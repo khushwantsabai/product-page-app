@@ -1,0 +1,215 @@
+.templates-container {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #FAFAFA;
+  padding: 32px 40px;
+  min-height: 100vh;
+}
+
+.templates-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.templates-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.templates-subtitle {
+  font-size: 14px;
+  color: #6B7280;
+}
+
+.templates-top-btn {
+  background-color: white;
+  border: 1px solid #D1D5DB;
+  color: #374151;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.templates-top-btn:hover {
+  background-color: #F9FAFB;
+}
+
+.filters-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.search-bar {
+  flex-grow: 1;
+  max-width: 320px;
+  position: relative;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px 16px 10px 40px;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9CA3AF;
+  width: 16px;
+  height: 16px;
+}
+
+.dropdown-select {
+  padding: 10px 16px;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #374151;
+  background: white;
+  outline: none;
+  min-width: 160px;
+  cursor: pointer;
+}
+
+.categories-scroll {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.category-pill {
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4B5563;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.category-pill.active {
+  background: #ECFDF5;
+  color: #16A34A;
+}
+.category-pill:hover:not(.active) {
+  background: #F3F4F6;
+}
+
+.templates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.template-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #E5E7EB;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.template-card:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.template-image-wrapper {
+  aspect-ratio: 4/3;
+  background: #F9FAFB;
+  position: relative;
+  overflow: hidden;
+}
+
+.template-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.template-card:hover .template-image-wrapper img {
+  transform: scale(1.02);
+}
+
+.template-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.badge-free { color: #6B7280; border: 1px solid #E5E7EB; }
+.badge-basic { color: #16A34A; background: #ECFDF5; border: 1px solid #A7F3D0; }
+.badge-standard { color: #8B5CF6; background: #F5F3FF; border: 1px solid #DDD6FE; }
+.badge-premium { color: #F59E0B; background: #FFFBEB; border: 1px solid #FDE68A; }
+
+.template-body {
+  padding: 16px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.template-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 20px;
+}
+
+.template-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.btn-preview {
+  background: #F3F4F6;
+  color: #374151;
+  border: none;
+}
+.btn-preview:hover { background: #E5E7EB; }
+
+.btn-use {
+  background: #8B5CF6;
+  color: white;
+  border: none;
+}
+.btn-use:hover { background: #7C3AED; }
+.btn-use-green { background: #16A34A; }
+.btn-use-green:hover { background: #15803D; }
+.btn-use-yellow { color: #B45309; background: #FEF3C7; }
+.btn-use-yellow:hover { background: #FDE68A; }
