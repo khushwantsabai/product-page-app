@@ -1,0 +1,154 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #FAFAFA;
+}
+
+.app-sidebar {
+  width: 260px;
+  background-color: white;
+  border-right: 1px solid #E5E7EB;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.app-content {
+  flex-grow: 1;
+  overflow-x: hidden;
+}
+
+/* Nav Menu Styles */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #4B5563;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.sidebar-link:hover {
+  background-color: #F3F4F6;
+  color: #111827;
+}
+
+.sidebar-link.active {
+  background-color: #F5F3FF; /* Light purple */
+  color: #6D28D9; /* Deep purple */
+}
+
+.sidebar-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9CA3AF;
+}
+
+.sidebar-link.active .sidebar-icon {
+  color: #6D28D9;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background-color: #F3F4F6;
+  margin: 8px 0 24px 0;
+}
+
+/* Premium Plan Card */
+.premium-card {
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.premium-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.premium-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.premium-desc {
+  font-size: 13px;
+  color: #4B5563;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.premium-btn {
+  width: 100%;
+  background-color: #6D28D9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.premium-btn:hover {
+  background-color: #5B21B6;
+}
+
+/* Why Choose Card */
+.why-card {
+  background-color: #F9FAFB;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.why-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 16px;
+}
+
+.why-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.why-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: #4B5563;
+  line-height: 1.4;
+}
+
+.why-check {
+  color: #6D28D9;
+  margin-top: 1px;
+  flex-shrink: 0;
+}

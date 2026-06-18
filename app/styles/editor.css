@@ -168,6 +168,16 @@
   gap: 40px;
 }
 
+.mock-product-stacked {
+  flex-direction: column;
+  align-items: center;
+}
+
+.mock-product-stacked .mock-gallery {
+  max-width: 500px;
+  width: 100%;
+}
+
 .mock-gallery {
   flex: 1;
   display: flex;

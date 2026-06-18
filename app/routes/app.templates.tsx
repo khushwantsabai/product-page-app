@@ -60,10 +60,10 @@ export default function Templates() {
   const templates = [
     { id: '1', name: "Minimal Clean", plan: "Free", brand: "free", image: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-5_large.png" },
     { id: '2', name: "Modern Electronics", plan: "Basic", brand: "basic", image: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-6_large.png" },
-    { id: '3', name: "Luxury Watch", plan: "Standard", brand: "standard", image: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-2_large.png" },
-    { id: '4', name: "Beauty Glow", plan: "Premium", brand: "premium", image: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-4_large.png" },
     { id: '5', name: "Fashion Store", plan: "Basic", brand: "basic", image: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-collection-3_large.png" },
+    { id: '3', name: "Luxury Watch", plan: "Standard", brand: "standard", image: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-2_large.png" },
     { id: '6', name: "Sporty Shoes", plan: "Standard", brand: "standard", image: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png" },
+    { id: '4', name: "Beauty Glow", plan: "Premium", brand: "premium", image: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-4_large.png" },
   ];
 
   return (
@@ -117,7 +117,11 @@ export default function Templates() {
             <div className="template-body">
               <div className="template-name">{tpl.name}</div>
               <div className="template-actions">
-                <button className="action-btn btn-preview">Preview</button>
+                <button 
+                  type="button"
+                  className="action-btn btn-preview"
+                  onClick={() => navigate(`/app/editor/preview-${tpl.id}`)}
+                >Preview</button>
                 
                 {PLAN_LEVELS[tpl.brand] > PLAN_LEVELS[activePlan] ? (
                    <button 
