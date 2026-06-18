@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs, LinksFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useState } from "react";
 import { authenticate } from "../shopify.server";
 import dashboardStyles from "../styles/dashboard.css?url";
 
@@ -28,6 +29,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function Dashboard() {
   const { merchantPlan, pagesCreated, pagesPublished, pageLimit, recentPages } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+
+  const getPrice = (monthly: number) => {
+    if (monthly === 0) return '$0';
+    if (billingCycle === 'yearly') return `$${Math.round(monthly * 0.8)}`;
+    return `$${monthly}`;
+  };
+  const getPeriod = () => billingCycle === 'yearly' ? '/month, billed yearly' : '/month';
 
   return (
     <div className="dashboard-container">
@@ -43,13 +52,6 @@ export default function Dashboard() {
           <div className="hero-buttons">
             <button className="btn-primary" onClick={() => navigate("/app/templates")}>
               Browse Templates
-            </button>
-            <button className="btn-secondary">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" fill="currentColor"/>
-                <path fillRule="evenodd" clipRule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z" fill="currentColor"/>
-              </svg>
-              Watch Demo
             </button>
           </div>
         </div>
@@ -67,8 +69,14 @@ export default function Dashboard() {
       <div className="section-header">
         <h2 className="section-title">Choose Your Plan</h2>
         <div className="toggle-container">
-          <button className="toggle-btn active">Monthly</button>
-          <button className="toggle-btn">Yearly (Save 20%)</button>
+          <button
+            className={`toggle-btn ${billingCycle === 'monthly' ? 'active' : ''}`}
+            onClick={() => setBillingCycle('monthly')}
+          >Monthly</button>
+          <button
+            className={`toggle-btn ${billingCycle === 'yearly' ? 'active' : ''}`}
+            onClick={() => setBillingCycle('yearly')}
+          >Yearly (Save 20%)</button>
         </div>
       </div>
 
@@ -77,7 +85,7 @@ export default function Dashboard() {
         {/* Free Plan */}
         <div className="pricing-card">
           <h3 className="plan-name">Free</h3>
-          <div className="plan-price">$0 <span>/month</span></div>
+          <div className="plan-price">{getPrice(0)} <span>{getPeriod()}</span></div>
           <p className="plan-desc">Perfect for getting started</p>
           <ul className="features-list">
             <li className="feature-item"><span className="feature-check">✓</span> 3 Free Templates</li>
@@ -91,7 +99,7 @@ export default function Dashboard() {
         {/* Basic Plan */}
         <div className="pricing-card">
           <h3 className="plan-name" style={{color: '#16A34A'}}>Basic</h3>
-          <div className="plan-price">$20 <span>/month</span></div>
+          <div className="plan-price">{getPrice(39)} <span>{getPeriod()}</span></div>
           <p className="plan-desc">Best for small stores</p>
           <ul className="features-list">
             <li className="feature-item"><span className="feature-check">✓</span> 15+ Premium Templates</li>
@@ -106,7 +114,7 @@ export default function Dashboard() {
         {/* Standard Plan */}
         <div className="pricing-card standard-border">
           <h3 className="plan-name" style={{color: '#8B5CF6'}}>Standard</h3>
-          <div className="plan-price">$35 <span>/month</span></div>
+          <div className="plan-price">{getPrice(69)} <span>{getPeriod()}</span></div>
           <p className="plan-desc">Best for growing stores</p>
           <ul className="features-list">
             <li className="feature-item"><span className="feature-check">✓</span> 35+ Premium Templates</li>
@@ -122,7 +130,7 @@ export default function Dashboard() {
         <div className="pricing-card premium-border">
           <div className="best-value-badge">Best Value</div>
           <h3 className="plan-name" style={{color: '#F59E0B'}}>Premium</h3>
-          <div className="plan-price">$60 <span>/month</span></div>
+          <div className="plan-price">{getPrice(99)} <span>{getPeriod()}</span></div>
           <p className="plan-desc">Best for high volume stores</p>
           <ul className="features-list">
             <li className="feature-item"><span className="feature-check">✓</span> Unlimited Templates</li>

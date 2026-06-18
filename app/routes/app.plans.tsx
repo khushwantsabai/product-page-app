@@ -95,19 +95,19 @@ const PLANS = [
   },
   {
     name: "Basic",
-    price: 20,
+    price: 39,
     features: ["5 Published Pages", "Basic Customization", "Image Edits & Fonts", "3 Templates Available"],
     lockedFeatures: ["Advanced Styling", "Video Embeds", "A/B Testing & Analytics"]
   },
   {
     name: "Standard",
-    price: 35,
+    price: 69,
     features: ["15 Published Pages", "Basic Customization", "Image Edits & Fonts", "Advanced Styling", "5 Templates Available"],
     lockedFeatures: ["Video Embeds", "A/B Testing & Analytics"]
   },
   {
     name: "Premium",
-    price: 60,
+    price: 99,
     features: ["Unlimited Pages", "Basic Customization", "Image Edits & Fonts", "Advanced Styling", "Video Embeds", "A/B Testing & Analytics", "Priority Support"],
     lockedFeatures: [],
     bestValue: true

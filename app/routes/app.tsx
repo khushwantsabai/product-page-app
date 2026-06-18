@@ -12,7 +12,12 @@ export const links = () => [
 ];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await authenticate.admin(request);
+  const url = new URL(request.url);
+  const isPreview = url.pathname.includes("/editor/preview-");
+  
+  if (!isPreview) {
+    await authenticate.admin(request);
+  }
 
   return { apiKey: process.env.SHOPIFY_API_KEY || "" };
 };

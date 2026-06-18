@@ -88,6 +88,21 @@
   margin-bottom: 32px;
   overflow-x: auto;
   padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #E5E7EB transparent;
+}
+
+.categories-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.categories-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.categories-scroll::-webkit-scrollbar-thumb {
+  background-color: #E5E7EB;
+  border-radius: 10px;
 }
 
 .category-pill {
@@ -213,3 +228,47 @@
 .btn-use-green:hover { background: #15803D; }
 .btn-use-yellow { color: #B45309; background: #FEF3C7; }
 .btn-use-yellow:hover { background: #FDE68A; }
+
+/* RESPONSIVE MEDIA QUERIES */
+@media (max-width: 768px) {
+  .templates-container {
+    padding: 20px 16px;
+  }
+
+  .templates-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .templates-top-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .filters-bar {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .search-bar {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .dropdown-select {
+    width: 100%;
+  }
+
+  .categories-scroll {
+    margin-bottom: 20px;
+    padding-bottom: 4px;
+  }
+
+  .templates-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
