@@ -1,6 +1,5 @@
 {
   "buildCommand": "npx prisma@6.19.3 generate && npx prisma@6.19.3 db push && remix vite:build",
-  "framework": null,
   "installCommand": "npm install --legacy-peer-deps",
   "env": {
     "NODE_ENV": "production"
