@@ -1,5 +1,7 @@
 import prisma from "../db.server";
 
+const db = prisma as any;
+
 export interface MerchantSettings {
   defaultButtonText: string;
   defaultCurrency: string;
@@ -20,7 +22,7 @@ const DEFAULT_SETTINGS: MerchantSettings = {
 
 export async function getSettings(shopDomain: string): Promise<MerchantSettings> {
   try {
-    const record = await prisma.merchantSettings.findUnique({
+    const record = await db.merchantSettings.findUnique({
       where: { shopDomain },
     });
     if (!record) return { ...DEFAULT_SETTINGS };
@@ -46,7 +48,7 @@ export async function saveSettings(
     const existing = await getSettings(shopDomain);
     const updated = { ...existing, ...settings };
 
-    await prisma.merchantSettings.upsert({
+    await db.merchantSettings.upsert({
       where: { shopDomain },
       update: {
         defaultButtonText: updated.defaultButtonText,

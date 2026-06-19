@@ -22,9 +22,11 @@ import { useState, useCallback, useEffect } from "react";
 
 import prisma from "../db.server";
 
+const db = prisma as any;
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
-  const tickets = await prisma.supportTicket.findMany({
+  const tickets = await db.supportTicket.findMany({
     where: { shopDomain: session.shop },
     orderBy: { createdAt: 'desc' },
   });
@@ -54,7 +56,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     status: "Open",
   };
 
-  await prisma.supportTicket.create({ data: ticketData });
+  await db.supportTicket.create({ data: ticketData });
 
   return json({ success: true, message: `Support ticket ${ticketId} submitted successfully! We'll reply within 12 hours.` });
 };
