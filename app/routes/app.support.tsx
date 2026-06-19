@@ -60,7 +60,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const ticketData = {
     id: ticketId,
     shop: session.shop,
-    email: session.email || "support@mystore.com",
+    email: (session as any).email || "support@mystore.com",
     subject,
     priority,
     description,
