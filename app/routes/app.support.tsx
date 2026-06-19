@@ -20,22 +20,14 @@ import {
 import { authenticate } from "../shopify.server";
 import { useState, useCallback, useEffect } from "react";
 
-import fs from "fs";
-import path from "path";
+import prisma from "../db.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
-  const ticketsDir = path.join(process.cwd(), "db_tickets");
-  const filePath = path.join(ticketsDir, `${session.shop.replace(/[^a-zA-Z0-9.-]/g, "_")}.json`);
-  
-  let tickets = [];
-  if (fs.existsSync(filePath)) {
-    try {
-      tickets = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-    } catch (e) {
-      tickets = [];
-    }
-  }
+  const tickets = await prisma.supportTicket.findMany({
+    where: { shopDomain: session.shop },
+    orderBy: { createdAt: 'desc' },
+  });
   return json({ tickets });
 };
 
@@ -51,34 +43,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return json({ error: "Please fill out all fields." }, { status: 400 });
   }
 
-  const ticketsDir = path.join(process.cwd(), "db_tickets");
-  if (!fs.existsSync(ticketsDir)) {
-    fs.mkdirSync(ticketsDir, { recursive: true });
-  }
-
   const ticketId = `TKT-${Date.now().toString().slice(-6)}`;
   const ticketData = {
     id: ticketId,
-    shop: session.shop,
+    shopDomain: session.shop,
     email: (session as any).email || "support@mystore.com",
     subject,
     priority,
     description,
     status: "Open",
-    createdAt: new Date().toISOString()
   };
 
-  const filePath = path.join(ticketsDir, `${session.shop.replace(/[^a-zA-Z0-9.-]/g, "_")}.json`);
-  let existingTickets = [];
-  if (fs.existsSync(filePath)) {
-    try {
-      existingTickets = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-    } catch (e) {
-      existingTickets = [];
-    }
-  }
-  existingTickets.unshift(ticketData); // Add new ticket to the top
-  fs.writeFileSync(filePath, JSON.stringify(existingTickets, null, 2), "utf-8");
+  await prisma.supportTicket.create({ data: ticketData });
 
   return json({ success: true, message: `Support ticket ${ticketId} submitted successfully! We'll reply within 12 hours.` });
 };

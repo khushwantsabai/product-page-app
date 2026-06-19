@@ -34,7 +34,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const activePlan = activeSub?.planId?.toLowerCase() || "free";
   const planName = activePlan.charAt(0).toUpperCase() + activePlan.slice(1);
 
-  const settings = getSettings(session.shop);
+  const settings = await getSettings(session.shop);
   
   return json({
     ...settings,
@@ -53,7 +53,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (actionType === "editProfile") {
     const brandName = formData.get("brandName") as string;
     const category = formData.get("category") as string;
-    saveSettings(session.shop, { brandName, category });
+    await saveSettings(session.shop, { brandName, category });
     return json({ success: true, message: "Profile updated successfully!" });
   }
 

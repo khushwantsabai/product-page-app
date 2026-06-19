@@ -1,7 +1,4 @@
-import fs from "fs";
-import path from "path";
-
-const SETTINGS_DIR = path.join(process.cwd(), "db_settings");
+import prisma from "../db.server";
 
 export interface MerchantSettings {
   defaultButtonText: string;
@@ -21,41 +18,58 @@ const DEFAULT_SETTINGS: MerchantSettings = {
   category: "",
 };
 
-function ensureDirExists() {
-  if (!fs.existsSync(SETTINGS_DIR)) {
-    fs.mkdirSync(SETTINGS_DIR, { recursive: true });
-  }
-}
-
-export function getSettings(shopDomain: string): MerchantSettings {
-  ensureDirExists();
-  const filePath = path.join(SETTINGS_DIR, `${shopDomain.replace(/[^a-zA-Z0-9.-]/g, "_")}.json`);
-  
-  if (!fs.existsSync(filePath)) {
-    return { ...DEFAULT_SETTINGS };
-  }
-
+export async function getSettings(shopDomain: string): Promise<MerchantSettings> {
   try {
-    const rawData = fs.readFileSync(filePath, "utf-8");
-    return { ...DEFAULT_SETTINGS, ...JSON.parse(rawData) };
+    const record = await prisma.merchantSettings.findUnique({
+      where: { shopDomain },
+    });
+    if (!record) return { ...DEFAULT_SETTINGS };
+    return {
+      defaultButtonText: record.defaultButtonText,
+      defaultCurrency: record.defaultCurrency,
+      autoPublish: record.autoPublish,
+      storeMail: record.storeMail,
+      brandName: record.brandName,
+      category: record.category,
+    };
   } catch (error) {
     console.error(`Error reading settings for ${shopDomain}:`, error);
     return { ...DEFAULT_SETTINGS };
   }
 }
 
-export function saveSettings(shopDomain: string, settings: Partial<MerchantSettings>): MerchantSettings {
-  ensureDirExists();
-  const filePath = path.join(SETTINGS_DIR, `${shopDomain.replace(/[^a-zA-Z0-9.-]/g, "_")}.json`);
-  
-  const currentSettings = getSettings(shopDomain);
-  const updatedSettings = { ...currentSettings, ...settings };
-
+export async function saveSettings(
+  shopDomain: string,
+  settings: Partial<MerchantSettings>
+): Promise<MerchantSettings> {
   try {
-    fs.writeFileSync(filePath, JSON.stringify(updatedSettings, null, 2), "utf-8");
+    const existing = await getSettings(shopDomain);
+    const updated = { ...existing, ...settings };
+
+    await prisma.merchantSettings.upsert({
+      where: { shopDomain },
+      update: {
+        defaultButtonText: updated.defaultButtonText,
+        defaultCurrency: updated.defaultCurrency,
+        autoPublish: updated.autoPublish,
+        storeMail: updated.storeMail,
+        brandName: updated.brandName ?? "",
+        category: updated.category ?? "",
+      },
+      create: {
+        shopDomain,
+        defaultButtonText: updated.defaultButtonText,
+        defaultCurrency: updated.defaultCurrency,
+        autoPublish: updated.autoPublish,
+        storeMail: updated.storeMail,
+        brandName: updated.brandName ?? "",
+        category: updated.category ?? "",
+      },
+    });
+
+    return updated;
   } catch (error) {
     console.error(`Error saving settings for ${shopDomain}:`, error);
+    return { ...DEFAULT_SETTINGS, ...settings };
   }
-
-  return updatedSettings;
 }

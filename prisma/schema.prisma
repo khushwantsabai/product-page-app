@@ -9,8 +9,8 @@ generator client {
 // enough when changing adapters.
 // See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Session {
@@ -65,7 +65,7 @@ model ProductPage {
   templateId  String
   planId      String
   name        String
-  status      String    // draft/published
+  status      String
   settings    Json
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -92,4 +92,26 @@ model Analytics {
   views            Int      @default(0)
   addToCartClicks  Int      @default(0)
   date             DateTime
+}
+
+model MerchantSettings {
+  id                String  @id @default(uuid())
+  shopDomain        String  @unique
+  defaultButtonText String  @default("Add to Cart")
+  defaultCurrency   String  @default("USD ($)")
+  autoPublish       Boolean @default(true)
+  storeMail         String  @default("support@mystore.com")
+  brandName         String  @default("")
+  category          String  @default("")
+}
+
+model SupportTicket {
+  id          String   @id
+  shopDomain  String
+  email       String
+  subject     String
+  priority    String
+  description String
+  status      String   @default("Open")
+  createdAt   DateTime @default(now())
 }
