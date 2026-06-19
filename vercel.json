@@ -1,0 +1,8 @@
+{
+  "buildCommand": "prisma generate && prisma db push && remix vite:build",
+  "framework": null,
+  "installCommand": "npm install --legacy-peer-deps",
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
