@@ -226,16 +226,7 @@ export default function Support() {
           {/* Sidebar with guides and status */}
           <Layout.Section variant="oneThird">
             <BlockStack gap="500">
-              <Card>
-                <BlockStack gap="300">
-                  <Text as="h2" variant="headingMd">Guides & Documentation</Text>
-                  <Text as="p" tone="subdued">Detailed manuals and guidelines on template customizer logic:</Text>
-                  <Divider />
-                  <Button fullWidth url="https://shopify.dev" external>📖 Getting Started Guide</Button>
-                  <Button fullWidth url="https://shopify.dev" external>👟 Customizing theme assets</Button>
-                  <Button fullWidth url="https://shopify.dev" external>💬 Join Developer Forum</Button>
-                </BlockStack>
-              </Card>
+
 
               <Card>
                 <BlockStack gap="300">

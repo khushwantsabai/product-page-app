@@ -212,7 +212,7 @@ export default function Editor() {
       text: 'Only {count} items left in stock!'
     },
     trustBadges: initialMockData.trustBadges || [
-      { id: '1', title: 'Free Shipping', desc: 'On all orders', icon: '🚚' },
+      { id: '1', title: 'Shipping', desc: 'On all orders', icon: '🚚' },
       { id: '2', title: '30-Day Returns', desc: 'No questions asked', icon: '🔄' },
       { id: '3', title: 'Secure Checkout', desc: '100% protected', icon: '🔒' },
       { id: '4', title: '24/7 Support', desc: 'We\'re here to help', icon: '💬' }
@@ -242,6 +242,7 @@ export default function Editor() {
   }, [page.id]);
 
   const activePlan = isPreview ? (editorData.plan || 'Free').toLowerCase() : loaderData.activePlan;
+  const isLocked = isPreview && activePlan !== 'free';
 
   const updateStyle = (key: string, value: string | number) => {
     if (!['title', 'price', 'desc', 'cart', 'buy'].includes(activeSection)) return;
@@ -304,6 +305,15 @@ export default function Editor() {
       <div className="editor-workspace">
         {/* Left Sidebar */}
         <div className="sidebar-left">
+          {isLocked ? (
+            <div style={{ padding: '24px', textAlign: 'center', color: '#6B7280', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '16px' }}>
+              <span style={{ fontSize: '32px' }}>🔒</span>
+              <h3 style={{ margin: 0, color: '#111827' }}>Preview Mode</h3>
+              <p style={{ margin: 0, fontSize: '13px' }}>Upgrade to {editorData.plan} to customize this template.</p>
+              <button onClick={() => navigate('/app/plans')} className="btn-solid" style={{ width: '100%', marginTop: '8px' }}>Upgrade Plan</button>
+            </div>
+          ) : (
+            <>
           <div className="sidebar-header">Add Section</div>
           <div className="section-list">
             {[
@@ -330,6 +340,8 @@ export default function Editor() {
               </div>
             ))}
           </div>
+          </>
+          )}
         </div>
 
         {/* Center Canvas */}
@@ -799,6 +811,14 @@ export default function Editor() {
 
         {/* Right Sidebar */}
         <div className="sidebar-right">
+          {isLocked ? (
+             <div style={{ padding: '24px', textAlign: 'center', color: '#6B7280', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '16px', background: '#F9FAFB' }}>
+               <span style={{ fontSize: '32px' }}>⚙️</span>
+               <h3 style={{ margin: 0, color: '#111827' }}>Settings Locked</h3>
+               <p style={{ margin: 0, fontSize: '13px' }}>You can only view the layout of paid templates in preview mode. Customization requires an active subscription.</p>
+             </div>
+          ) : (
+            <>
           <div className="sidebar-header" style={{display: 'flex', justifyContent: 'space-between', textTransform: 'capitalize'}}>
             {activeSection === 'desc' ? 'Description' : activeSection === 'cart' ? 'Add To Cart' : activeSection === 'buy' ? 'Buy Now' : `Product ${activeSection}`}
             <span style={{cursor: 'pointer', color: '#9CA3AF'}}>🗑️</span>
@@ -1587,6 +1607,8 @@ export default function Editor() {
               );
             })()}
           </div>
+          </>
+          )}
         </div>
       </div>
     </div>

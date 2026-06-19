@@ -8,6 +8,8 @@ export interface MerchantSettings {
   defaultCurrency: string;
   autoPublish: boolean;
   storeMail: string;
+  brandName?: string;
+  category?: string;
 }
 
 const DEFAULT_SETTINGS: MerchantSettings = {
@@ -15,6 +17,8 @@ const DEFAULT_SETTINGS: MerchantSettings = {
   defaultCurrency: "USD ($)",
   autoPublish: true,
   storeMail: "support@mystore.com",
+  brandName: "",
+  category: "",
 };
 
 function ensureDirExists() {

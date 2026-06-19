@@ -16,6 +16,8 @@ import {
   Frame,
   Toast,
   Banner,
+  Modal,
+  List,
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 import { useState, useCallback, useEffect } from "react";
@@ -37,7 +39,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return json({
     ...settings,
     themeInstalled: true,
-    activePlan: planName
+    activePlan: planName,
+    shopDomain: session.shop,
   });
 };
 
@@ -45,19 +48,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const { session } = await authenticate.admin(request);
   const formData = await request.formData();
   
-  const defaultButtonText = formData.get("defaultButtonText") as string;
-  const defaultCurrency = formData.get("defaultCurrency") as string;
-  const autoPublish = formData.get("autoPublish") === "true";
-  const storeMail = formData.get("storeMail") as string;
+  const actionType = formData.get("actionType");
 
-  saveSettings(session.shop, {
-    defaultButtonText,
-    defaultCurrency,
-    autoPublish,
-    storeMail,
-  });
+  if (actionType === "editProfile") {
+    const brandName = formData.get("brandName") as string;
+    const category = formData.get("category") as string;
+    saveSettings(session.shop, { brandName, category });
+    return json({ success: true, message: "Profile updated successfully!" });
+  }
+
+  if (actionType === "removeTemplates") {
+    // Simulated template removal
+    return json({ success: true, message: "Templates removed successfully!" });
+  }
   
-  return json({ success: true, message: "Settings saved successfully!" });
+  return json({ success: false, message: "Unknown action" });
 };
 
 export default function Settings() {
@@ -66,25 +71,33 @@ export default function Settings() {
   const submit = useSubmit();
   const navigation = useNavigation();
 
-  // Settings states
-  const [btnText, setBtnText] = useState(defaultData.defaultButtonText);
-  const [currency, setCurrency] = useState(defaultData.defaultCurrency);
-  const [autoPublish, setAutoPublish] = useState(defaultData.autoPublish);
-  const [storeMail, setStoreMail] = useState(defaultData.storeMail);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  
+  // Profile Modal State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [brandName, setBrandName] = useState(defaultData.brandName || "");
+  const [category, setCategory] = useState(defaultData.category || "");
 
   useEffect(() => {
     if (actionData?.success && actionData?.message) {
       setToastMessage(actionData.message);
+      if (isEditModalOpen) {
+        setIsEditModalOpen(false);
+      }
     }
-  }, [actionData]);
+  }, [actionData, isEditModalOpen]);
 
-  const handleSave = () => {
+  const handleSaveProfile = () => {
     const formData = new FormData();
-    formData.append("defaultButtonText", btnText);
-    formData.append("defaultCurrency", currency);
-    formData.append("autoPublish", String(autoPublish));
-    formData.append("storeMail", storeMail);
+    formData.append("actionType", "editProfile");
+    formData.append("brandName", brandName);
+    formData.append("category", category);
+    submit(formData, { method: "post" });
+  };
+
+  const handleRemoveTemplates = () => {
+    const formData = new FormData();
+    formData.append("actionType", "removeTemplates");
     submit(formData, { method: "post" });
   };
 
@@ -99,69 +112,22 @@ export default function Settings() {
             <BlockStack gap="500">
               <Card>
                 <BlockStack gap="400">
-                  <Text as="h2" variant="headingMd">⚙️ Store Defaults</Text>
-                  <Text as="p" tone="subdued">Configure default settings when creating new page templates.</Text>
-                  
-                  <FormLayout>
-                    <TextField
-                      label="Default Add to Cart Button Text"
-                      value={btnText}
-                      onChange={(val) => setBtnText(val)}
-                      autoComplete="off"
-                    />
-                    <TextField
-                      label="Default Currency & Symbol"
-                      value={currency}
-                      onChange={(val) => setCurrency(val)}
-                      autoComplete="off"
-                    />
-                    <TextField
-                      type="email"
-                      label="Notification Email"
-                      value={storeMail}
-                      onChange={(val) => setStoreMail(val)}
-                      autoComplete="off"
-                    />
-                  </FormLayout>
+                  <Text as="h2" variant="headingMd">Store Details</Text>
+                  <List type="bullet">
+                    <List.Item>Shop Domain: {defaultData.shopDomain}</List.Item>
+                    <List.Item>Brand Name: {defaultData.brandName || "Not set"}</List.Item>
+                    <List.Item>Category: {defaultData.category || "Not set"}</List.Item>
+                  </List>
+                  <Button fullWidth onClick={() => setIsEditModalOpen(true)}>Edit Profile</Button>
                 </BlockStack>
               </Card>
 
               <Card>
                 <BlockStack gap="400">
-                  <Text as="h2" variant="headingMd">🛠️ Automation & Integrations</Text>
-                  <Text as="p" tone="subdued">Control how template pages publish and interact with your Shopify admin.</Text>
-                  
-                  <FormLayout>
-                    <InlineStack align="space-between">
-                      <BlockStack gap="100">
-                        <Text as="h3" variant="headingSm">Auto-Apply to New Products</Text>
-                        <Text as="p" tone="subdued">Automatically attach default layouts to newly created draft products.</Text>
-                      </BlockStack>
-                      <Button onClick={() => setAutoPublish(!autoPublish)} variant="secondary">
-                        {autoPublish ? "Enabled (Click to Disable)" : "Disabled (Click to Enable)"}
-                      </Button>
-                    </InlineStack>
-                  </FormLayout>
-                </BlockStack>
-              </Card>
-
-              <Card>
-                <BlockStack gap="400">
-                  <Text as="h2" variant="headingMd">🔌 Theme Helper (Manual Embed)</Text>
-                  <Text as="p" tone="subdued">If templates are not showing on your store page automatically, paste this liquid tag directly inside your theme's <code>sections/main-product.liquid</code> file:</Text>
-                  
-                  <Box padding="300" background="bg-surface-secondary" borderRadius="200">
-                    <pre style={{ margin: 0, fontFamily: 'monospace', fontSize: '13px', color: '#DC2626' }}>
-                      {"{% include 'pagecraft-product-builder' %}"}
-                    </pre>
-                  </Box>
-                  
-                  <InlineStack align="start" gap="300">
-                    <Button onClick={() => {
-                      navigator.clipboard.writeText("{% include 'pagecraft-product-builder' %}");
-                      setToastMessage("Liquid code copied to clipboard!");
-                    }} variant="secondary">Copy Code Snippet</Button>
-                    <Button variant="plain" url="https://shopify.dev" external>Learn about liquid embeds</Button>
+                  <Text as="h2" variant="headingMd" tone="critical">Reset Customizations</Text>
+                  <Text as="p">This will remove all ShopFrame templates from your live theme.</Text>
+                  <InlineStack>
+                    <Button tone="critical" loading={isSaving && navigation.formData?.get("actionType") === "removeTemplates"} onClick={handleRemoveTemplates}>Remove Templates</Button>
                   </InlineStack>
                 </BlockStack>
               </Card>
@@ -183,45 +149,44 @@ export default function Settings() {
                   <Button fullWidth url="/app/plans">Change Plan</Button>
                 </BlockStack>
               </Card>
-
-              <Card>
-                <BlockStack gap="300">
-                  <Text as="h2" variant="headingMd">System Status</Text>
-                  <InlineStack gap="200" blockAlign="center">
-                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#16A34A' }}></div>
-                    <Text as="span" variant="bodyMd">Prisma DB: Connected</Text>
-                  </InlineStack>
-                  <InlineStack gap="200" blockAlign="center">
-                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#16A34A' }}></div>
-                    <Text as="span" variant="bodyMd">Webhooks: Registered</Text>
-                  </InlineStack>
-                  <InlineStack gap="200" blockAlign="center">
-                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#16A34A' }}></div>
-                    <Text as="span" variant="bodyMd">API Handshake: Stable</Text>
-                  </InlineStack>
-                </BlockStack>
-              </Card>
             </BlockStack>
-          </Layout.Section>
-
-          {/* Save Button Bar */}
-          <Layout.Section>
-            <Divider />
-            <Box paddingBlockStart="400">
-              <InlineStack align="end" gap="300">
-                <Button variant="secondary" onClick={() => {
-                  setBtnText(defaultData.defaultButtonText);
-                  setCurrency(defaultData.defaultCurrency);
-                  setAutoPublish(defaultData.autoPublish);
-                  setStoreMail(defaultData.storeMail);
-                  setToastMessage("Changes reverted!");
-                }}>Cancel</Button>
-                <Button variant="primary" loading={isSaving} onClick={handleSave}>Save Settings</Button>
-              </InlineStack>
-            </Box>
           </Layout.Section>
         </Layout>
       </Page>
+
+      <Modal
+        open={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        title="Edit Profile"
+        primaryAction={{
+          content: 'Save',
+          onAction: handleSaveProfile,
+          loading: isSaving && navigation.formData?.get("actionType") === "editProfile",
+        }}
+        secondaryActions={[
+          {
+            content: 'Cancel',
+            onAction: () => setIsEditModalOpen(false),
+          },
+        ]}
+      >
+        <Modal.Section>
+          <FormLayout>
+            <TextField
+              label="Brand Name"
+              value={brandName}
+              onChange={(val) => setBrandName(val)}
+              autoComplete="off"
+            />
+            <TextField
+              label="Category"
+              value={category}
+              onChange={(val) => setCategory(val)}
+              autoComplete="off"
+            />
+          </FormLayout>
+        </Modal.Section>
+      </Modal>
 
       {toastMessage && (
         <Toast content={toastMessage} onDismiss={() => setToastMessage(null)} duration={4000} />

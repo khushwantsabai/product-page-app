@@ -183,10 +183,12 @@ export default function Pages() {
                     <Text as="p" tone="subdued" alignment="center">
                       Create beautiful, high-converting product pages using our responsive templates and drag-and-drop elements.
                     </Text>
-                    <Box paddingBlockStart="200" style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Button variant="primary" onClick={() => navigate('/app/templates')}>
-                        Browse Templates
-                      </Button>
+                    <Box paddingBlockStart="200">
+                      <InlineStack align="center">
+                        <Button variant="primary" onClick={() => navigate('/app/templates')}>
+                          Browse Templates
+                        </Button>
+                      </InlineStack>
                     </Box>
                   </BlockStack>
                 </Box>
