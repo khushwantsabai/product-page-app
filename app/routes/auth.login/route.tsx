@@ -9,12 +9,14 @@ import {
   Page,
   Text,
   TextField,
+  BlockStack,
+  InlineStack,
+  Box,
 } from "@shopify/polaris";
 import polarisTranslations from "@shopify/polaris/locales/en.json";
 import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 
 import { login } from "../../shopify.server";
-
 import { loginErrorMessage } from "./error.server";
 
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
@@ -42,26 +44,85 @@ export default function Auth() {
   return (
     <PolarisAppProvider i18n={loaderData.polarisTranslations}>
       <Page>
-        <Card>
-          <Form method="post">
-            <FormLayout>
-              <Text variant="headingMd" as="h2">
-                Log in
-              </Text>
-              <TextField
-                type="text"
-                name="shop"
-                label="Shop domain"
-                helpText="example.myshopify.com"
-                value={shop}
-                onChange={setShop}
-                autoComplete="on"
-                error={errors.shop}
-              />
-              <Button submit>Log in</Button>
-            </FormLayout>
-          </Form>
-        </Card>
+        <Box paddingBlockStart="1000" paddingBlockEnd="1000">
+          <InlineStack align="center">
+            <Box maxWidth="600px" width="100%">
+              <BlockStack gap="800" inlineAlign="center">
+                
+                {/* Branding & Header */}
+                <BlockStack gap="400" inlineAlign="center">
+                  <Text variant="heading3xl" as="h1" alignment="center">
+                    Pagecraft Product Builder
+                  </Text>
+                  <Text variant="bodyLg" as="p" tone="subdued" alignment="center">
+                    Design high-converting product pages effortlessly.
+                  </Text>
+                </BlockStack>
+
+                {/* Login Card */}
+                <Box minWidth="400px">
+                  <Card>
+                    <Box padding="500">
+                      <Form method="post">
+                        <FormLayout>
+                          <BlockStack gap="400">
+                            <Text variant="headingMd" as="h2" alignment="center">
+                              Log in to your store
+                            </Text>
+                            <TextField
+                              type="text"
+                              name="shop"
+                              label="Shop domain"
+                              helpText="e.g: my-shop-domain.myshopify.com"
+                              value={shop}
+                              onChange={setShop}
+                              autoComplete="on"
+                              error={errors.shop}
+                            />
+                            <Button submit variant="primary" size="large" tone="success">
+                              Log in
+                            </Button>
+                          </BlockStack>
+                        </FormLayout>
+                      </Form>
+                    </Box>
+                  </Card>
+                </Box>
+
+                {/* Features Section */}
+                <Box paddingBlockStart="600">
+                  <InlineStack align="space-evenly" gap="600">
+                    <Box maxWidth="160px">
+                      <BlockStack gap="200" inlineAlign="center">
+                        <Text variant="headingSm" as="h3">Drag & Drop</Text>
+                        <Text variant="bodySm" as="p" tone="subdued" alignment="center">
+                          Build pages visually without any coding skills.
+                        </Text>
+                      </BlockStack>
+                    </Box>
+                    <Box maxWidth="160px">
+                      <BlockStack gap="200" inlineAlign="center">
+                        <Text variant="headingSm" as="h3">High Converting</Text>
+                        <Text variant="bodySm" as="p" tone="subdued" alignment="center">
+                          Optimized templates that drive more sales.
+                        </Text>
+                      </BlockStack>
+                    </Box>
+                    <Box maxWidth="160px">
+                      <BlockStack gap="200" inlineAlign="center">
+                        <Text variant="headingSm" as="h3">Lightning Fast</Text>
+                        <Text variant="bodySm" as="p" tone="subdued" alignment="center">
+                          Pages load instantly for the best user experience.
+                        </Text>
+                      </BlockStack>
+                    </Box>
+                  </InlineStack>
+                </Box>
+
+              </BlockStack>
+            </Box>
+          </InlineStack>
+        </Box>
       </Page>
     </PolarisAppProvider>
   );
