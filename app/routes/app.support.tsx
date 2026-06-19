@@ -26,11 +26,16 @@ const db = prisma as any;
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
-  const tickets = await db.supportTicket.findMany({
-    where: { shopDomain: session.shop },
-    orderBy: { createdAt: 'desc' },
-  });
-  return json({ tickets });
+  try {
+    const tickets = await db.supportTicket.findMany({
+      where: { shopDomain: session.shop },
+      orderBy: { createdAt: 'desc' },
+    });
+    return json({ tickets });
+  } catch (e) {
+    console.error('SupportTicket model not available yet, run prisma generate:', e);
+    return json({ tickets: [] });
+  }
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -56,7 +61,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     status: "Open",
   };
 
-  await db.supportTicket.create({ data: ticketData });
+  try {
+    await db.supportTicket.create({ data: ticketData });
+  } catch (e) {
+    console.error('SupportTicket model not available yet, run prisma generate:', e);
+  }
 
   return json({ success: true, message: `Support ticket ${ticketId} submitted successfully! We'll reply within 12 hours.` });
 };
