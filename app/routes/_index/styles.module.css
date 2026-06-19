@@ -2,20 +2,21 @@
 
 :root {
   --font-sans: 'Inter', sans-serif;
-  --bg-color: #f8fafc;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
-  --card-bg: #ffffff;
-  --border-color: #e2e8f0;
+  --bg-color: #000000;
+  --text-main: #ffffff;
+  --text-muted: #a1a1aa;
+  --accent: #ffffff;
+  --accent-text: #000000;
+  --accent-hover: #e4e4e7;
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --border-color: rgba(255, 255, 255, 0.1);
 }
 
 body {
   margin: 0;
   font-family: var(--font-sans);
   background-color: var(--bg-color);
-  background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
   background-size: 24px 24px;
   color: var(--text-main);
   min-height: 100vh;
@@ -37,9 +38,10 @@ body {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background-image: 
-    radial-gradient(circle at 15% 50%, rgba(224, 231, 255, 0.9) 0%, transparent 50%),
-    radial-gradient(circle at 85% 30%, rgba(237, 233, 254, 0.9) 0%, transparent 50%);
+    radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
   z-index: -1;
+  pointer-events: none;
 }
 
 .content {
@@ -58,7 +60,7 @@ body {
 .heading {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-main);
   margin: 0 0 0.75rem 0;
   letter-spacing: -0.025em;
 }
@@ -76,7 +78,9 @@ body {
   padding: 2.5rem;
   width: 100%;
   max-width: 440px;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
   margin-bottom: 3rem;
 }
 
@@ -90,7 +94,7 @@ body {
 .formHeaderIcon {
   width: 48px;
   height: 48px;
-  background-color: #eef2ff;
+  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -151,6 +155,7 @@ body {
 
 .input {
   width: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
@@ -164,7 +169,7 @@ body {
 .input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
 .hint {
@@ -175,12 +180,12 @@ body {
 
 .buttonPrimary {
   background: var(--accent);
-  color: white;
+  color: var(--accent-text);
   border: none;
   border-radius: 8px;
   padding: 0.875rem;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -197,51 +202,6 @@ body {
 .buttonPrimary svg {
   width: 18px;
   height: 18px;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.875rem;
-  margin: 0.5rem 0;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.divider::before { margin-right: 1rem; }
-.divider::after { margin-left: 1rem; }
-
-.buttonSecondary {
-  background: white;
-  color: var(--text-main);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 0.875rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
-
-.buttonSecondary:hover {
-  background: #f8fafc;
-}
-
-.buttonSecondary svg {
-  width: 20px;
-  height: 20px;
 }
 
 .secureText {
@@ -279,7 +239,7 @@ body {
 .featureIconWrapper {
   width: 48px;
   height: 48px;
-  background-color: #eef2ff;
+  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   display: flex;
   align-items: center;

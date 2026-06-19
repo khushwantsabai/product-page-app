@@ -64,13 +64,6 @@ export default function App() {
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </button>
 
-              <div className={styles.divider}>or</div>
-
-              <button className={styles.buttonSecondary} type="button" onClick={() => window.location.href="https://shopify.com/login"}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#95bf47" stroke="none"><path d="M16.923 8.358c-.378-2.613-1.637-4.225-3.328-4.225-.262 0-.528.04-.79.117v-.118c0-2.28-1.565-4.132-3.488-4.132-1.922 0-3.488 1.852-3.488 4.132v2.301c-.815.176-1.583.56-2.183 1.13-.538.514-.848 1.144-1.026 1.77-.384 1.343-.274 3.12-.132 4.96.16 2.054.403 5.166.425 5.568.04 1.096.536 2.08 1.402 2.775.87.7 2.053 1.056 3.328 1.002.585-.025 1.15-.098 1.688-.216a6.993 6.993 0 0 0 2.65-.99c1.077-.665 1.727-1.42 1.95-2.257l.004-.015.003-.016.035-.119.043-.16.002-.01v-.002l.142-.516c.338-1.228 1.084-2.228 2.122-2.842a2.388 2.388 0 0 1 .442-.206c.928-.312 2.147-.282 3.25.076.62.203 1.2.49 1.716.852l.462-1.233c.31-1.393.428-3.385.424-5.323-.005-2.09-.133-4.108-.532-4.99-.214-.47-.565-.892-1.01-1.218-.63-.46-1.44-.66-2.11-.635m-5.462 6.556c-1.353-.162-2.138-.89-2.205-1.527-.067-.643.593-1.47 2.016-1.306 1.512.18 2.213 1.007 2.256 1.63.044.623-.557 1.38-2.067 1.203m1.406-3.84c-1.503-.18-2.906.185-3.167.822-.26.638.742 1.314 2.246 1.493 1.34.16 2.645-.078 2.925-.662.28-.586-.5-1.474-2.004-1.653m-3.55-5.918c0-1.642 1.07-2.977 2.385-2.977 1.264 0 2.298 1.23 2.382 2.784l-4.767-.57v.763" /></svg>
-                Log in with Shopify
-              </button>
-
               <div className={styles.secureText}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 Secure login powered by Shopify
