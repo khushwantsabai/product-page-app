@@ -1,25 +1,8 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
-import {
-  AppProvider as PolarisAppProvider,
-  Button,
-  Card,
-  FormLayout,
-  Page,
-  Text,
-  TextField,
-  BlockStack,
-  InlineStack,
-  Box,
-} from "@shopify/polaris";
-import polarisTranslations from "@shopify/polaris/locales/en.json";
-import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
-import { useState } from "react";
-
 import { login } from "../../shopify.server";
-
-export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
+import styles from "./styles.module.css";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
@@ -28,97 +11,63 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     throw redirect(`/app?${url.searchParams.toString()}`);
   }
 
-  return { showForm: Boolean(login), polarisTranslations };
+  return { showForm: Boolean(login) };
 };
 
 export default function App() {
-  const { showForm, polarisTranslations } = useLoaderData<typeof loader>();
-  const [shop, setShop] = useState("");
+  const { showForm } = useLoaderData<typeof loader>();
 
   return (
-    <PolarisAppProvider i18n={polarisTranslations}>
-      <Page>
-        <Box paddingBlockStart="1000" paddingBlockEnd="1000">
-          <InlineStack align="center">
-            <Box maxWidth="600px" width="100%">
-              <BlockStack gap="800" inlineAlign="center">
-                
-                {/* Branding & Header */}
-                <BlockStack gap="400" inlineAlign="center">
-                  <Text variant="heading3xl" as="h1" alignment="center">
-                    Pagecraft Product Builder
-                  </Text>
-                  <Text variant="bodyLg" as="p" tone="subdued" alignment="center">
-                    Design high-converting product pages effortlessly.
-                  </Text>
-                </BlockStack>
+    <div className={styles.index}>
+      <div className={styles.content}>
+        
+        <div className={styles.hero}>
+          <h1 className={styles.heading}>Pagecraft Builder</h1>
+          <p className={styles.text}>
+            Design stunning, high-converting product pages effortlessly with our visual drag-and-drop editor.
+          </p>
+        </div>
 
-                {/* Login Card */}
-                {showForm && (
-                  <Box minWidth="400px">
-                    <Card>
-                      <Box padding="500">
-                        <Form method="post" action="/auth/login">
-                          <FormLayout>
-                            <BlockStack gap="400">
-                              <Text variant="headingMd" as="h2" alignment="center">
-                                Log in to your store
-                              </Text>
-                              <TextField
-                                type="text"
-                                name="shop"
-                                label="Shop domain"
-                                helpText="e.g: my-shop-domain.myshopify.com"
-                                value={shop}
-                                onChange={setShop}
-                                autoComplete="on"
-                              />
-                              <Button submit variant="primary" size="large" tone="success">
-                                Log in
-                              </Button>
-                            </BlockStack>
-                          </FormLayout>
-                        </Form>
-                      </Box>
-                    </Card>
-                  </Box>
-                )}
+        {showForm && (
+          <div className={styles.formWrapper}>
+            <h2 className={styles.formHeading}>Connect your store</h2>
+            <Form className={styles.form} method="post" action="/auth/login">
+              <label className={styles.label}>
+                <span>Shop domain</span>
+                <input 
+                  className={styles.input} 
+                  type="text" 
+                  name="shop" 
+                  placeholder="e.g: my-shop.myshopify.com"
+                  required
+                />
+              </label>
+              <button className={styles.button} type="submit">
+                Log in
+              </button>
+            </Form>
+          </div>
+        )}
 
-                {/* Features Section */}
-                <Box paddingBlockStart="600">
-                  <InlineStack align="space-evenly" gap="600">
-                    <Box maxWidth="160px">
-                      <BlockStack gap="200" inlineAlign="center">
-                        <Text variant="headingSm" as="h3">Drag & Drop</Text>
-                        <Text variant="bodySm" as="p" tone="subdued" alignment="center">
-                          Build pages visually without any coding skills.
-                        </Text>
-                      </BlockStack>
-                    </Box>
-                    <Box maxWidth="160px">
-                      <BlockStack gap="200" inlineAlign="center">
-                        <Text variant="headingSm" as="h3">High Converting</Text>
-                        <Text variant="bodySm" as="p" tone="subdued" alignment="center">
-                          Optimized templates that drive more sales.
-                        </Text>
-                      </BlockStack>
-                    </Box>
-                    <Box maxWidth="160px">
-                      <BlockStack gap="200" inlineAlign="center">
-                        <Text variant="headingSm" as="h3">Lightning Fast</Text>
-                        <Text variant="bodySm" as="p" tone="subdued" alignment="center">
-                          Pages load instantly for the best user experience.
-                        </Text>
-                      </BlockStack>
-                    </Box>
-                  </InlineStack>
-                </Box>
+        <div className={styles.features}>
+          <div className={styles.featureCard}>
+            <span className={styles.featureIcon}>✨</span>
+            <h3 className={styles.featureTitle}>Visual Editor</h3>
+            <p className={styles.featureDesc}>Drag and drop components to build beautiful pages without writing a single line of code.</p>
+          </div>
+          <div className={styles.featureCard}>
+            <span className={styles.featureIcon}>⚡</span>
+            <h3 className={styles.featureTitle}>Lightning Fast</h3>
+            <p className={styles.featureDesc}>Pages are optimized for speed, ensuring your customers never wait to see your products.</p>
+          </div>
+          <div className={styles.featureCard}>
+            <span className={styles.featureIcon}>📈</span>
+            <h3 className={styles.featureTitle}>High Converting</h3>
+            <p className={styles.featureDesc}>Built-in templates designed using e-commerce best practices to maximize your sales.</p>
+          </div>
+        </div>
 
-              </BlockStack>
-            </Box>
-          </InlineStack>
-        </Box>
-      </Page>
-    </PolarisAppProvider>
+      </div>
+    </div>
   );
 }
