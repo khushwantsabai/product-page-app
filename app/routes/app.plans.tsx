@@ -7,9 +7,30 @@ import { useState, useEffect } from "react";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { admin } = await authenticate.admin(request);
   
-  // Here we would typically fetch the DB for `Subscription` or check `admin.billing`
-  // For now, defaulting to Free.
-  const currentPlan = "Free";
+  // Query Shopify for active subscriptions
+  const response = await admin.graphql(`
+    query {
+      app {
+        installation {
+          activeSubscriptions {
+            name
+            status
+          }
+        }
+      }
+    }
+  `);
+  
+  const responseJson = await response.json();
+  const activeSubscriptions = responseJson.data?.app?.installation?.activeSubscriptions || [];
+  const activeSub = activeSubscriptions.find((sub: any) => sub.status === "ACTIVE");
+  
+  let currentPlan = "Free";
+  if (activeSub && activeSub.name) {
+    if (activeSub.name.toLowerCase().includes("basic")) currentPlan = "Basic";
+    if (activeSub.name.toLowerCase().includes("standard")) currentPlan = "Standard";
+    if (activeSub.name.toLowerCase().includes("premium")) currentPlan = "Premium";
+  }
 
   return json({ currentPlan });
 };
@@ -21,13 +42,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const planPrice = formData.get("planPrice") as string;
   
   const host = session.shop; 
-  // Normally the returnUrl should be dynamically constructed using the app's base URL.
-  const returnUrl = `https://${host}/admin/apps/product-page/app/billing/callback`;
+  // Construct the returnUrl dynamically using the API key to ensure correct routing
+  const returnUrl = `https://${host}/admin/apps/${process.env.SHOPIFY_API_KEY}/app/templates`;
 
   // GraphQL Mutation for appSubscriptionCreate
   const response = await admin.graphql(`
-    mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $trialDays: Int) {
-      appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays) {
+    mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $trialDays: Int, $test: Boolean) {
+      appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
         userErrors {
           field
           message
@@ -43,6 +64,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       name: `Product Page ${planName}`,
       returnUrl,
       trialDays: 7,
+      test: true,
       lineItems: [
         {
           plan: {
@@ -131,7 +153,7 @@ export default function Plans() {
   useEffect(() => {
     if (actionData?.confirmationUrl) {
       // Redirect to Shopify approval screen
-      window.top?.location.assign(actionData.confirmationUrl);
+      window.open(actionData.confirmationUrl, "_top");
     } else if (actionData?.error) {
        setActiveToast(actionData.error);
     }
@@ -266,12 +288,12 @@ export default function Plans() {
                     color: plan.btnText,
                     fontSize: '15px',
                     fontWeight: 600,
-                    cursor: (currentPlan === plan.name || isLoading) ? 'not-allowed' : 'pointer',
+                    cursor: (currentPlan === plan.name || isLoading) ? 'default' : 'pointer',
                     opacity: (currentPlan === plan.name || isLoading) ? 0.7 : 1,
                     transition: 'all 0.2s',
                   }}
                 >
-                  {currentPlan === plan.name ? "Current Plan" : plan.name === "Free" ? "Choose Free" : `Upgrade to ${plan.name}`}
+                  {currentPlan === plan.name ? "Current Plan" : plan.name === "Free" ? "Choose Free" : (PLANS.findIndex(p => p.name === currentPlan) > PLANS.findIndex(p => p.name === plan.name) ? `Switch to ${plan.name}` : `Upgrade to ${plan.name}`)}
                 </button>
               </div>
             ))}

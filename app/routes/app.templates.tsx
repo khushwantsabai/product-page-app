@@ -1,7 +1,7 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs, LinksFunction } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import templatesStyles from "../styles/templates.css?url";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
@@ -37,14 +37,37 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { session } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   
-  const activeSub = await prisma.subscription.findFirst({
-    where: { shopId: session.shop, status: "active" }
-  });
+  // Query Shopify for active subscriptions
+  const response = await admin.graphql(`
+    query {
+      app {
+        installation {
+          activeSubscriptions {
+            name
+            status
+          }
+        }
+      }
+    }
+  `);
+  
+  const responseJson = await response.json();
+  const activeSubscriptions = responseJson.data?.app?.installation?.activeSubscriptions || [];
+  const activeSub = activeSubscriptions.find((sub: any) => sub.status === "ACTIVE");
+  
+  let activePlan = "free";
+  if (activeSub && activeSub.name) {
+    if (activeSub.name.toLowerCase().includes("basic")) activePlan = "basic";
+    if (activeSub.name.toLowerCase().includes("standard")) activePlan = "standard";
+    if (activeSub.name.toLowerCase().includes("premium")) activePlan = "premium";
+  }
 
-  const activePlan = activeSub?.planId?.toLowerCase() || "free";
-  return json({ activePlan });
+  const url = new URL(request.url);
+  const chargeId = url.searchParams.get("charge_id");
+
+  return json({ activePlan, chargeId });
 };
 
 const PLAN_LEVELS: Record<string, number> = {
@@ -55,12 +78,22 @@ const PLAN_LEVELS: Record<string, number> = {
 };
 
 export default function Templates() {
-  const { activePlan } = useLoaderData<typeof loader>();
+  const { activePlan, chargeId } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
 
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedPlan, setSelectedPlan] = useState("All Plans");
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    if (chargeId) {
+      window.shopify?.toast?.show("Plan activated successfully!");
+      // Remove charge_id from URL without refreshing
+      const url = new URL(window.location.href);
+      url.searchParams.delete('charge_id');
+      window.history.replaceState({}, '', url.toString());
+    }
+  }, [chargeId]);
 
   const templates = [
     { id: '1', name: "Minimal Clean", plan: "Free", brand: "free", image: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-5_large.png", categories: ["Minimal", "Furniture"] },
@@ -161,14 +194,14 @@ export default function Templates() {
                     onClick={() => navigate(`/app/editor/preview-${tpl.id}`)}
                   >Preview</button>
                   
-                  {PLAN_LEVELS[tpl.brand] > PLAN_LEVELS[activePlan] ? (
+                  {tpl.brand !== 'free' && tpl.brand !== activePlan ? (
                      <button 
                        type="button" 
                        className="action-btn" 
-                       style={{width: '100%', background: '#F3F4F6', color: '#9CA3AF', cursor: 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'}}
+                       style={{width: '100%', background: '#F3F4F6', color: '#9CA3AF', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'}}
                        onClick={() => navigate('/app/plans')}
                      >
-                       🔒 Upgrade Plan
+                       🔒 {PLAN_LEVELS[tpl.brand] > PLAN_LEVELS[activePlan] ? 'Upgrade Plan' : `Switch to ${tpl.plan} Plan`}
                      </button>
                   ) : (
                     <Form method="post" style={{flex: 1, display: 'flex'}}>

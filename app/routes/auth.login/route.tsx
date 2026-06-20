@@ -49,11 +49,23 @@ export default function Auth() {
             <Box maxWidth="600px" width="100%">
               <BlockStack gap="800" inlineAlign="center">
                 
+                {/* Custom Theme Styles */}
+                <style>{`
+                  .Polaris-Button--toneSuccess {
+                    background: #11a34a !important;
+                    color: white !important;
+                    border: none !important;
+                  }
+                  .Polaris-Button--toneSuccess:hover {
+                    background: #0e8a3e !important;
+                  }
+                `}</style>
+
                 {/* Branding & Header */}
                 <BlockStack gap="400" inlineAlign="center">
-                  <Text variant="heading3xl" as="h1" alignment="center">
-                    Pagecraft Product Builder
-                  </Text>
+                  <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+                    <img src="/logo.png" alt="Pagecraft Builder" style={{ height: '140px', objectFit: 'contain' }} />
+                  </div>
                   <Text variant="bodyLg" as="p" tone="subdued" alignment="center">
                     Design high-converting product pages effortlessly.
                   </Text>

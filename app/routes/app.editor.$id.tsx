@@ -16,10 +16,12 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   let session: any = { shop: "mock-shop.myshopify.com" };
   let activePlan = "free";
   let isAuthenticated = false;
+  let admin: any = null;
 
   try {
     const authResult = await authenticate.admin(request);
     session = authResult.session;
+    admin = authResult.admin;
     isAuthenticated = true;
   } catch (e) {
     if (!pageId.startsWith('preview-')) {
@@ -28,16 +30,37 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   }
 
   let page = null;
-  if (isAuthenticated && !pageId.startsWith('preview-')) {
+  if (isAuthenticated) {
     try {
-      const [pageData, activeSub] = await Promise.all([
-        prisma.productPage.findUnique({ where: { id: pageId } }),
-        prisma.subscription.findFirst({ where: { shopId: session.shop, status: "active" } })
-      ]);
-      page = pageData;
-      activePlan = activeSub?.planId?.toLowerCase() || "free";
+      const response = await admin.graphql(`
+        query {
+          app {
+            installation {
+              activeSubscriptions {
+                name
+                status
+              }
+            }
+          }
+        }
+      `);
+      
+      const responseJson = await response.json();
+      const activeSubscriptions = responseJson.data?.app?.installation?.activeSubscriptions || [];
+      const activeSub = activeSubscriptions.find((sub: any) => sub.status === "ACTIVE");
+      
+      activePlan = "free";
+      if (activeSub && activeSub.name) {
+        if (activeSub.name.toLowerCase().includes("basic")) activePlan = "basic";
+        if (activeSub.name.toLowerCase().includes("standard")) activePlan = "standard";
+        if (activeSub.name.toLowerCase().includes("premium")) activePlan = "premium";
+      }
     } catch (_) {}
-  } else if (!isAuthenticated && pageId.startsWith('preview-')) {
+  }
+  
+  if (!pageId.startsWith('preview-')) {
+    page = await prisma.productPage.findUnique({ where: { id: pageId } });
+  } else if (!isAuthenticated) {
     const templateId = pageId.replace('preview-', '');
     if (['4'].includes(templateId)) {
       activePlan = "premium";
@@ -241,8 +264,15 @@ export default function Editor() {
     setUnavailableRaw(null);
   }, [page.id]);
 
-  const activePlan = isPreview ? (editorData.plan || 'Free').toLowerCase() : loaderData.activePlan;
-  const isLocked = isPreview && activePlan !== 'free';
+  const userPlan = loaderData.activePlan;
+  const templatePlan = (editorData.plan || 'Free').toLowerCase();
+  
+  // Use the user's plan for editing permissions, unless it's a preview in which case we show what the template requires
+  const activePlan = isPreview ? templatePlan : userPlan;
+  
+  // A template is locked in preview mode if the template is not free and does not exactly match the user's plan
+  const isLockedPreview = isPreview && templatePlan !== 'free' && templatePlan !== userPlan;
+  const isEditablePreview = isPreview && (templatePlan === 'free' || templatePlan === userPlan);
 
   const updateStyle = (key: string, value: string | number) => {
     if (!['title', 'price', 'desc', 'cart', 'buy'].includes(activeSection)) return;
@@ -297,15 +327,25 @@ export default function Editor() {
             </svg>
             Undo
           </button>
-          <button className="btn-outline">Save Draft</button>
-          <button className="btn-solid">Publish</button>
+          {isPreview ? (
+            <form method="post" action="/app/templates" style={{ margin: 0 }}>
+              <input type="hidden" name="templateId" value={page?.templateId || editorData.id || page.id.replace('preview-', '')} />
+              <input type="hidden" name="templateName" value={editorData.title || "Template"} />
+              <button type="submit" className="btn-solid">Use Template</button>
+            </form>
+          ) : (
+            <>
+              <button className="btn-outline">Save Draft</button>
+              <button className="btn-solid">Publish</button>
+            </>
+          )}
         </div>
       </div>
 
       <div className="editor-workspace">
         {/* Left Sidebar */}
         <div className="sidebar-left">
-          {isLocked ? (
+          {isLockedPreview ? (
             <div style={{ padding: '24px', textAlign: 'center', color: '#6B7280', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '16px' }}>
               <span style={{ fontSize: '32px' }}>🔒</span>
               <h3 style={{ margin: 0, color: '#111827' }}>Preview Mode</h3>
@@ -811,7 +851,7 @@ export default function Editor() {
 
         {/* Right Sidebar */}
         <div className="sidebar-right">
-          {isLocked ? (
+          {isLockedPreview ? (
              <div style={{ padding: '24px', textAlign: 'center', color: '#6B7280', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '16px', background: '#F9FAFB' }}>
                <span style={{ fontSize: '32px' }}>⚙️</span>
                <h3 style={{ margin: 0, color: '#111827' }}>Settings Locked</h3>
@@ -824,17 +864,8 @@ export default function Editor() {
             <span style={{cursor: 'pointer', color: '#9CA3AF'}}>🗑️</span>
           </div>
           
-          <div className="properties-tabs">
-            <div className="prop-tab active">Content</div>
-            <div className="prop-tab">Style</div>
-            {PLAN_LEVELS[activePlan] >= PLAN_LEVELS["premium"] ? (
-              <div className="prop-tab">Advanced</div>
-            ) : (
-              <div className="prop-tab" style={{color: '#D1D5DB', cursor: 'not-allowed'}} title="Requires Premium Plan">Advanced 🔒</div>
-            )}
-          </div>
-
           <div className="prop-section">
+
             {activeSection === 'layout' && (
               <>
                 <span className="prop-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -1513,99 +1544,6 @@ export default function Editor() {
               </div>
             )}
 
-            {['title', 'price', 'desc', 'cart', 'buy'].includes(activeSection) && (() => {
-              const currentStyle = (editorData.styles as any)[activeSection];
-              return (
-                <>
-                  <span className="prop-label" style={{ borderBottom: '1px solid #E5E7EB', paddingBottom: '8px', marginBottom: '16px', marginTop: '16px' }}>Typography</span>
-                  
-                  <span className="prop-label">Font Family</span>
-                  <select 
-                    className="prop-select" 
-                    style={{ marginBottom: '16px' }}
-                    value={currentStyle.fontFamily}
-                    onChange={(e) => updateStyle('fontFamily', e.target.value)}
-                  >
-                    <option>Poppins</option>
-                    <option>Inter</option>
-                    <option>Roboto</option>
-                  </select>
-
-                  <div className="prop-row" style={{ marginBottom: '16px' }}>
-                    <div style={{ flex: 1 }}>
-                      <span className="prop-label">Font Size</span>
-                      <div className="prop-input-group">
-                        <input 
-                          type="number" 
-                          value={currentStyle.fontSize}
-                          onChange={(e) => updateStyle('fontSize', Number(e.target.value))}
-                        />
-                        <span>px</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <span className="prop-label">Font Weight</span>
-                  <select 
-                    className="prop-select" 
-                    style={{ marginBottom: '16px' }}
-                    value={currentStyle.fontWeight}
-                    onChange={(e) => updateStyle('fontWeight', e.target.value)}
-                  >
-                    <option value="600">Semi Bold 600</option>
-                    <option value="700">Bold 700</option>
-                    <option value="400">Regular 400</option>
-                  </select>
-
-                  <span className="prop-label">Text Color</span>
-                  <div className="color-picker-mock" style={{ marginBottom: '24px' }}>
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                      <input 
-                        type="color" 
-                        value={currentStyle.color}
-                        onChange={(e) => updateStyle('color', e.target.value)}
-                        style={{ width: '24px', height: '24px', padding: 0, border: 'none', cursor: 'pointer' }}
-                      />
-                      <div className="color-hex">{currentStyle.color}</div>
-                    </div>
-                  </div>
-
-                  <span className="prop-label">Alignment</span>
-                  <div className="toggle-group">
-                    <div 
-                      className={`toggle-item ${currentStyle.textAlign === 'left' ? 'active' : ''}`}
-                      onClick={() => updateStyle('textAlign', 'left')}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="12" x2="15" y2="12"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                      </svg>
-                    </div>
-                    <div 
-                      className={`toggle-item ${currentStyle.textAlign === 'center' ? 'active' : ''}`}
-                      onClick={() => updateStyle('textAlign', 'center')}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="6" y1="12" x2="18" y2="12"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                      </svg>
-                    </div>
-                    <div 
-                      className={`toggle-item ${currentStyle.textAlign === 'right' ? 'active' : ''}`}
-                      onClick={() => updateStyle('textAlign', 'right')}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="9" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                      </svg>
-                    </div>
-                  </div>
-                </>
-              );
-            })()}
           </div>
           </>
           )}
