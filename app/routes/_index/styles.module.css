@@ -15,9 +15,7 @@
 body {
   margin: 0;
   font-family: var(--font-sans);
-  background-color: var(--bg-color);
-  background-image: radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-color: #ffffff;
   color: var(--text-main);
   min-height: 100vh;
 }
@@ -37,9 +35,7 @@ body {
   content: "";
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-image: 
-    radial-gradient(circle at 15% 50%, rgba(17, 163, 74, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 85% 30%, rgba(17, 163, 74, 0.03) 0%, transparent 50%);
+  background-color: #ffffff;
   z-index: -1;
   pointer-events: none;
 }

@@ -22,7 +22,9 @@ export default function App() {
       <div className={styles.content}>
         
         <div className={styles.hero}>
-          <img src="/logo.png" alt="Pagecraft Builder" style={{ height: '140px', objectFit: 'contain', marginBottom: '1rem' }} />
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+            <img src="/logo.png" alt="Pagecraft Builder" style={{ height: '140px', objectFit: 'contain' }} />
+          </div>
           <p className={styles.text}>
             Design high-converting product pages effortlessly.
           </p>
