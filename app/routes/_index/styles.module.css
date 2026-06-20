@@ -2,21 +2,21 @@
 
 :root {
   --font-sans: 'Inter', sans-serif;
-  --bg-color: #000000;
-  --text-main: #ffffff;
-  --text-muted: #a1a1aa;
-  --accent: #ffffff;
-  --accent-text: #000000;
-  --accent-hover: #e4e4e7;
-  --card-bg: rgba(255, 255, 255, 0.03);
-  --border-color: rgba(255, 255, 255, 0.1);
+  --bg-color: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --accent: #11a34a;
+  --accent-text: #ffffff;
+  --accent-hover: #0e8a3e;
+  --card-bg: #ffffff;
+  --border-color: #e2e8f0;
 }
 
 body {
   margin: 0;
   font-family: var(--font-sans);
   background-color: var(--bg-color);
-  background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px);
   background-size: 24px 24px;
   color: var(--text-main);
   min-height: 100vh;
@@ -38,8 +38,8 @@ body {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background-image: 
-    radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+    radial-gradient(circle at 15% 50%, rgba(17, 163, 74, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(17, 163, 74, 0.03) 0%, transparent 50%);
   z-index: -1;
   pointer-events: none;
 }
@@ -94,7 +94,7 @@ body {
 .formHeaderIcon {
   width: 48px;
   height: 48px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(17, 163, 74, 0.1);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -155,7 +155,7 @@ body {
 
 .input {
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: #f8fafc;
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
@@ -169,7 +169,7 @@ body {
 .input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(17, 163, 74, 0.1);
 }
 
 .hint {
@@ -239,7 +239,7 @@ body {
 .featureIconWrapper {
   width: 48px;
   height: 48px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(17, 163, 74, 0.1);
   border-radius: 50%;
   display: flex;
   align-items: center;

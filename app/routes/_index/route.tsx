@@ -22,9 +22,9 @@ export default function App() {
       <div className={styles.content}>
         
         <div className={styles.hero}>
-          <h1 className={styles.heading}>Pagecraft Builder</h1>
+          <img src="/logo.png" alt="Pagecraft Builder" style={{ height: '140px', objectFit: 'contain', marginBottom: '1rem' }} />
           <p className={styles.text}>
-            A tagline about Pagecraft that describes your value proposition.
+            Design high-converting product pages effortlessly.
           </p>
         </div>
 
