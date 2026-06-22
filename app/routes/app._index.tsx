@@ -25,41 +25,35 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session, admin } = await authenticate.admin(request);
   const shopId = session.shop;
 
-  // Fetch active subscription from Shopify
-  const response = await admin.graphql(`
-    #graphql
-    query ShopPlan {
-      app {
-        installation {
-          activeSubscriptions {
-            id
-            name
-            status
+  // Run all network and database queries in parallel
+  const [planResponse, recentPages, pagesCreated, pagesPublished] = await Promise.all([
+    admin.graphql(`
+      #graphql
+      query ShopPlan {
+        app {
+          installation {
+            activeSubscriptions {
+              id
+              name
+              status
+            }
           }
         }
       }
-    }
-  `);
-  const data = await response.json();
+    `),
+    db.productPage.findMany({
+      where: { shopId },
+      orderBy: { updatedAt: "desc" },
+      take: 5,
+      select: { id: true, name: true, templateId: true, status: true, updatedAt: true },
+    }),
+    db.productPage.count({ where: { shopId } }),
+    db.productPage.count({ where: { shopId, status: "Published" } }) // Note: Status is capitalized
+  ]);
+
+  const data = await planResponse.json();
   const activeSubs = data.data?.app?.installation?.activeSubscriptions || [];
   const activePlan = activeSubs.length > 0 ? activeSubs[0].name : "Free";
-
-  // Fetch real pages from DB
-  const recentPages = await db.productPage.findMany({
-    where: { shopId },
-    orderBy: { updatedAt: "desc" },
-    take: 5,
-    select: {
-      id: true,
-      name: true,
-      templateId: true,
-      status: true,
-      updatedAt: true,
-    },
-  });
-
-  const pagesCreated = await db.productPage.count({ where: { shopId } });
-  const pagesPublished = await db.productPage.count({ where: { shopId, status: "published" } });
 
   return json({
     activePlan,
