@@ -1,222 +1,178 @@
 import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData, useSubmit, useNavigation, useActionData, useNavigate } from "@remix-run/react";
-import {
-  Page,
-  Layout,
-  Card,
-  BlockStack,
-  Text,
-  Button,
-  Box,
-  Divider,
-  InlineStack,
-  Badge,
-  Frame,
-  Toast,
-  IndexTable,
-} from "@shopify/polaris";
+import { redirect } from "@remix-run/node";
+import { useLoaderData, useNavigate, Form } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
-import { useState, useEffect } from "react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { session } = await authenticate.admin(request);
-  
-  const pages = await prisma.productPage.findMany({
-    where: { shopId: session.shop },
-    orderBy: { updatedAt: "desc" }
-  });
+  const { admin, session } = await authenticate.admin(request);
 
-  return json({
-    pages: pages.map(p => ({
-      id: p.id,
-      name: p.name,
-      templateId: p.templateId,
-      status: p.status,
-      updatedAt: p.updatedAt.toISOString(),
-    }))
-  });
+  // Fetch active plan
+  const response = await admin.graphql(`
+    query {
+      app {
+        installation {
+          activeSubscriptions {
+            name
+            status
+          }
+        }
+      }
+    }
+  `);
+  const responseJson = await response.json();
+  const activeSubscriptions = responseJson.data?.app?.installation?.activeSubscriptions || [];
+  const activeSub = activeSubscriptions.find((sub: any) => sub.status === "ACTIVE");
+
+  let activePlan = "free";
+  if (activeSub?.name) {
+    if (activeSub.name.toLowerCase().includes("basic")) activePlan = "basic";
+    if (activeSub.name.toLowerCase().includes("standard")) activePlan = "standard";
+    if (activeSub.name.toLowerCase().includes("premium")) activePlan = "premium";
+  }
+
+  return json({ activePlan, shop: session.shop });
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { session } = await authenticate.admin(request);
   const formData = await request.formData();
-  const actionType = formData.get("actionType") as string;
-  const pageId = formData.get("pageId") as string;
+  const templateId = String(formData.get("templateId"));
+  const templateName = String(formData.get("templateName"));
+  const actionType = String(formData.get("actionType"));
 
-  if (actionType === "delete") {
-    await prisma.productPage.delete({
-      where: { id: pageId, shopId: session.shop }
-    });
-    return json({ success: true, message: "Page deleted successfully!" });
-  } else if (actionType === "toggle-status") {
-    const page = await prisma.productPage.findUnique({
-      where: { id: pageId, shopId: session.shop }
-    });
-    if (!page) return json({ error: "Page not found" }, { status: 404 });
-    const newStatus = page.status === "Published" ? "Draft" : "Published";
-    
-    await prisma.productPage.update({
-      where: { id: pageId },
-      data: { status: newStatus }
-    });
-    
-    return json({ success: true, message: `Page status updated to ${newStatus}!` });
-  }
+  // Create page record with the requested status (Draft or Published)
+  const status = actionType === "publish" ? "Published" : "Draft";
+  const newPage = await prisma.productPage.create({
+    data: {
+      shopId: session.shop,
+      templateId,
+      planId: "free",
+      name: `Untitled ${templateName}`,
+      status,
+      settings: JSON.stringify({}),
+    },
+  });
 
-  return json({ error: "Invalid action" }, { status: 400 });
+  // If editing, go to the editor; if publishing directly, redirect to pages list confirmation
+  return redirect(`/app/editor/${newPage.id}`);
 };
 
-const TEMPLATE_NAMES: Record<string, string> = {
-  "1": "Minimal Clean",
-  "2": "Modern Electronics",
-  "3": "Luxury Watch",
-  "4": "Beauty Glow",
-  "5": "Fashion Store",
-  "6": "Sporty Shoes",
+const PLAN_LEVELS: Record<string, number> = { free: 0, basic: 1, standard: 2, premium: 3 };
+
+const TEMPLATES = [
+  { id: "1", name: "Minimal Clean",       plan: "Free",     brand: "free",     emoji: "🪴", desc: "Clean, minimal layout for any product." },
+  { id: "2", name: "Modern Electronics",  plan: "Basic",    brand: "basic",    emoji: "💻", desc: "Bold stacked layout for tech products." },
+  { id: "5", name: "Fashion Store",       plan: "Basic",    brand: "basic",    emoji: "👗", desc: "Stylish layout for clothing & fashion." },
+  { id: "3", name: "Luxury Watch",        plan: "Standard", brand: "standard", emoji: "⌚", desc: "Elegant split-layout for premium goods." },
+  { id: "6", name: "Sporty Shoes",        plan: "Standard", brand: "standard", emoji: "👟", desc: "Dynamic layout for sports & footwear." },
+  { id: "4", name: "Beauty Glow",         plan: "Premium",  brand: "premium",  emoji: "✨", desc: "Rich visual layout for beauty brands." },
+];
+
+const BADGE_COLORS: Record<string, { bg: string; color: string }> = {
+  free:     { bg: "#F3F4F6", color: "#374151" },
+  basic:    { bg: "#D1FAE5", color: "#065F46" },
+  standard: { bg: "#EDE9FE", color: "#5B21B6" },
+  premium:  { bg: "#FEF3C7", color: "#92400E" },
 };
 
 export default function Pages() {
-  const { pages } = useLoaderData<typeof loader>();
-  const actionData = useActionData<typeof action>() as { success?: boolean; error?: string; message?: string } | undefined;
+  const { activePlan } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
-  const submit = useSubmit();
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (actionData?.success && actionData?.message) {
-      setToastMessage(actionData.message);
-    } else if (actionData?.error) {
-      setToastMessage(actionData.error);
-    }
-  }, [actionData]);
-
-  const handleToggleStatus = (pageId: string) => {
-    const formData = new FormData();
-    formData.append("actionType", "toggle-status");
-    formData.append("pageId", pageId);
-    submit(formData, { method: "post" });
-  };
-
-  const handleDelete = (pageId: string) => {
-    if (confirm("Are you sure you want to delete this page?")) {
-      const formData = new FormData();
-      formData.append("actionType", "delete");
-      formData.append("pageId", pageId);
-      submit(formData, { method: "post" });
-    }
-  };
-
-  const resourceName = {
-    singular: 'custom product page',
-    plural: 'custom product pages',
-  };
-
-  const rowMarkup = pages.map(
-    ({ id, name, templateId, status, updatedAt }, index) => {
-      const templateName = TEMPLATE_NAMES[templateId] || "Custom Layout";
-      const isPublished = status === "Published";
-      
-      return (
-        <IndexTable.Row
-          id={id}
-          key={id}
-          position={index}
-        >
-          <IndexTable.Cell>
-            <div style={{ padding: '12px 6px' }}>
-              <Text as="span" variant="bodyMd" fontWeight="semibold">
-                {name || "Untitled Page"}
-              </Text>
-            </div>
-          </IndexTable.Cell>
-          <IndexTable.Cell>{templateName}</IndexTable.Cell>
-          <IndexTable.Cell>
-            <Badge tone={isPublished ? "success" : "attention"}>
-              {status}
-            </Badge>
-          </IndexTable.Cell>
-          <IndexTable.Cell>
-            {new Date(updatedAt).toLocaleDateString()} {new Date(updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-          </IndexTable.Cell>
-          <IndexTable.Cell>
-            <InlineStack gap="200" align="end">
-              <Button onClick={() => navigate(`/app/editor/${id}`)} variant="secondary" size="slim">
-                Edit
-              </Button>
-              <Button 
-                onClick={() => handleToggleStatus(id)} 
-                variant="secondary" 
-                size="slim"
-                tone={isPublished ? "critical" : "success"}
-              >
-                {isPublished ? "Unpublish" : "Publish"}
-              </Button>
-              <Button onClick={() => handleDelete(id)} variant="plain" tone="critical" size="slim">
-                Delete
-              </Button>
-            </InlineStack>
-          </IndexTable.Cell>
-        </IndexTable.Row>
-      );
-    }
-  );
 
   return (
-    <Frame>
-      <Page 
-        title="Customize Product Pages" 
-        backAction={{ content: 'Dashboard', url: '/app' }}
-        primaryAction={{
-          content: 'Create Page from Template',
-          onAction: () => navigate('/app/templates'),
-        }}
-      >
-        <Layout>
-          <Layout.Section>
-            {pages.length === 0 ? (
-              <Card>
-                <Box padding="800">
-                  <BlockStack gap="400" align="center">
-                    <div style={{ fontSize: "56px", textAlign: "center" }}>🎨</div>
-                    <Text as="h2" variant="headingLg" alignment="center">No Custom Pages Created Yet</Text>
-                    <Text as="p" tone="subdued" alignment="center">
-                      Create beautiful, high-converting product pages using our responsive templates and drag-and-drop elements.
-                    </Text>
-                    <Box paddingBlockStart="200">
-                      <InlineStack align="center">
-                        <Button variant="primary" onClick={() => navigate('/app/templates')}>
-                          Browse Templates
-                        </Button>
-                      </InlineStack>
-                    </Box>
-                  </BlockStack>
-                </Box>
-              </Card>
-            ) : (
-              <Card padding="0">
-                <IndexTable
-                  resourceName={resourceName}
-                  itemCount={pages.length}
-                  headings={[
-                    { title: 'Page Name' },
-                    { title: 'Base Template' },
-                    { title: 'Status' },
-                    { title: 'Last Updated' },
-                    { title: 'Actions', alignment: 'end' },
-                  ]}
-                  selectable={false}
+    <div style={{ fontFamily: "'Inter', sans-serif", background: "#FAFAFA", minHeight: "100vh", padding: "32px 24px" }}>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "8px" }}>
+        <button
+          onClick={() => navigate("/app")}
+          style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", color: "#6B7280", fontSize: "14px", fontWeight: 500 }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back
+        </button>
+      </div>
+      <h1 style={{ fontSize: "26px", fontWeight: 800, color: "#111827", marginBottom: "6px" }}>Choose a Template</h1>
+      <p style={{ fontSize: "15px", color: "#6B7280", marginBottom: "32px" }}>
+        Select a template to open the editor. Save as draft or publish directly.
+      </p>
+
+      {/* Template Grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "20px" }}>
+        {TEMPLATES.map((tpl) => {
+          const locked = PLAN_LEVELS[tpl.brand] > PLAN_LEVELS[activePlan];
+          const badge = BADGE_COLORS[tpl.brand];
+          return (
+            <div
+              key={tpl.id}
+              style={{
+                background: "white",
+                borderRadius: "14px",
+                border: locked ? "1px solid #E5E7EB" : "1px solid #D1FAE5",
+                padding: "28px 24px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                opacity: locked ? 0.75 : 1,
+                transition: "box-shadow 0.2s",
+              }}
+            >
+              {/* Icon + Plan badge */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "36px" }}>{tpl.emoji}</span>
+                <span style={{ background: badge.bg, color: badge.color, fontSize: "12px", fontWeight: 600, padding: "3px 10px", borderRadius: "20px" }}>
+                  {tpl.plan}
+                </span>
+              </div>
+
+              {/* Name + desc */}
+              <div>
+                <h3 style={{ fontSize: "17px", fontWeight: 700, color: "#111827", margin: "0 0 4px" }}>{tpl.name}</h3>
+                <p style={{ fontSize: "13px", color: "#6B7280", margin: 0 }}>{tpl.desc}</p>
+              </div>
+
+              {/* Actions */}
+              {locked ? (
+                <button
+                  onClick={() => navigate("/app/plans")}
+                  style={{ marginTop: "auto", padding: "10px", borderRadius: "8px", border: "1px solid #E5E7EB", background: "#F9FAFB", color: "#9CA3AF", fontWeight: 600, fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
                 >
-                  {rowMarkup}
-                </IndexTable>
-              </Card>
-            )}
-          </Layout.Section>
-        </Layout>
-      </Page>
-      {toastMessage && (
-        <Toast content={toastMessage} onDismiss={() => setToastMessage(null)} duration={4000} />
-      )}
-    </Frame>
+                  🔒 Upgrade to {tpl.plan}
+                </button>
+              ) : (
+                <div style={{ display: "flex", gap: "8px", marginTop: "auto" }}>
+                  {/* Edit (Save as Draft) */}
+                  <Form method="post" style={{ flex: 1 }}>
+                    <input type="hidden" name="templateId" value={tpl.id} />
+                    <input type="hidden" name="templateName" value={tpl.name} />
+                    <input type="hidden" name="actionType" value="edit" />
+                    <button
+                      type="submit"
+                      style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #D1D5DB", background: "white", color: "#374151", fontWeight: 600, fontSize: "14px", cursor: "pointer" }}
+                    >
+                      ✏️ Edit
+                    </button>
+                  </Form>
+
+                  {/* Publish directly */}
+                  <Form method="post" style={{ flex: 1 }}>
+                    <input type="hidden" name="templateId" value={tpl.id} />
+                    <input type="hidden" name="templateName" value={tpl.name} />
+                    <input type="hidden" name="actionType" value="publish" />
+                    <button
+                      type="submit"
+                      style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "none", background: "#16A34A", color: "white", fontWeight: 600, fontSize: "14px", cursor: "pointer" }}
+                    >
+                      🚀 Publish
+                    </button>
+                  </Form>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
