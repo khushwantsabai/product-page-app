@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs, LinksFunction } from "@remix-run/node";
-import { redirect, json } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import templatesStyles from "../styles/templates.css?url";
@@ -10,7 +10,7 @@ export const links: LinksFunction = () => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  await authenticate.admin(request);
+  const { redirect } = await authenticate.admin(request);
   const formData = await request.formData();
   const templateId = String(formData.get("templateId"));
   const templateName = String(formData.get("templateName"));

@@ -1,5 +1,5 @@
 import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+
 import { useLoaderData, useNavigate, Form } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
@@ -36,7 +36,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const { session } = await authenticate.admin(request);
+  const { session, redirect } = await authenticate.admin(request);
   const formData = await request.formData();
   const templateId = String(formData.get("templateId"));
   const templateName = String(formData.get("templateName"));
