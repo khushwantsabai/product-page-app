@@ -26,13 +26,32 @@ import prisma from "../db.server";
 import { getSettings, saveSettings } from "../utils/settings.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { session } = await authenticate.admin(request);
+  const { session, admin } = await authenticate.admin(request);
   
-  const activeSub = await prisma.subscription.findFirst({
-    where: { shopId: session.shop, status: "active" }
-  });
-  const activePlan = activeSub?.planId?.toLowerCase() || "free";
-  const planName = activePlan.charAt(0).toUpperCase() + activePlan.slice(1);
+  // Query Shopify for active subscriptions instead of relying on local db
+  const response = await admin.graphql(`
+    query {
+      app {
+        installation {
+          activeSubscriptions {
+            name
+            status
+          }
+        }
+      }
+    }
+  `);
+  
+  const responseJson = await response.json();
+  const activeSubscriptions = responseJson.data?.app?.installation?.activeSubscriptions || [];
+  const activeSub = activeSubscriptions.find((sub: any) => sub.status === "ACTIVE");
+  
+  let planName = "Free";
+  if (activeSub && activeSub.name) {
+    if (activeSub.name.toLowerCase().includes("basic")) planName = "Basic";
+    if (activeSub.name.toLowerCase().includes("standard")) planName = "Standard";
+    if (activeSub.name.toLowerCase().includes("premium")) planName = "Premium";
+  }
 
   const settings = await getSettings(session.shop);
   
@@ -125,7 +144,7 @@ export default function Settings() {
               <Card>
                 <BlockStack gap="400">
                   <Text as="h2" variant="headingMd" tone="critical">Reset Customizations</Text>
-                  <Text as="p">This will remove all ShopFrame templates from your live theme.</Text>
+                  <Text as="p">This will remove all Pagecraft Product Builder templates from your live theme.</Text>
                   <InlineStack>
                     <Button tone="critical" loading={isSaving && navigation.formData?.get("actionType") === "removeTemplates"} onClick={handleRemoveTemplates}>Remove Templates</Button>
                   </InlineStack>

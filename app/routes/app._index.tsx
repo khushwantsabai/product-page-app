@@ -4,6 +4,7 @@ import { useLoaderData, useNavigate } from "@remix-run/react";
 import { useState } from "react";
 import { authenticate } from "../shopify.server";
 import dashboardStyles from "../styles/dashboard.css?url";
+import logo from "../../public/logo.png";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: dashboardStyles }];
@@ -43,6 +44,9 @@ export default function Dashboard() {
       {/* Hero Banner */}
       <div className="hero-banner">
         <div className="hero-content">
+          <div style={{ marginBottom: "1rem" }}>
+            <img src={logo} alt="Pagecraft Builder" style={{ height: "60px", objectFit: "contain" }} />
+          </div>
           <h1 className="hero-title">
             Create High Converting <span className="hero-title-highlight">Product Pages</span> Without Coding
           </h1>

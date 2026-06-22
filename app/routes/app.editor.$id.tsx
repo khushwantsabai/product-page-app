@@ -1,12 +1,39 @@
-import { json, type LoaderFunctionArgs, type LinksFunction } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
-import { useState, useEffect } from "react";
+import { json, type LoaderFunctionArgs, type LinksFunction, type ActionFunctionArgs } from "@remix-run/node";
+import { useLoaderData, useNavigate, useSubmit, useActionData, useNavigation } from "@remix-run/react";
+import { useState, useEffect, useRef } from "react";
 import editorStyles from "../styles/editor.css?url";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: editorStyles }];
+};
+
+export const action = async ({ request, params }: ActionFunctionArgs) => {
+  const pageId = params.id;
+  if (!pageId || pageId.startsWith('preview-')) return json({ success: false, error: "Cannot save preview" });
+  
+  const { session } = await authenticate.admin(request);
+  const formData = await request.formData();
+  
+  const status = formData.get("status") as string;
+  const settingsStr = formData.get("settings") as string;
+  const title = formData.get("title") as string;
+  
+  if (!settingsStr) return json({ success: false, error: "No settings provided" });
+  
+  const settings = JSON.parse(settingsStr);
+  
+  await prisma.productPage.update({
+    where: { id: pageId, shopId: session.shop },
+    data: {
+      status,
+      name: title || undefined,
+      settings
+    }
+  });
+  
+  return json({ success: true, status });
 };
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -220,7 +247,7 @@ export default function Editor() {
   const [activeSection, setActiveSection] = useState('title');
   const initialMockData = TEMPLATE_MOCKS[page.templateId] || TEMPLATE_MOCKS['1'];
   
-  const [editorData, setEditorData] = useState({
+  const [editorData, setEditorDataState] = useState(() => ({
     ...initialMockData,
     imageBgColor: initialMockData.imageBgColor || '#F9FAFB',
     vendor: initialMockData.vendor || {
@@ -254,7 +281,42 @@ export default function Editor() {
       buy: { fontFamily: 'Inter', fontSize: 16, fontWeight: '600', color: '#ffffff', textAlign: 'center' },
       badge: { backgroundColor: '#FEE2E2', color: '#EF4444' }
     }
-  });
+  }));
+
+  const historyRef = useRef<any[]>([editorData]);
+  const historyIndexRef = useRef<number>(0);
+  const timeoutRef = useRef<any>(null);
+
+  const setEditorData = (newDataOrUpdater: any) => {
+    setEditorDataState((prev: any) => {
+      const nextData = typeof newDataOrUpdater === 'function' ? newDataOrUpdater(prev) : newDataOrUpdater;
+      
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        const history = historyRef.current;
+        const index = historyIndexRef.current;
+        const newHistory = history.slice(0, index + 1);
+        newHistory.push(nextData);
+        if (newHistory.length > 50) newHistory.shift();
+        historyRef.current = newHistory;
+        historyIndexRef.current = newHistory.length - 1;
+      }, 500);
+
+      return nextData;
+    });
+  };
+
+  const handleUndo = () => {
+    if (historyIndexRef.current > 0) {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      historyIndexRef.current -= 1;
+      setEditorDataState(historyRef.current[historyIndexRef.current]);
+    }
+  };
+
+  const submit = useSubmit();
+  const navigation = useNavigation();
+  const actionData = useActionData<typeof action>();
 
   const [sizesRaw, setSizesRaw] = useState<string | null>(null);
   const [unavailableRaw, setUnavailableRaw] = useState<string | null>(null);
@@ -263,6 +325,14 @@ export default function Editor() {
     setSizesRaw(null);
     setUnavailableRaw(null);
   }, [page.id]);
+
+  const handleSave = (status: 'Draft' | 'Published') => {
+    const formData = new FormData();
+    formData.append("status", status);
+    formData.append("settings", JSON.stringify(editorData));
+    formData.append("title", editorData.title || page.name);
+    submit(formData, { method: "post" });
+  };
 
   const userPlan = loaderData.activePlan;
   const templatePlan = (editorData.plan || 'Free').toLowerCase();
@@ -320,7 +390,12 @@ export default function Editor() {
         </div>
 
         <div className="topbar-right">
-          <button className="btn-outline">
+          <button 
+            className="btn-outline" 
+            onClick={handleUndo}
+            disabled={historyIndexRef.current === 0}
+            style={{ opacity: historyIndexRef.current === 0 ? 0.5 : 1, cursor: historyIndexRef.current === 0 ? 'not-allowed' : 'pointer' }}
+          >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{marginRight: '6px', verticalAlign: 'text-bottom'}}>
               <polyline points="1 4 1 10 7 10"></polyline>
               <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
@@ -335,8 +410,20 @@ export default function Editor() {
             </form>
           ) : (
             <>
-              <button className="btn-outline">Save Draft</button>
-              <button className="btn-solid">Publish</button>
+              <button 
+                className="btn-outline" 
+                onClick={() => handleSave("Draft")}
+                disabled={navigation.state === 'submitting'}
+              >
+                {navigation.state === 'submitting' && navigation.formData?.get('status') === 'Draft' ? 'Saving...' : 'Save Draft'}
+              </button>
+              <button 
+                className="btn-solid" 
+                onClick={() => handleSave("Published")}
+                disabled={navigation.state === 'submitting'}
+              >
+                {navigation.state === 'submitting' && navigation.formData?.get('status') === 'Published' ? 'Publishing...' : 'Publish'}
+              </button>
             </>
           )}
         </div>
