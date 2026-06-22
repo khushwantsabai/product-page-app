@@ -342,10 +342,15 @@ export default function Editor() {
   const submit = useSubmit();
   const navigation = useNavigation();
   const actionData = useActionData<typeof action>();
+  const isSaving = navigation.state === "submitting";
 
   useEffect(() => {
     if (actionData?.newId && page.id === 'new') {
       navigate(`/app/editor/${actionData.newId}`, { replace: true });
+    }
+    
+    if (actionData?.success) {
+      window.shopify?.toast?.show("Template saved successfully!");
     }
   }, [actionData, navigate, page.id]);
 
@@ -1258,6 +1263,24 @@ export default function Editor() {
                     onChange={(e) => setEditorData({ ...editorData, showSizeChart: e.target.checked })}
                     style={{ cursor: 'pointer', width: '16px', height: '16px' }}
                   />
+                  <div className="topbar-right">
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button 
+                        onClick={() => handleSave('Draft')}
+                        disabled={isSaving}
+                        style={{ padding: '8px 16px', background: 'transparent', border: '1px solid #D1D5DB', borderRadius: '6px', fontSize: '14px', fontWeight: '500', color: '#374151', cursor: isSaving ? 'not-allowed' : 'pointer', opacity: isSaving ? 0.7 : 1 }}
+                      >
+                        {isSaving ? 'Saving...' : 'Save Draft'}
+                      </button>
+                      <button 
+                        onClick={() => handleSave('Published')}
+                        disabled={isSaving}
+                        style={{ padding: '8px 16px', background: '#16A34A', border: 'none', borderRadius: '6px', fontSize: '14px', fontWeight: '500', color: 'white', cursor: isSaving ? 'not-allowed' : 'pointer', opacity: isSaving ? 0.7 : 1 }}
+                      >
+                        {isSaving ? 'Saving...' : 'Publish to Store'}
+                      </button>
+                    </div>
+                  </div>
                   <label htmlFor="show-size-chart" style={{ fontSize: '13px', fontWeight: 600, color: '#374151', cursor: 'pointer' }}>
                     Show Size Chart collapsible link
                   </label>
