@@ -65,7 +65,7 @@ export default function Auth() {
                 {/* Branding & Header */}
                 <BlockStack gap="400" inlineAlign="center">
                   <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-                    <img src={logo} alt="Pagecraft Builder" style={{ height: '140px', objectFit: 'contain' }} />
+                    <img src="/logo.png?v=2" alt="Pagecraft Builder" style={{ height: '140px', objectFit: 'contain' }} />
                   </div>
                   <Text variant="bodyLg" as="p" tone="subdued" alignment="center">
                     Design high-converting product pages effortlessly.
