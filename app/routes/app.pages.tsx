@@ -41,21 +41,33 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const templateName = String(formData.get("templateName"));
   const actionType = String(formData.get("actionType"));
 
-  // Create page record with the requested status (Draft or Published)
-  const status = actionType === "publish" ? "Published" : "Draft";
-  const newPage = await prisma.productPage.create({
-    data: {
-      shopId: session.shop,
-      templateId,
-      planId: "free",
-      name: `Untitled ${templateName}`,
-      status,
-      settings: JSON.stringify({}),
-    },
-  });
+  if (actionType === "edit") {
+    // Just redirect to editor, don't create DB record yet
+    return redirect(`/app/editor/new?templateId=${encodeURIComponent(templateId)}&templateName=${encodeURIComponent(templateName)}`);
+  }
 
-  // If editing, go to the editor; if publishing directly, redirect to pages list confirmation
-  return redirect(`/app/editor/${newPage.id}`);
+  if (actionType === "publish") {
+    // Load mock data for the template so it's not empty when published
+    const mockModule = await import('./app.editor.$id');
+    const mocks = mockModule.TEMPLATE_MOCKS || {};
+    const defaultSettings = mocks[templateId] || mocks['1'] || {};
+
+    await prisma.productPage.create({
+      data: {
+        shopId: session.shop,
+        templateId,
+        planId: "free",
+        name: `Untitled ${templateName}`,
+        status: "Published",
+        settings: JSON.stringify(defaultSettings),
+      },
+    });
+
+    // Redirect to dashboard with a success message (could use toast via session, but simple redirect works)
+    return redirect(`/app?published=true`);
+  }
+
+  return null;
 };
 
 const PLAN_LEVELS: Record<string, number> = { free: 0, basic: 1, standard: 2, premium: 3 };

@@ -130,7 +130,7 @@ const PLAN_LEVELS: Record<string, number> = {
   premium: 3
 };
 
-const TEMPLATE_MOCKS: Record<string, any> = {
+export const TEMPLATE_MOCKS: Record<string, any> = {
   '1': {
     title: 'Minimal Clean Lamp',
     plan: 'Free',
