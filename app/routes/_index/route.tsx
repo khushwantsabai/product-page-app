@@ -3,7 +3,6 @@ import { redirect } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { login } from "../../shopify.server";
 import styles from "./styles.module.css";
-import logo from "../../public/logo.png";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
@@ -24,7 +23,7 @@ export default function App() {
         
         <div className={styles.hero}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-            <img src={logo} alt="Pagecraft Builder" style={{ height: '140px', objectFit: 'contain' }} />
+            <img src="/logo.png?v=4" alt="Pagecraft Builder" style={{ height: '140px', objectFit: 'contain' }} />
           </div>
           <p className={styles.text}>
             Design high-converting product pages effortlessly.

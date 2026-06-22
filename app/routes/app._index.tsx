@@ -4,7 +4,6 @@ import { useLoaderData, useNavigate } from "@remix-run/react";
 import { useState } from "react";
 import { authenticate } from "../shopify.server";
 import dashboardStyles from "../styles/dashboard.css?url";
-import logo from "../../public/logo.png";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: dashboardStyles }];
@@ -45,7 +44,7 @@ export default function Dashboard() {
       <div className="hero-banner">
         <div className="hero-content">
           <div style={{ marginBottom: "1rem" }}>
-            <img src={logo} alt="Pagecraft Builder" style={{ height: "60px", objectFit: "contain" }} />
+            <img src="/logo.png" alt="Pagecraft Builder" style={{ height: "60px", objectFit: "contain" }} />
           </div>
           <h1 className="hero-title">
             Create High Converting <span className="hero-title-highlight">Product Pages</span> Without Coding
@@ -68,86 +67,6 @@ export default function Dashboard() {
           />
         </div>
       </div>
-
-      {/* Plan Header */}
-      <div className="section-header">
-        <h2 className="section-title">Choose Your Plan</h2>
-        <div className="toggle-container">
-          <button
-            className={`toggle-btn ${billingCycle === 'monthly' ? 'active' : ''}`}
-            onClick={() => setBillingCycle('monthly')}
-          >Monthly</button>
-          <button
-            className={`toggle-btn ${billingCycle === 'yearly' ? 'active' : ''}`}
-            onClick={() => setBillingCycle('yearly')}
-          >Yearly (Save 20%)</button>
-        </div>
-      </div>
-
-      {/* Pricing Grid */}
-      <div className="pricing-grid">
-        {/* Free Plan */}
-        <div className="pricing-card">
-          <h3 className="plan-name">Free</h3>
-          <div className="plan-price">{getPrice(0)} <span>{getPeriod()}</span></div>
-          <p className="plan-desc">Perfect for getting started</p>
-          <ul className="features-list">
-            <li className="feature-item"><span className="feature-check">✓</span> 3 Free Templates</li>
-            <li className="feature-item"><span className="feature-check">✓</span> Basic Features</li>
-            <li className="feature-item"><span className="feature-check">✓</span> Edit Product Text Only</li>
-            <li className="feature-item"><span className="feature-check">✓</span> Responsive Design</li>
-          </ul>
-          <button className="plan-btn" onClick={() => navigate('/app/plans')}>Choose Free</button>
-        </div>
-
-        {/* Basic Plan */}
-        <div className="pricing-card">
-          <h3 className="plan-name" style={{color: '#16A34A'}}>Basic</h3>
-          <div className="plan-price">{getPrice(39)} <span>{getPeriod()}</span></div>
-          <p className="plan-desc">Best for small stores</p>
-          <ul className="features-list">
-            <li className="feature-item"><span className="feature-check">✓</span> 15+ Premium Templates</li>
-            <li className="feature-item"><span className="feature-check">✓</span> 2 Template Types</li>
-            <li className="feature-item"><span className="feature-check">✓</span> Advanced Customization</li>
-            <li className="feature-item"><span className="feature-check">✓</span> Image & Color Control</li>
-            <li className="feature-item"><span className="feature-check">✓</span> Priority Support</li>
-          </ul>
-          <button className="plan-btn btn-green" onClick={() => navigate('/app/plans')}>Upgrade to Basic</button>
-        </div>
-
-        {/* Standard Plan */}
-        <div className="pricing-card standard-border">
-          <h3 className="plan-name" style={{color: '#8B5CF6'}}>Standard</h3>
-          <div className="plan-price">{getPrice(69)} <span>{getPeriod()}</span></div>
-          <p className="plan-desc">Best for growing stores</p>
-          <ul className="features-list">
-            <li className="feature-item"><span className="feature-check">✓</span> 35+ Premium Templates</li>
-            <li className="feature-item"><span className="feature-check">✓</span> Advanced Styling</li>
-            <li className="feature-item"><span className="feature-check">✓</span> Reviews & Ratings</li>
-            <li className="feature-item"><span className="feature-check">✓</span> Delivery & Stock Info</li>
-            <li className="feature-item"><span className="feature-check">✓</span> Premium Support</li>
-          </ul>
-          <button className="plan-btn btn-purple" onClick={() => navigate('/app/plans')}>Upgrade to Standard</button>
-        </div>
-
-        {/* Premium Plan */}
-        <div className="pricing-card premium-border">
-          <div className="best-value-badge">Best Value</div>
-          <h3 className="plan-name" style={{color: '#F59E0B'}}>Premium</h3>
-          <div className="plan-price">{getPrice(99)} <span>{getPeriod()}</span></div>
-          <p className="plan-desc">Best for high volume stores</p>
-          <ul className="features-list">
-            <li className="feature-item"><span className="feature-check">✓</span> Unlimited Templates</li>
-            <li className="feature-item"><span className="feature-check">✓</span> Video & 360 Gallery</li>
-            <li className="feature-item"><span className="feature-check">✓</span> Volume Discounts</li>
-            <li className="feature-item"><span className="feature-check">✓</span> Related Products</li>
-            <li className="feature-item"><span className="feature-check">✓</span> All Customization Features</li>
-            <li className="feature-item"><span className="feature-check">✓</span> 24/7 Priority Support</li>
-          </ul>
-          <button className="plan-btn btn-yellow" onClick={() => navigate('/app/plans')}>Upgrade to Premium</button>
-        </div>
-      </div>
-
 
 
       {/* Bottom Split */}

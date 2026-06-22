@@ -15,7 +15,6 @@ import {
 } from "@shopify/polaris";
 import polarisTranslations from "@shopify/polaris/locales/en.json";
 import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
-import logo from "../../public/logo.png";
 
 import { login } from "../../shopify.server";
 import { loginErrorMessage } from "./error.server";
@@ -60,12 +59,15 @@ export default function Auth() {
                   .Polaris-Button--toneSuccess:hover {
                     background: #0e8a3e !important;
                   }
+                  body, html, .Polaris-Page {
+                    background-color: #ffffff !important;
+                  }
                 `}</style>
 
                 {/* Branding & Header */}
                 <BlockStack gap="400" inlineAlign="center">
                   <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-                    <img src="/logo.png?v=2" alt="Pagecraft Builder" style={{ height: '140px', objectFit: 'contain' }} />
+                    <img src="/logo.png?v=4" alt="Pagecraft Builder" style={{ height: '140px', objectFit: 'contain' }} />
                   </div>
                   <Text variant="bodyLg" as="p" tone="subdued" alignment="center">
                     Design high-converting product pages effortlessly.
