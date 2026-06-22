@@ -10,11 +10,31 @@ export const links: LinksFunction = () => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await authenticate.admin(request);
+  const { session, admin } = await authenticate.admin(request);
   
+  const response = await admin.graphql(`
+    #graphql
+    query ShopPlan {
+      app {
+        installation {
+          activeSubscriptions {
+            id
+            name
+            status
+          }
+        }
+      }
+    }
+  `);
+  
+  const data = await response.json();
+  const activeSubs = data.data?.app?.installation?.activeSubscriptions || [];
+  const activePlan = activeSubs.length > 0 ? activeSubs[0].name : "Free";
+
   // Dummy data for skeleton layout
   return json({
-    merchantPlan: "Free",
+    activePlan,
+    merchantPlan: activePlan,
     pagesCreated: 3,
     pagesPublished: 1,
     pageLimit: 5,
@@ -27,7 +47,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function Dashboard() {
-  const { merchantPlan, pagesCreated, pagesPublished, pageLimit, recentPages } = useLoaderData<typeof loader>();
+  const { merchantPlan, activePlan, pagesCreated, pagesPublished, pageLimit, recentPages } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
@@ -37,6 +57,35 @@ export default function Dashboard() {
     return `$${monthly}`;
   };
   const getPeriod = () => billingCycle === 'yearly' ? '/month, billed yearly' : '/month';
+
+  const getPlanDescription = (planName: string) => {
+    switch(planName.toLowerCase()) {
+      case 'premium':
+        return 'Your Premium plan unlocks the ultimate page building experience with all customization options.';
+      case 'standard':
+        return 'Your Standard plan provides advanced split/stacked structures and live image backgrounds.';
+      case 'basic':
+        return 'Your Basic plan includes premium designs and advanced image & color controls.';
+      default:
+        return 'Your Free plan allows you to edit product text and build standard pages.';
+    }
+  };
+
+  const getPlanTemplates = (planName: string) => {
+    const plan = planName.toLowerCase();
+    
+    if (plan === 'premium') {
+      return [{ name: '6 Templates Unlocked', color: '#92400E', bg: '#FEF3C7' }];
+    }
+    if (plan === 'standard') {
+      return [{ name: '5 Templates Unlocked', color: '#5B21B6', bg: '#EDE9FE' }];
+    }
+    if (plan === 'basic') {
+      return [{ name: '3 Templates Unlocked', color: '#065F46', bg: '#D1FAE5' }];
+    }
+    
+    return [{ name: '3 Templates Unlocked', color: '#374151', bg: '#F3F4F6' }];
+  };
 
   return (
     <div className="dashboard-container">
@@ -72,6 +121,40 @@ export default function Dashboard() {
       {/* Bottom Split */}
       <div className="split-grid">
         <div className="panel-card">
+          <div className="panel-header" style={{ marginBottom: '16px' }}>
+            <h3 className="panel-title" style={{ fontSize: '18px', fontWeight: 'bold', color: '#111827' }}>Subscription Details</h3>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+            <span style={{ fontSize: '15px', color: '#374151' }}>Current Plan:</span>
+            <span style={{ background: '#A7F3D0', color: '#065F46', padding: '4px 12px', fontSize: '13px', borderRadius: '8px', fontWeight: '500' }}>
+              {activePlan}
+            </span>
+          </div>
+          <p style={{ fontSize: '15px', color: '#4B5563', lineHeight: '1.5', marginBottom: '16px' }}>
+            {getPlanDescription(activePlan)}
+          </p>
+          
+          <div style={{ marginBottom: '24px' }}>
+            <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#111827', marginBottom: '10px' }}>Unlocked Templates:</h4>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {getPlanTemplates(activePlan).map(t => (
+                <span key={t.name} style={{ background: t.bg, color: t.color, padding: '4px 10px', borderRadius: '6px', fontSize: '13px', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  {t.name}
+                </span>
+              ))}
+            </div>
+          </div>
+          <hr style={{ border: 'none', borderTop: '1px solid #E5E7EB', margin: '0 0 16px 0' }} />
+          <button 
+            className="plan-btn" 
+            onClick={() => navigate('/app/plans')}
+          >
+            Change Plan
+          </button>
+        </div>
+
+        <div className="panel-card">
           <div className="panel-header">
             <h3 className="panel-title">Recent Product Pages</h3>
             <a href="#" className="view-all-link">View All</a>
@@ -95,7 +178,6 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
-
       </div>
 
     </div>
