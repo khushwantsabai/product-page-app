@@ -3,7 +3,7 @@ import { json } from "@remix-run/node";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import { useState } from "react";
 import { authenticate } from "../shopify.server";
-import { db } from "../db.server";
+import db from "../db.server";
 import dashboardStyles from "../styles/dashboard.css?url";
 
 function formatRelativeTime(date: Date): string {
@@ -66,7 +66,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     merchantPlan: activePlan,
     pagesCreated,
     pagesPublished,
-    recentPages: recentPages.map((p) => ({
+    recentPages: recentPages.map((p: { id: string; name: string; templateId: string; status: string; updatedAt: Date }) => ({
       id: p.id,
       name: p.name,
       template: p.templateId,
@@ -77,7 +77,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function Dashboard() {
-  const { merchantPlan, activePlan, pagesCreated, pagesPublished, pageLimit, recentPages } = useLoaderData<typeof loader>();
+  const { merchantPlan, activePlan, pagesCreated, pagesPublished, recentPages } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
@@ -197,7 +197,7 @@ export default function Dashboard() {
                 <p style={{ fontSize: '13px' }}>Create your first product page to get started.</p>
               </div>
             ) : (
-              recentPages.map((page) => (
+              recentPages.map((page: { id: string; name: string; template: string; status: string; updated: string }) => (
                 <div className="page-item" key={page.id}>
                   <div className="page-info">
                     <div className="page-thumb" style={{ background: '#F0FDF4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
