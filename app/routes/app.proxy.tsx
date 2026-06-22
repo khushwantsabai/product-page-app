@@ -455,7 +455,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       </div>
     `;
 
-    return json({ html: fullHtml });
+    return new Response(JSON.stringify({ html: fullHtml }), {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+      }
+    });
   } catch (error) {
     console.error("Error fetching product page:", error);
     return json({ error: "Internal Server Error" }, { status: 500 });

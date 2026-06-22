@@ -1,5 +1,5 @@
 import { json, type LoaderFunctionArgs, type LinksFunction, type ActionFunctionArgs } from "@remix-run/node";
-import { useLoaderData, useNavigate, useSubmit, useNavigation } from "@remix-run/react";
+import { useLoaderData, useNavigate, useSubmit, useActionData, useNavigation } from "@remix-run/react";
 import { useState, useEffect, useRef } from "react";
 import editorStyles from "../styles/editor.css?url";
 import { authenticate } from "../shopify.server";
@@ -341,6 +341,13 @@ export default function Editor() {
 
   const submit = useSubmit();
   const navigation = useNavigation();
+  const actionData = useActionData<typeof action>();
+
+  useEffect(() => {
+    if (actionData?.newId && page.id === 'new') {
+      navigate(`/app/editor/${actionData.newId}`, { replace: true });
+    }
+  }, [actionData, navigate, page.id]);
 
   const [sizesRaw, setSizesRaw] = useState<string | null>(null);
   const [unavailableRaw, setUnavailableRaw] = useState<string | null>(null);
