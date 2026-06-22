@@ -25,9 +25,15 @@
       })
       .then(function(data) {
         if (data.html) {
-            container.innerHTML = data.html;
+            var section = container.closest('.shopify-section') || container.closest('section');
+            if (section) {
+                // Completely replace the default product section with our custom template!
+                section.innerHTML = data.html;
+            } else {
+                container.innerHTML = data.html;
+            }
         } else {
-            container.innerHTML = "";
+            container.style.display = "none";
         }
       })
       .catch(function(err) {
