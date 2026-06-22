@@ -1,6 +1,6 @@
-import type { LoaderFunctionArgs, LinksFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, LinksFunction, ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData, useNavigate, Link } from "@remix-run/react";
+import { useLoaderData, useNavigate, Link, Form } from "@remix-run/react";
 import { useState } from "react";
 import { authenticate } from "../shopify.server";
 import db from "../db.server";
@@ -19,6 +19,25 @@ function formatRelativeTime(date: Date): string {
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: dashboardStyles }];
+};
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const { session } = await authenticate.admin(request);
+  const formData = await request.formData();
+  const actionType = formData.get("actionType");
+  const pageId = String(formData.get("pageId"));
+
+  if (actionType === "delete" && pageId) {
+    await db.productPage.deleteMany({
+      where: {
+        id: pageId,
+        shopId: session.shop,
+      }
+    });
+    return json({ success: true });
+  }
+
+  return json({ error: "Invalid action" }, { status: 400 });
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -199,17 +218,36 @@ export default function Dashboard() {
             ) : (
               recentPages.map((page: { id: string; name: string; template: string; status: string; updated: string }) => (
                 <div className="page-item" key={page.id}>
-                  <div className="page-info">
+                  <div className="page-info" style={{ flex: 1 }}>
                     <div className="page-thumb" style={{ background: '#F0FDF4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                     </div>
                     <div>
                       <div className="page-name">{page.name}</div>
-                      <div className="page-date">Updated {page.updated}</div>
+                      <div className="page-date" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span>Updated {page.updated}</span>
+                        <span style={{ fontSize: '11px', background: '#F3F4F6', padding: '2px 6px', borderRadius: '4px', color: '#4B5563', fontFamily: 'monospace' }}>ID: {page.id}</span>
+                      </div>
                     </div>
                   </div>
-                  <div className={`status-badge ${page.status === 'Published' ? 'status-published' : 'status-draft'}`}>
-                    {page.status}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div className={`status-badge ${page.status === 'Published' ? 'status-published' : 'status-draft'}`}>
+                      {page.status}
+                    </div>
+                    {(page.status === 'Draft' || page.status === 'Published') && (
+                      <Link to={`/app/editor/${page.id}`} style={{ textDecoration: 'none', color: '#4F46E5', fontSize: '14px', fontWeight: '500' }}>
+                        Edit
+                      </Link>
+                    )}
+                    <Form method="post" onSubmit={(e) => {
+                      if (!confirm('Are you sure you want to delete this page?')) e.preventDefault();
+                    }}>
+                      <input type="hidden" name="actionType" value="delete" />
+                      <input type="hidden" name="pageId" value={page.id} />
+                      <button type="submit" style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>
+                        Delete
+                      </button>
+                    </Form>
                   </div>
                 </div>
               ))
