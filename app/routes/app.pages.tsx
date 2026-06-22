@@ -3,6 +3,7 @@ import { redirect } from "@remix-run/node";
 import { useLoaderData, useNavigate, Form } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
+import { TEMPLATE_MOCKS } from "./app.editor.$id";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { admin, session } = await authenticate.admin(request);
@@ -48,9 +49,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   if (actionType === "publish") {
     // Load mock data for the template so it's not empty when published
-    const mockModule = await import('./app.editor.$id');
-    const mocks = mockModule.TEMPLATE_MOCKS || {};
-    const defaultSettings = mocks[templateId] || mocks['1'] || {};
+    const defaultSettings = TEMPLATE_MOCKS[templateId] || TEMPLATE_MOCKS['1'] || {};
 
     await prisma.productPage.create({
       data: {
