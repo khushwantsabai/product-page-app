@@ -341,7 +341,7 @@ export default function Editor() {
 
   const submit = useSubmit();
   const navigation = useNavigation();
-  const actionData = useActionData<typeof action>();
+  const actionData = useActionData<any>();
   const isSaving = navigation.state === "submitting";
 
   useEffect(() => {
