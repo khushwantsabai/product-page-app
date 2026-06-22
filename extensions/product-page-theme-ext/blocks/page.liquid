@@ -2,43 +2,37 @@
 {
   "name": "Product Page Builder",
   "target": "section",
-  "settings": [
-    {
-      "type": "text",
-      "id": "page_id",
-      "label": "Product Page ID",
-      "info": "This will automatically render the layout and settings associated with this ID."
-    }
-  ]
+  "settings": []
 }
 {% endschema %}
 
-<div id="product-page-container-{{ section.id }}" class="product-page-container" data-page-id="{{ block.settings.page_id }}">
+<div id="product-page-container-{{ section.id }}" class="product-page-container">
   <p style="text-align: center; color: #666; font-family: sans-serif;">Loading Product Page Custom Layout...</p>
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  (function() {
     var container = document.getElementById("product-page-container-{{ section.id }}");
-    var pageId = container.getAttribute("data-page-id");
-
-    if (pageId) {
-      // Use the Shopify App Proxy route. Adjust the '/apps/product-page' prefix to match your app proxy configuration in the Partner Dashboard.
-      fetch('/apps/product-page?pageId=' + encodeURIComponent(pageId))
-        .then(function(response) { return response.json(); })
-        .then(function(data) {
-          if (data.html) {
-             container.innerHTML = data.html;
-          } else {
-             container.innerHTML = "<p>Product Page Layout not found.</p>";
-          }
-        })
-        .catch(function(err) {
-          console.error("Product Page Proxy Error:", err);
-          container.innerHTML = "<p>Error loading Product Page content.</p>";
-        });
-    } else {
-      container.innerHTML = "<p style='padding: 20px; border: 1px dashed #ccc;'>Please enter a Page ID in the block settings.</p>";
-    }
-  });
+    if (!container) return;
+    
+    // Use the Shopify App Proxy route. Adjust the '/apps/product-page' prefix to match your app proxy configuration in the Partner Dashboard.
+    fetch('/apps/product-page')
+      .then(function(response) { 
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json(); 
+      })
+      .then(function(data) {
+        if (data.html) {
+            container.innerHTML = data.html;
+        } else {
+            container.innerHTML = "";
+        }
+      })
+      .catch(function(err) {
+        console.error("Product Page Proxy Error:", err);
+        container.innerHTML = "";
+      });
+  })();
 </script>

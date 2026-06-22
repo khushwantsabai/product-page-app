@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs, LinksFunction, ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData, useNavigate, Link, Form } from "@remix-run/react";
-import { useState } from "react";
+import { useEffect } from "react";
 import { authenticate } from "../shopify.server";
 import db from "../db.server";
 import dashboardStyles from "../styles/dashboard.css?url";
@@ -28,10 +28,32 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const pageId = String(formData.get("pageId"));
 
   if (actionType === "delete" && pageId) {
-    await db.productPage.deleteMany({
+    await db.productPage.delete({
       where: {
         id: pageId,
         shopId: session.shop,
+      }
+    });
+    return json({ success: true });
+  }
+
+  if (actionType === "deleteAll") {
+    await db.productPage.deleteMany({
+      where: {
+        shopId: session.shop,
+      }
+    });
+    return json({ success: true });
+  }
+
+  if (actionType === "unpublish" && pageId) {
+    await db.productPage.update({
+      where: {
+        id: pageId,
+        shopId: session.shop,
+      },
+      data: {
+        status: "Draft"
       }
     });
     return json({ success: true });
@@ -96,16 +118,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function Dashboard() {
-  const { merchantPlan, activePlan, pagesCreated, pagesPublished, recentPages } = useLoaderData<typeof loader>();
+  const { activePlan, recentPages } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
-
-  const getPrice = (monthly: number) => {
-    if (monthly === 0) return '$0';
-    if (billingCycle === 'yearly') return `$${Math.round(monthly * 0.8)}`;
-    return `$${monthly}`;
-  };
-  const getPeriod = () => billingCycle === 'yearly' ? '/month, billed yearly' : '/month';
 
   const getPlanDescription = (planName: string) => {
     switch(planName.toLowerCase()) {
@@ -206,7 +220,17 @@ export default function Dashboard() {
         <div className="panel-card">
           <div className="panel-header">
             <h3 className="panel-title">Recent Product Pages</h3>
-            <Link to="/app/pages" className="view-all-link">+ New Page</Link>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <Form method="post" onSubmit={(e) => {
+                if (!confirm('Are you sure you want to delete ALL templates? This cannot be undone.')) e.preventDefault();
+              }}>
+                <input type="hidden" name="actionType" value="deleteAll" />
+                <button type="submit" style={{ background: 'none', border: '1px solid #EF4444', color: '#EF4444', cursor: 'pointer', fontSize: '13px', fontWeight: '500', padding: '6px 12px', borderRadius: '6px' }}>
+                  Delete All
+                </button>
+              </Form>
+              <Link to="/app/pages" className="view-all-link">+ New Page</Link>
+            </div>
           </div>
           <div className="page-list">
             {recentPages.length === 0 ? (
@@ -226,7 +250,6 @@ export default function Dashboard() {
                       <div className="page-name">{page.name}</div>
                       <div className="page-date" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span>Updated {page.updated}</span>
-                        <span style={{ fontSize: '11px', background: '#F3F4F6', padding: '2px 6px', borderRadius: '4px', color: '#4B5563', fontFamily: 'monospace' }}>ID: {page.id}</span>
                       </div>
                     </div>
                   </div>
@@ -238,6 +261,15 @@ export default function Dashboard() {
                       <Link to={`/app/editor/${page.id}`} style={{ textDecoration: 'none', color: '#4F46E5', fontSize: '14px', fontWeight: '500' }}>
                         Edit
                       </Link>
+                    )}
+                    {page.status === 'Published' && (
+                      <Form method="post">
+                        <input type="hidden" name="actionType" value="unpublish" />
+                        <input type="hidden" name="pageId" value={page.id} />
+                        <button type="submit" style={{ background: 'none', border: 'none', color: '#F59E0B', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>
+                          Unpublish
+                        </button>
+                      </Form>
                     )}
                     <Form method="post" onSubmit={(e) => {
                       if (!confirm('Are you sure you want to delete this page?')) e.preventDefault();

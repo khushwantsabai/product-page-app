@@ -7,7 +7,6 @@ import {
   BlockStack,
   Text,
   Button,
-  Box,
   TextField,
   FormLayout,
   Divider,
@@ -15,14 +14,13 @@ import {
   Badge,
   Frame,
   Toast,
-  Banner,
   Modal,
   List,
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-import prisma from "../db.server";
+
 import { getSettings, saveSettings } from "../utils/settings.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

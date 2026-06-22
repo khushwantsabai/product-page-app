@@ -1,5 +1,5 @@
 import { json, type LoaderFunctionArgs, type LinksFunction, type ActionFunctionArgs } from "@remix-run/node";
-import { useLoaderData, useNavigate, useSubmit, useActionData, useNavigation } from "@remix-run/react";
+import { useLoaderData, useNavigate, useSubmit, useNavigation } from "@remix-run/react";
 import { useState, useEffect, useRef } from "react";
 import editorStyles from "../styles/editor.css?url";
 import { authenticate } from "../shopify.server";
@@ -24,6 +24,14 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   if (!settingsStr) return json({ success: false, error: "No settings provided" });
   
   const settings = JSON.parse(settingsStr);
+
+  // If publishing, set all others to draft first
+  if (status === 'Published') {
+    await prisma.productPage.updateMany({
+      where: { shopId: session.shop },
+      data: { status: 'Draft' }
+    });
+  }
 
   // If this is a brand-new page (id=new), create a DB record for the first time
   if (pageId === 'new') {
@@ -53,14 +61,12 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const pageId = params.id;
   if (!pageId) throw new Error("Page ID required");
 
-  let session: any = { shop: "mock-shop.myshopify.com" };
   let activePlan = "free";
   let isAuthenticated = false;
   let admin: any = null;
 
   try {
     const authResult = await authenticate.admin(request);
-    session = authResult.session;
     admin = authResult.admin;
     isAuthenticated = true;
   } catch (e) {
@@ -335,7 +341,6 @@ export default function Editor() {
 
   const submit = useSubmit();
   const navigation = useNavigation();
-  const actionData = useActionData<typeof action>();
 
   const [sizesRaw, setSizesRaw] = useState<string | null>(null);
   const [unavailableRaw, setUnavailableRaw] = useState<string | null>(null);
@@ -366,21 +371,7 @@ export default function Editor() {
   
   // A template is locked in preview mode if the template plan level is higher than the user's plan level
   const isLockedPreview = isPreview && PLAN_LEVELS[templatePlan] > PLAN_LEVELS[userPlan];
-  const isEditablePreview = isPreview && PLAN_LEVELS[templatePlan] <= PLAN_LEVELS[userPlan];
 
-  const updateStyle = (key: string, value: string | number) => {
-    if (!['title', 'price', 'desc', 'cart', 'buy'].includes(activeSection)) return;
-    setEditorData((prev: any) => ({
-      ...prev,
-      styles: {
-        ...prev.styles,
-        [activeSection]: {
-          ...prev.styles[activeSection],
-          [key]: value
-        }
-      }
-    }));
-  };
 
   return (
     <div className="editor-container">

@@ -21,7 +21,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { admin, session } = await authenticate.admin(request);
+  const { admin } = await authenticate.admin(request);
   
   // Query Shopify for active subscriptions
   const response = await admin.graphql(`

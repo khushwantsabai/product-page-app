@@ -5,23 +5,22 @@ import prisma from "../db.server"; // eslint-disable-line
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   // authenticate.public.appProxy securely validates the request came from Shopify
-  const { session } = await authenticate.public.appProxy(request);
+  await authenticate.public.appProxy(request);
   
   const url = new URL(request.url);
-  const pageId = url.searchParams.get("pageId");
   const shop = url.searchParams.get("shop");
 
-  if (!pageId || !shop) {
-    return json({ error: "Missing pageId or shop parameter" }, { status: 400 });
+  if (!shop) {
+    return json({ error: "Missing shop parameter" }, { status: 400 });
   }
 
   try {
-    const page = await prisma.productPage.findUnique({
-      where: { id: pageId, shopId: shop },
+    const page = await prisma.productPage.findFirst({
+      where: { shopId: shop, status: 'Published' },
     });
 
     if (!page) {
-      return json({ html: `<p style="padding: 20px; text-align: center; border: 1px dashed #ccc;">Product Page (ID: ${pageId}) not found or unpublished.</p>` });
+      return json({ html: "" }); // Return empty if no published template
     }
 
     // Try parsing settings, otherwise fallback
