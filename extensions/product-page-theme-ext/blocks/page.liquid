@@ -24,7 +24,7 @@
 
     if (pageId) {
       // Use the Shopify App Proxy route. Adjust the '/apps/product-page' prefix to match your app proxy configuration in the Partner Dashboard.
-      fetch('/apps/product-page/proxy?pageId=' + encodeURIComponent(pageId))
+      fetch('/apps/product-page?pageId=' + encodeURIComponent(pageId))
         .then(function(response) { return response.json(); })
         .then(function(data) {
           if (data.html) {

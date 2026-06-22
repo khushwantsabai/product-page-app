@@ -14,28 +14,37 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return json({ error: "Missing pageId" }, { status: 400 });
   }
 
-  /* 
-   * When the database is running, we can query it like this:
-   * 
-   * const pageVersion = await prisma.pageVersion.findFirst({
-   *   where: { pageId: pageId },
-   *   orderBy: { savedAt: 'desc' }
-   * });
-   * 
-   * const html = renderSettingsToHtml(pageVersion.settings);
-   * return json({ html });
-   */
+  try {
+    const page = await prisma.productPage.findUnique({
+      where: { id: pageId, shopId: session.shop },
+    });
 
-  // Placeholder Response for the Theme Extension
-  return json({
-    html: `
-      <div style="font-family: inherit; margin: 2rem 0; padding: 2rem; background: #fafafa; border: 1px solid #eaeaea; border-radius: 8px;">
-        <h2 style="margin-top: 0; font-size: 1.5rem;">Product Page Block: ${pageId}</h2>
-        <p style="color: #444; line-height: 1.5;">This content is being securely injected from the Shopify App Proxy. Once the builder is complete, this block will render the dynamic layout designed in the React dashboard.</p>
-        <button style="background: #202223; color: white; border: none; border-radius: 4px; padding: 0.75rem 1.5rem; font-weight: bold; cursor: pointer; margin-top: 1rem;">
-          Dynamic Action
-        </button>
-      </div>
-    `
-  });
+    if (!page) {
+      return json({ html: `<p style="padding: 20px; text-align: center; border: 1px dashed #ccc;">Product Page (ID: ${pageId}) not found or unpublished.</p>` });
+    }
+
+    // Try parsing settings, otherwise fallback
+    let settingsObj: any = {};
+    try {
+      settingsObj = JSON.parse(page.settings as string);
+    } catch(e) {}
+
+    const title = settingsObj.title || page.name;
+    const desc = settingsObj.description || "No description set in builder.";
+
+    return json({
+      html: `
+        <div style="font-family: inherit; margin: 2rem 0; padding: 2rem; background: #fafafa; border: 1px solid #eaeaea; border-radius: 8px;">
+          <h2 style="margin-top: 0; font-size: 1.5rem; color: #111827;">${title}</h2>
+          <p style="color: #4B5563; line-height: 1.6;">${desc}</p>
+          <div style="margin-top: 24px;">
+            <p style="font-size: 12px; color: #9CA3AF; text-transform: uppercase; font-weight: bold;">(App Proxy Rendered Successfully)</p>
+          </div>
+        </div>
+      `
+    });
+  } catch (error) {
+    console.error("Error fetching product page:", error);
+    return json({ error: "Internal Server Error" }, { status: 500 });
+  }
 };
