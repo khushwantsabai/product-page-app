@@ -19,18 +19,31 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   const status = formData.get("status") as string;
   const settingsStr = formData.get("settings") as string;
   const title = formData.get("title") as string;
+  const templateId = formData.get("templateId") as string;
   
   if (!settingsStr) return json({ success: false, error: "No settings provided" });
   
   const settings = JSON.parse(settingsStr);
-  
+
+  // If this is a brand-new page (id=new), create a DB record for the first time
+  if (pageId === 'new') {
+    const templateName = formData.get("templateName") as string || "Untitled";
+    const newPage = await prisma.productPage.create({
+      data: {
+        shopId: session.shop,
+        templateId: templateId || '1',
+        planId: "free",
+        name: title || `Untitled ${templateName}`,
+        status,
+        settings
+      }
+    });
+    return json({ success: true, status, newId: newPage.id });
+  }
+
   await prisma.productPage.update({
     where: { id: pageId, shopId: session.shop },
-    data: {
-      status,
-      name: title || undefined,
-      settings
-    }
+    data: { status, name: title || undefined, settings }
   });
   
   return json({ success: true, status });
@@ -85,22 +98,28 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     } catch (_) {}
   }
   
-  if (!pageId.startsWith('preview-')) {
+  const url = new URL(request.url);
+  const queryTemplateId = url.searchParams.get("templateId") || '1';
+  const queryTemplateName = url.searchParams.get("templateName") || "Untitled";
+
+  if (!pageId.startsWith('preview-') && pageId !== 'new') {
     page = await prisma.productPage.findUnique({ where: { id: pageId } });
-  } else if (!isAuthenticated) {
+  } else if (pageId.startsWith('preview-') && !isAuthenticated) {
     const templateId = pageId.replace('preview-', '');
-    if (['4'].includes(templateId)) {
-      activePlan = "premium";
-    } else if (['3', '6'].includes(templateId)) {
-      activePlan = "standard";
-    } else if (['2', '5'].includes(templateId)) {
-      activePlan = "basic";
-    }
+    if (['4'].includes(templateId)) activePlan = "premium";
+    else if (['3', '6'].includes(templateId)) activePlan = "standard";
+    else if (['2', '5'].includes(templateId)) activePlan = "basic";
   }
 
+  // For new pages, use the template from query param
+  const effectiveTemplateId = pageId === 'new' ? queryTemplateId : (page?.templateId ?? pageId.replace('preview-', ''));
+
   return json({
-    page: page || { name: "Untitled Product Page", id: pageId, templateId: pageId.replace('preview-', '') },
-    activePlan
+    page: page || { name: queryTemplateName, id: pageId, templateId: effectiveTemplateId },
+    activePlan,
+    isNew: pageId === 'new',
+    newTemplateId: queryTemplateId,
+    newTemplateName: queryTemplateName,
   });
 };
 
@@ -331,6 +350,11 @@ export default function Editor() {
     formData.append("status", status);
     formData.append("settings", JSON.stringify(editorData));
     formData.append("title", editorData.title || page.name);
+    // For new pages, pass template info so the action can create the record
+    if (loaderData.isNew) {
+      formData.append("templateId", loaderData.newTemplateId || page.templateId);
+      formData.append("templateName", loaderData.newTemplateName || page.name);
+    }
     submit(formData, { method: "post" });
   };
 

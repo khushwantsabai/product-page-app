@@ -4,36 +4,20 @@ import { Form, useLoaderData, useNavigate } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import templatesStyles from "../styles/templates.css?url";
 import { authenticate } from "../shopify.server";
-import prisma from "../db.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: templatesStyles }];
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const { session } = await authenticate.admin(request);
+  await authenticate.admin(request);
   const formData = await request.formData();
   const templateId = String(formData.get("templateId"));
   const templateName = String(formData.get("templateName"));
-  
-  // Create a new draft page in the database
-  const newPage = await prisma.productPage.create({
-    data: {
-      shopId: session.shop,
-      templateId: templateId,
-      planId: "free", // Defaulting to free plan for now
-      name: `Untitled ${templateName}`,
-      status: "Draft",
-      settings: JSON.stringify({
-        sections: [
-          { id: "hero", type: "product-hero", settings: { showTitle: true, showPrice: true } }
-        ]
-      })
-    }
-  });
 
-  // Redirect cleanly into the rich visual editor
-  return redirect(`/app/editor/${newPage.id}`);
+  // Go directly to editor with template info — no DB record yet
+  // The record is only created when the user clicks Save Draft or Publish
+  return redirect(`/app/editor/new?templateId=${encodeURIComponent(templateId)}&templateName=${encodeURIComponent(templateName)}`);
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
