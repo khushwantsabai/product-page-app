@@ -9,14 +9,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   
   const url = new URL(request.url);
   const pageId = url.searchParams.get("pageId");
+  const shop = url.searchParams.get("shop");
 
-  if (!pageId) {
-    return json({ error: "Missing pageId" }, { status: 400 });
+  if (!pageId || !shop) {
+    return json({ error: "Missing pageId or shop parameter" }, { status: 400 });
   }
 
   try {
     const page = await prisma.productPage.findUnique({
-      where: { id: pageId, shopId: session.shop },
+      where: { id: pageId, shopId: shop },
     });
 
     if (!page) {
