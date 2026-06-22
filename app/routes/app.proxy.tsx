@@ -35,6 +35,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const price = settingsObj.price || "$0.00";
     const compareAt = settingsObj.compareAt || "";
     const image = settingsObj.image || "";
+    const imageBgColor = settingsObj.imageBgColor || "transparent";
     const thumbnails = settingsObj.thumbnails || [];
     const layout = settingsObj.layout || "split";
     const sizes = settingsObj.sizes || [];
@@ -45,6 +46,16 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const buyNowText = settingsObj.buyNowText || "Buy it Now";
     const vendor = settingsObj.vendor || null;
     const trustBadges = settingsObj.trustBadges || [];
+    
+    // Dynamic Styles
+    const styles = settingsObj.styles || {
+      title: { fontFamily: 'inherit', fontSize: 28, fontWeight: '700', color: '#111827', textAlign: 'left' },
+      price: { fontFamily: 'inherit', fontSize: 24, fontWeight: '700', color: '#111827', textAlign: 'left' },
+      desc: { fontFamily: 'inherit', fontSize: 16, fontWeight: '400', color: '#4B5563', textAlign: 'left' },
+      cart: { fontFamily: 'inherit', fontSize: 16, fontWeight: '700', color: '#111827', textAlign: 'center' },
+      buy: { fontFamily: 'inherit', fontSize: 16, fontWeight: '700', color: '#ffffff', textAlign: 'center' },
+      badge: { backgroundColor: '#FEE2E2', color: '#EF4444' }
+    };
 
     const fullHtml = `
       <style>
@@ -66,6 +77,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           width: 100%;
           border-radius: 8px;
           object-fit: cover;
+          background-color: ${imageBgColor};
         }
         .pp-thumbnails {
           display: flex;
@@ -81,7 +93,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           align-items: center;
           justify-content: center;
           color: #9CA3AF;
-          background: #F9FAFB;
+          background: ${imageBgColor !== 'transparent' ? imageBgColor : '#F9FAFB'};
         }
         .pp-thumbnail img {
           width: 100%;
@@ -98,7 +110,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           font-weight: 700;
           color: #111827;
           margin-bottom: 12px;
-          font-size: 14px;
+          font-size: 13px;
           text-transform: uppercase;
           letter-spacing: 0.5px;
         }
@@ -111,9 +123,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           gap: 16px;
         }
         .pp-title {
-          font-size: 28px;
-          font-weight: 700;
-          color: #111827;
+          font-family: ${styles.title?.fontFamily || 'inherit'};
+          font-size: ${styles.title?.fontSize || 28}px;
+          font-weight: ${styles.title?.fontWeight || 700};
+          color: ${styles.title?.color || '#111827'};
+          text-align: ${styles.title?.textAlign || 'left'};
           margin: 0;
         }
         .pp-reviews {
@@ -122,16 +136,19 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           gap: 8px;
           color: #4B5563;
           font-size: 14px;
+          justify-content: ${styles.title?.textAlign === 'center' ? 'center' : 'flex-start'};
         }
         .pp-price-wrap {
           display: flex;
           align-items: center;
           gap: 12px;
+          justify-content: ${styles.price?.textAlign === 'center' ? 'center' : 'flex-start'};
         }
         .pp-price {
-          font-size: 24px;
-          font-weight: 700;
-          color: #111827;
+          font-family: ${styles.price?.fontFamily || 'inherit'};
+          font-size: ${styles.price?.fontSize || 24}px;
+          font-weight: ${styles.price?.fontWeight || 700};
+          color: ${styles.price?.color || '#111827'};
         }
         .pp-compare {
           text-decoration: line-through;
@@ -139,20 +156,24 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           font-size: 16px;
         }
         .pp-save {
-          background: #FEE2E2;
-          color: #EF4444;
+          background: ${styles.badge?.backgroundColor || '#FEE2E2'};
+          color: ${styles.badge?.color || '#EF4444'};
           padding: 4px 8px;
           border-radius: 4px;
           font-size: 12px;
           font-weight: 600;
         }
         .pp-desc {
-          color: #4B5563;
+          font-family: ${styles.desc?.fontFamily || 'inherit'};
+          font-size: ${styles.desc?.fontSize || 16}px;
+          font-weight: ${styles.desc?.fontWeight || 400};
+          color: ${styles.desc?.color || '#4B5563'};
+          text-align: ${styles.desc?.textAlign || 'left'};
           line-height: 1.6;
-          font-size: 16px;
         }
         .pp-options {
           margin-top: 16px;
+          text-align: ${styles.desc?.textAlign === 'center' ? 'center' : 'left'};
         }
         .pp-opt-title {
           font-weight: 600;
@@ -163,6 +184,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .pp-colors {
           display: flex;
           gap: 12px;
+          justify-content: ${styles.desc?.textAlign === 'center' ? 'center' : 'flex-start'};
         }
         .pp-color {
           width: 32px; height: 32px; border-radius: 50%;
@@ -174,6 +196,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           display: flex;
           gap: 8px;
           flex-wrap: wrap;
+          justify-content: ${styles.desc?.textAlign === 'center' ? 'center' : 'flex-start'};
         }
         .pp-size {
           padding: 8px 16px;
@@ -237,33 +260,55 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .pp-add-btn {
           width: 100%;
           padding: 16px;
-          background: white;
-          color: #111827;
-          border: 2px solid #111827;
+          background: transparent;
+          color: ${styles.cart?.color || '#111827'};
+          border: 2px solid ${styles.cart?.color || '#111827'};
           border-radius: 8px;
-          font-size: 16px;
-          font-weight: 700;
+          font-family: ${styles.cart?.fontFamily || 'inherit'};
+          font-size: ${styles.cart?.fontSize || 16}px;
+          font-weight: ${styles.cart?.fontWeight || 700};
           cursor: pointer;
           transition: all 0.2s;
         }
         .pp-add-btn:hover {
-          background: #111827;
+          background: ${styles.cart?.color || '#111827'};
           color: white;
         }
         .pp-buy-btn {
           width: 100%;
           padding: 16px;
           background: #16A34A;
-          color: white;
+          color: ${styles.buy?.color || '#ffffff'};
           border: none;
           border-radius: 8px;
-          font-size: 16px;
-          font-weight: 700;
+          font-family: ${styles.buy?.fontFamily || 'inherit'};
+          font-size: ${styles.buy?.fontSize || 16}px;
+          font-weight: ${styles.buy?.fontWeight || 700};
           cursor: pointer;
           transition: all 0.2s;
         }
         .pp-buy-btn:hover {
           background: #15803D;
+        }
+        .pp-vendor-details {
+          padding: 12px;
+          border-radius: 8px;
+          background: #F9FAFB;
+          border: 1px solid #E5E7EB;
+          font-size: 13px;
+          width: 100%;
+          box-sizing: border-box;
+          margin-top: 20px;
+        }
+        .pp-trust-badges {
+          padding: 14px 12px;
+          background: #F9FAFB;
+          border-radius: 8px;
+          border: 1px solid #E5E7EB;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          margin-top: 20px;
         }
         @media (max-width: 768px) {
           .pp-container { flex-direction: column !important; align-items: center !important; }
@@ -286,25 +331,39 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
                 </div>
               `).join('')}
             </div>
-          ` : `
-            <div class="pp-thumbnails">
-              <div class="pp-thumbnail">
-                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-              </div>
-              <div class="pp-thumbnail">
-                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-              </div>
-              <div class="pp-thumbnail">
-                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-              </div>
-            </div>
-          `}
+          ` : ''}
 
           ${layout === 'split' ? `
             <div class="pp-desc-left">
               <div class="pp-desc-title">Product Description</div>
               <div class="pp-desc">${desc}</div>
             </div>
+            
+            ${vendor && vendor.name ? `
+              <div class="pp-vendor-details">
+                <div style="font-weight: 600; color: #374151; margin-bottom: 6px;">Vendor Details</div>
+                <div style="display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; color: #4B5563;">
+                  <span style="color: #6B7280;">Vendor:</span> <span>${vendor.name}</span>
+                  ${vendor.manufacturer ? `<span style="color: #6B7280;">Manufacturer:</span> <span>${vendor.manufacturer}</span>` : ''}
+                </div>
+              </div>
+            ` : ''}
+
+            ${trustBadges && trustBadges.length > 0 ? `
+              <div class="pp-trust-badges">
+                ${trustBadges.map((badge: any) => `
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #E5E7EB; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                      ${badge.icon}
+                    </div>
+                    <div>
+                      <div style="font-size: 12px; font-weight: 700; color: #111827;">${badge.title}</div>
+                      <div style="font-size: 10px; color: #6B7280;">${badge.desc}</div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
           ` : ''}
         </div>
 
@@ -328,6 +387,31 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
           ${layout !== 'split' ? `
             <div class="pp-desc" style="margin-top: 16px;">${desc}</div>
+            
+            ${vendor && vendor.name ? `
+              <div class="pp-vendor-details">
+                <div style="font-weight: 600; color: #374151; margin-bottom: 6px;">Vendor Details</div>
+                <div style="display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; color: #4B5563;">
+                  <span style="color: #6B7280;">Vendor:</span> <span>${vendor.name}</span>
+                </div>
+              </div>
+            ` : ''}
+
+            ${trustBadges && trustBadges.length > 0 ? `
+              <div class="pp-trust-badges">
+                ${trustBadges.map((badge: any) => `
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #E5E7EB; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                      ${badge.icon}
+                    </div>
+                    <div>
+                      <div style="font-size: 12px; font-weight: 700; color: #111827;">${badge.title}</div>
+                      <div style="font-size: 10px; color: #6B7280;">${badge.desc}</div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
           ` : ''}
 
           <!-- Color Options -->
