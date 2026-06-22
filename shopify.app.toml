@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "06fec0d0f3013071adbb80cf7190b42b"
-application_url = "https://shopify.dev/apps/default-app-home"
+application_url = "https://pagecraft.electrosale.shop"
 embedded = true
-name = "Product Page\r"
+name = "Product Page"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
@@ -21,18 +21,22 @@ api_version = "2026-07"
   # topics = [ "app/subscriptions_update" ]
 
   [webhooks.privacy_compliance]
-  customer_deletion_url = "https://shopify.dev/apps/default-app-home/webhooks/privacy/customers_redact"
-  customer_data_request_url = "https://shopify.dev/apps/default-app-home/webhooks/privacy/customers_data_request"
-  shop_deletion_url = "https://shopify.dev/apps/default-app-home/webhooks/privacy/shop_redact"
+  customer_deletion_url = "https://pagecraft.electrosale.shop/webhooks/privacy/customers_redact"
+  customer_data_request_url = "https://pagecraft.electrosale.shop/webhooks/privacy/customers_data_request"
+  shop_deletion_url = "https://pagecraft.electrosale.shop/webhooks/privacy/shop_redact"
 
 [auth]
-redirect_urls = [ "https://shopify.dev/apps/default-app-home/api/auth" ]
+redirect_urls = [ 
+  "https://pagecraft.electrosale.shop/auth/callback",
+  "https://pagecraft.electrosale.shop/auth/shopify/callback",
+  "https://pagecraft.electrosale.shop/api/auth"
+]
 
 [build]
 include_config_on_deploy = true
 automatically_update_urls_on_dev = true
 
 [app_proxy]
-url = "https://shopify.dev/apps/default-app-home/app/proxy"
+url = "https://pagecraft.electrosale.shop/app/proxy"
 subpath = "product-page"
 prefix = "apps"

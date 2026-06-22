@@ -194,14 +194,14 @@ export default function Templates() {
                     onClick={() => navigate(`/app/editor/preview-${tpl.id}`)}
                   >Preview</button>
                   
-                  {tpl.brand !== 'free' && tpl.brand !== activePlan ? (
+                  {PLAN_LEVELS[tpl.brand] > PLAN_LEVELS[activePlan] ? (
                      <button 
                        type="button" 
                        className="action-btn" 
                        style={{width: '100%', background: '#F3F4F6', color: '#9CA3AF', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'}}
                        onClick={() => navigate('/app/plans')}
                      >
-                       🔒 {PLAN_LEVELS[tpl.brand] > PLAN_LEVELS[activePlan] ? 'Upgrade Plan' : `Switch to ${tpl.plan} Plan`}
+                       🔒 Upgrade Plan
                      </button>
                   ) : (
                     <Form method="post" style={{flex: 1, display: 'flex'}}>

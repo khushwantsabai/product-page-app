@@ -270,9 +270,9 @@ export default function Editor() {
   // Use the user's plan for editing permissions, unless it's a preview in which case we show what the template requires
   const activePlan = isPreview ? templatePlan : userPlan;
   
-  // A template is locked in preview mode if the template is not free and does not exactly match the user's plan
-  const isLockedPreview = isPreview && templatePlan !== 'free' && templatePlan !== userPlan;
-  const isEditablePreview = isPreview && (templatePlan === 'free' || templatePlan === userPlan);
+  // A template is locked in preview mode if the template plan level is higher than the user's plan level
+  const isLockedPreview = isPreview && PLAN_LEVELS[templatePlan] > PLAN_LEVELS[userPlan];
+  const isEditablePreview = isPreview && PLAN_LEVELS[templatePlan] <= PLAN_LEVELS[userPlan];
 
   const updateStyle = (key: string, value: string | number) => {
     if (!['title', 'price', 'desc', 'cart', 'buy'].includes(activeSection)) return;
