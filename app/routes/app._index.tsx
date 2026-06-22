@@ -59,7 +59,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   });
 
   const pagesCreated = await db.productPage.count({ where: { shopId } });
-  const pagesPublished = await db.productPage.count({ where: { shopId, status: "published" } });
+  const pagesPublished = await db.productPage.count({ where: { shopId, status: { equals: "Published", mode: "insensitive" } } });
 
   return json({
     activePlan,
@@ -70,7 +70,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       id: p.id,
       name: p.name,
       template: p.templateId,
-      status: p.status === "published" ? "Published" : "Draft",
+      status: p.status.toLowerCase() === "published" ? "Published" : "Draft",
       updated: formatRelativeTime(p.updatedAt),
     })),
   });
