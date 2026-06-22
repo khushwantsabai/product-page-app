@@ -3,7 +3,19 @@ import { json } from "@remix-run/node";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import { useState } from "react";
 import { authenticate } from "../shopify.server";
+import { db } from "../db.server";
 import dashboardStyles from "../styles/dashboard.css?url";
+
+function formatRelativeTime(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - new Date(date).getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffMins < 60) return `${diffMins} minute${diffMins === 1 ? '' : 's'} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours === 1 ? '' : 's'} ago`;
+  return `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
+}
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: dashboardStyles }];
@@ -11,7 +23,9 @@ export const links: LinksFunction = () => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session, admin } = await authenticate.admin(request);
-  
+  const shopId = session.shop;
+
+  // Fetch active subscription from Shopify
   const response = await admin.graphql(`
     #graphql
     query ShopPlan {
@@ -26,23 +40,39 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       }
     }
   `);
-  
   const data = await response.json();
   const activeSubs = data.data?.app?.installation?.activeSubscriptions || [];
   const activePlan = activeSubs.length > 0 ? activeSubs[0].name : "Free";
 
-  // Dummy data for skeleton layout
+  // Fetch real pages from DB
+  const recentPages = await db.productPage.findMany({
+    where: { shopId },
+    orderBy: { updatedAt: "desc" },
+    take: 5,
+    select: {
+      id: true,
+      name: true,
+      templateId: true,
+      status: true,
+      updatedAt: true,
+    },
+  });
+
+  const pagesCreated = await db.productPage.count({ where: { shopId } });
+  const pagesPublished = await db.productPage.count({ where: { shopId, status: "published" } });
+
   return json({
     activePlan,
     merchantPlan: activePlan,
-    pagesCreated: 3,
-    pagesPublished: 1,
-    pageLimit: 5,
-    recentPages: [
-      { id: 1, name: "Wireless Headphones", template: "Modern Electronics", status: "Published", updated: "2 hours ago", image: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-5_large.png" },
-      { id: 2, name: "Smart Watch Series 8", template: "Luxury Watch", status: "Published", updated: "1 day ago", image: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-6_large.png" },
-      { id: 3, name: "Premium Serum", template: "Beauty Glow", status: "Draft", updated: "2 days ago", image: "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-4_large.png" },
-    ],
+    pagesCreated,
+    pagesPublished,
+    recentPages: recentPages.map((p) => ({
+      id: p.id,
+      name: p.name,
+      template: p.templateId,
+      status: p.status === "published" ? "Published" : "Draft",
+      updated: formatRelativeTime(p.updatedAt),
+    })),
   });
 };
 
@@ -157,25 +187,33 @@ export default function Dashboard() {
         <div className="panel-card">
           <div className="panel-header">
             <h3 className="panel-title">Recent Product Pages</h3>
-            <a href="#" className="view-all-link">View All</a>
+            <a href="/app/templates" className="view-all-link">+ New Page</a>
           </div>
           <div className="page-list">
-            {recentPages.map((page) => (
-              <div className="page-item" key={page.id}>
-                <div className="page-info">
-                  <div className="page-thumb">
-                    <img src={page.image} alt={page.name} />
-                  </div>
-                  <div>
-                    <div className="page-name">{page.name}</div>
-                    <div className="page-date">Updated {page.updated}</div>
-                  </div>
-                </div>
-                <div className={`status-badge ${page.status === 'Published' ? 'status-published' : 'status-draft'}`}>
-                  {page.status}
-                </div>
+            {recentPages.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '32px 0', color: '#9CA3AF' }}>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto 12px' }}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <p style={{ fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>No pages yet</p>
+                <p style={{ fontSize: '13px' }}>Create your first product page to get started.</p>
               </div>
-            ))}
+            ) : (
+              recentPages.map((page) => (
+                <div className="page-item" key={page.id}>
+                  <div className="page-info">
+                    <div className="page-thumb" style={{ background: '#F0FDF4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <div>
+                      <div className="page-name">{page.name}</div>
+                      <div className="page-date">Updated {page.updated}</div>
+                    </div>
+                  </div>
+                  <div className={`status-badge ${page.status === 'Published' ? 'status-published' : 'status-draft'}`}>
+                    {page.status}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
