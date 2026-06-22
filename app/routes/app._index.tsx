@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs, LinksFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useLoaderData, useNavigate, Link } from "@remix-run/react";
 import { useState } from "react";
 import { authenticate } from "../shopify.server";
 import db from "../db.server";
@@ -187,7 +187,7 @@ export default function Dashboard() {
         <div className="panel-card">
           <div className="panel-header">
             <h3 className="panel-title">Recent Product Pages</h3>
-            <a href="/app/templates" className="view-all-link">+ New Page</a>
+            <Link to="/app/pages" className="view-all-link">+ New Page</Link>
           </div>
           <div className="page-list">
             {recentPages.length === 0 ? (
