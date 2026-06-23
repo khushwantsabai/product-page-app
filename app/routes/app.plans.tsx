@@ -1,7 +1,7 @@
 import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useSubmit, useNavigation, useActionData } from "@remix-run/react";
 import { Page, Frame, Toast } from "@shopify/polaris";
-import { authenticate } from "../shopify.server";
+import { authenticate, billing } from "../shopify.server";
 import { useState, useEffect } from "react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -44,65 +44,34 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const { admin, session } = await authenticate.admin(request);
   const formData = await request.formData();
   const planName = formData.get("planName") as string;
-  const planPrice = formData.get("planPrice") as string;
   
   const host = session.shop; 
   // Construct the returnUrl dynamically using the API key to ensure correct routing
   const returnUrl = `https://${host}/admin/apps/${process.env.SHOPIFY_API_KEY}/app/templates`;
 
-  // GraphQL Mutation for appSubscriptionCreate
-  let responseJson: any = null;
   try {
-    const response = await admin.graphql(`
-      mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $trialDays: Int, $test: Boolean) {
-        appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
-          userErrors {
-            field
-            message
-          }
-          confirmationUrl
-          appSubscription {
-            id
-          }
-        }
-      }
-    `, {
-      variables: {
-        name: `Product Page ${planName}`,
-        returnUrl,
-        trialDays: 7,
-        test: true,
-        lineItems: [
-          {
-            plan: {
-              appRecurringPricingDetails: {
-                price: { amount: parseFloat(planPrice), currencyCode: "USD" },
-                interval: "EVERY_30_DAYS"
-              }
-            }
-          }
-        ]
-      }
+    await billing.request({
+      plan: planName,
+      isTest: true,
+      returnUrl,
     });
-
-    responseJson = await response.json();
-  } catch (error) {
-    console.error("Failed to create subscription:", error);
-    return json({ error: "API request blocked. Ensure your store allows billing." });
+    return json({ success: true });
+  } catch (error: any) {
+    if (error instanceof Response && error.status >= 300 && error.status < 400) {
+      throw error; // This is the redirect to Shopify's payment approval screen!
+    }
+    
+    console.error("Failed to request billing via Shopify API:", error);
+    let errorDetails = error.message || String(error);
+    if (error instanceof Response) {
+      errorDetails = `HTTP ${error.status} ${error.statusText}`;
+      try {
+        const text = await error.clone().text();
+        errorDetails += ` | ${text}`;
+      } catch (e) {}
+    }
+    return json({ error: `API request blocked: ${errorDetails}` });
   }
-
-  const confirmationUrl = responseJson?.data?.appSubscriptionCreate?.confirmationUrl;
-  const userErrors = responseJson?.data?.appSubscriptionCreate?.userErrors || [];
-
-  if (userErrors.length > 0) {
-    return json({ error: userErrors[0].message });
-  }
-
-  if (confirmationUrl) {
-    return json({ confirmationUrl });
-  }
-
-  return json({ error: "Could not create subscription" });
 };
 
 const PLANS = [
