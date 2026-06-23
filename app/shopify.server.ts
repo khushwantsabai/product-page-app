@@ -7,7 +7,7 @@ import {
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import prisma from "./db.server";
 
-import { billingConfig } from "./billing.server";
+import { billingConfig } from "./billing.server.js";
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY || "missing-api-key",

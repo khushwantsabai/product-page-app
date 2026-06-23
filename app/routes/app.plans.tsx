@@ -1,7 +1,7 @@
 import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useSubmit, useNavigation, useActionData } from "@remix-run/react";
 import { Page, Frame, Toast } from "@shopify/polaris";
-import { authenticate, billing } from "../shopify.server";
+import { authenticate } from "../shopify.server";
 import { useState, useEffect } from "react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -41,7 +41,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const { admin, session } = await authenticate.admin(request);
+  const { admin, session, billing } = await authenticate.admin(request);
   const formData = await request.formData();
   const planName = formData.get("planName") as string;
   
