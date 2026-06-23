@@ -14,20 +14,27 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return json({ error: "Missing shop parameter" }, { status: 400 });
   }
 
+  const isDesignMode = url.searchParams.get("designMode") === 'true';
+
   try {
     const page = await prisma.productPage.findFirst({
-      where: { shopId: shop, status: 'Published' },
+      where: isDesignMode 
+        ? { shopId: shop } // order by updated at desc
+        : { shopId: shop, status: 'Published' },
+      orderBy: isDesignMode ? { updatedAt: 'desc' } : undefined
     });
 
     if (!page) {
-      return json({ html: "" }); // Return empty if no published template
+      return json({ html: "" }); // Return empty if no template
     }
 
-    // Try parsing settings, otherwise fallback
-    let settingsObj: any = {};
-    try {
-      settingsObj = JSON.parse(page.settings as string);
-    } catch(e) {}
+    // Try parsing settings if it's a string, otherwise use directly
+    let settingsObj: any = page.settings || {};
+    if (typeof settingsObj === 'string') {
+      try {
+        settingsObj = JSON.parse(settingsObj);
+      } catch(e) {}
+    }
 
     const title = settingsObj.title || page.name;
     const desc = settingsObj.desc || settingsObj.description || "";

@@ -270,7 +270,13 @@ export default function Editor() {
 
   const [activeDevice, setActiveDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [activeSection, setActiveSection] = useState('title');
-  const initialMockData = TEMPLATE_MOCKS[page.templateId] || TEMPLATE_MOCKS['1'];
+  let savedSettings = null;
+  if ('settings' in page && page.settings) {
+    try {
+      savedSettings = typeof page.settings === 'string' ? JSON.parse(page.settings) : page.settings;
+    } catch(e) {}
+  }
+  const initialMockData = (savedSettings && Object.keys(savedSettings).length > 0) ? savedSettings : (TEMPLATE_MOCKS[page.templateId] || TEMPLATE_MOCKS['1']);
   
   const [editorData, setEditorDataState] = useState(() => ({
     ...initialMockData,

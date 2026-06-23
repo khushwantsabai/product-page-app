@@ -15,8 +15,10 @@
     var container = document.getElementById("product-page-container-{{ section.id }}");
     if (!container) return;
     
+    var isDesignMode = {{ request.design_mode | json }};
+    
     // Use the Shopify App Proxy route. Adjust the '/apps/product-page' prefix to match your app proxy configuration in the Partner Dashboard.
-    fetch('/apps/product-page')
+    fetch('/apps/product-page?designMode=' + (isDesignMode ? 'true' : 'false'))
       .then(function(response) { 
         if (!response.ok) {
           throw new Error('Network response was not ok');
