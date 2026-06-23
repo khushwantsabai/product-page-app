@@ -9,7 +9,16 @@ declare global {
   var prismaGlobal: PrismaClient | undefined;
 }
 
-const connectionString = process.env.DATABASE_URL || "";
+let connectionString = process.env.DATABASE_URL || "";
+try {
+  // Strip out unsupported query parameters like channel_binding to prevent pg Pool crashes
+  const url = new URL(connectionString);
+  url.search = "?sslmode=require";
+  connectionString = url.toString();
+} catch (error) {
+  // Ignore parsing errors
+}
+
 const pool = new Pool({ connectionString });
 const adapter = new PrismaNeon(pool);
 
