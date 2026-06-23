@@ -24,6 +24,8 @@
     "node": ">=20.19 <22 || >=22.12"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "@prisma/adapter-neon": "^7.8.0",
     "@prisma/client": "6.19.3",
     "@remix-run/dev": "^2.16.1",
     "@remix-run/fs-routes": "^2.16.1",
@@ -39,7 +41,8 @@
     "prisma": "6.19.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "vite-tsconfig-paths": "^5.0.1"
+    "vite-tsconfig-paths": "^5.0.1",
+    "ws": "^8.21.0"
   },
   "devDependencies": {
     "@remix-run/eslint-config": "^2.16.1",
@@ -49,6 +52,7 @@
     "@types/node": "^22.2.0",
     "@types/react": "^18.2.31",
     "@types/react-dom": "^18.2.14",
+    "@types/ws": "^8.18.1",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^10.0.1",
     "prettier": "^3.2.4",
