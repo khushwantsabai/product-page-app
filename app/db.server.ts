@@ -19,8 +19,7 @@ try {
   // Ignore parsing errors
 }
 
-const pool = new Pool({ connectionString });
-const adapter = new PrismaNeon(pool);
+const adapter = new PrismaNeon({ connectionString });
 
 if (process.env.NODE_ENV !== "production") {
   if (!global.prismaGlobal) {
