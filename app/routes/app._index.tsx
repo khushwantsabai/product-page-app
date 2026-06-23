@@ -67,23 +67,30 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const shopId = session.shop;
 
   // Fetch active subscription from Shopify
-  const response = await admin.graphql(`
-    #graphql
-    query ShopPlan {
-      app {
-        installation {
-          activeSubscriptions {
-            id
-            name
-            status
+  let activePlan = "Free";
+  try {
+    const response = await admin.graphql(`
+      #graphql
+      query ShopPlan {
+        app {
+          installation {
+            activeSubscriptions {
+              id
+              name
+              status
+            }
           }
         }
       }
+    `);
+    const data = await response.json();
+    const activeSubs = data.data?.app?.installation?.activeSubscriptions || [];
+    if (activeSubs.length > 0) {
+      activePlan = activeSubs[0].name;
     }
-  `);
-  const data = await response.json();
-  const activeSubs = data.data?.app?.installation?.activeSubscriptions || [];
-  const activePlan = activeSubs.length > 0 ? activeSubs[0].name : "Free";
+  } catch (error) {
+    console.error("Failed to fetch active subscriptions:", error);
+  }
 
   // Fetch real pages from DB
   const recentPages = await db.productPage.findMany({

@@ -23,22 +23,27 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { admin } = await authenticate.admin(request);
   
-  // Query Shopify for active subscriptions
-  const response = await admin.graphql(`
-    query {
-      app {
-        installation {
-          activeSubscriptions {
-            name
-            status
+  let activeSubscriptions: any[] = [];
+  try {
+    const response = await admin.graphql(`
+      query {
+        app {
+          installation {
+            activeSubscriptions {
+              name
+              status
+            }
           }
         }
       }
-    }
-  `);
+    `);
+    
+    const responseJson = await response.json();
+    activeSubscriptions = responseJson.data?.app?.installation?.activeSubscriptions || [];
+  } catch (error) {
+    console.error("Failed to fetch active subscriptions in templates:", error);
+  }
   
-  const responseJson = await response.json();
-  const activeSubscriptions = responseJson.data?.app?.installation?.activeSubscriptions || [];
   const activeSub = activeSubscriptions.find((sub: any) => sub.status === "ACTIVE");
   
   let activePlan = "free";

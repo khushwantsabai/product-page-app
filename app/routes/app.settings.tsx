@@ -26,22 +26,27 @@ import { getSettings, saveSettings } from "../utils/settings.server";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session, admin } = await authenticate.admin(request);
   
-  // Query Shopify for active subscriptions instead of relying on local db
-  const response = await admin.graphql(`
-    query {
-      app {
-        installation {
-          activeSubscriptions {
-            name
-            status
+  let activeSubscriptions: any[] = [];
+  try {
+    const response = await admin.graphql(`
+      query {
+        app {
+          installation {
+            activeSubscriptions {
+              name
+              status
+            }
           }
         }
       }
-    }
-  `);
+    `);
+    
+    const responseJson = await response.json();
+    activeSubscriptions = responseJson.data?.app?.installation?.activeSubscriptions || [];
+  } catch (error) {
+    console.error("Failed to fetch active subscriptions in settings:", error);
+  }
   
-  const responseJson = await response.json();
-  const activeSubscriptions = responseJson.data?.app?.installation?.activeSubscriptions || [];
   const activeSub = activeSubscriptions.find((sub: any) => sub.status === "ACTIVE");
   
   let planName = "Free";

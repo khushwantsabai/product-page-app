@@ -13,26 +13,31 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 
   // Fetch the subscription details from Shopify to confirm it's active
-  const response = await admin.graphql(`
-    query getSubscription($id: ID!) {
-      node(id: $id) {
-        ... on AppSubscription {
-          id
-          name
-          status
-          currentPeriodEnd
-          trialDays
+  let subscription: any = null;
+  try {
+    const response = await admin.graphql(`
+      query getSubscription($id: ID!) {
+        node(id: $id) {
+          ... on AppSubscription {
+            id
+            name
+            status
+            currentPeriodEnd
+            trialDays
+          }
         }
       }
-    }
-  `, {
-    variables: {
-      id: `gid://shopify/AppSubscription/${chargeId}`
-    }
-  });
+    `, {
+      variables: {
+        id: `gid://shopify/AppSubscription/${chargeId}`
+      }
+    });
 
-  const responseJson = await response.json();
-  const subscription = responseJson.data?.node;
+    const responseJson = await response.json();
+    subscription = responseJson.data?.node;
+  } catch (error) {
+    console.error("Failed to fetch subscription details:", error);
+  }
 
   if (subscription && subscription.status === "ACTIVE") {
     // Determine which plan this is based on the subscription name

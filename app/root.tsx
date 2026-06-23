@@ -35,7 +35,8 @@ export function ErrorBoundary() {
   const error = useRouteError();
   let errorMessage = "Unknown error";
   if (isRouteErrorResponse(error)) {
-    errorMessage = `${error.status} ${error.statusText} - ${error.data}`;
+    const errorData = typeof error.data === 'object' ? JSON.stringify(error.data, null, 2) : error.data;
+    errorMessage = `${error.status} ${error.statusText} - ${errorData}`;
   } else if (error instanceof Error) {
     errorMessage = error.message;
   }

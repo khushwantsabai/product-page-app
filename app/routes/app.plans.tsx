@@ -7,22 +7,27 @@ import { useState, useEffect } from "react";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { admin } = await authenticate.admin(request);
   
-  // Query Shopify for active subscriptions
-  const response = await admin.graphql(`
-    query {
-      app {
-        installation {
-          activeSubscriptions {
-            name
-            status
+  let activeSubscriptions: any[] = [];
+  try {
+    const response = await admin.graphql(`
+      query {
+        app {
+          installation {
+            activeSubscriptions {
+              name
+              status
+            }
           }
         }
       }
-    }
-  `);
+    `);
+    
+    const responseJson = await response.json();
+    activeSubscriptions = responseJson.data?.app?.installation?.activeSubscriptions || [];
+  } catch (error) {
+    console.error("Failed to fetch active subscriptions in plans:", error);
+  }
   
-  const responseJson = await response.json();
-  const activeSubscriptions = responseJson.data?.app?.installation?.activeSubscriptions || [];
   const activeSub = activeSubscriptions.find((sub: any) => sub.status === "ACTIVE");
   
   let currentPlan = "Free";
@@ -46,41 +51,48 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const returnUrl = `https://${host}/admin/apps/${process.env.SHOPIFY_API_KEY}/app/templates`;
 
   // GraphQL Mutation for appSubscriptionCreate
-  const response = await admin.graphql(`
-    mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $trialDays: Int, $test: Boolean) {
-      appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
-        userErrors {
-          field
-          message
-        }
-        confirmationUrl
-        appSubscription {
-          id
-        }
-      }
-    }
-  `, {
-    variables: {
-      name: `Product Page ${planName}`,
-      returnUrl,
-      trialDays: 7,
-      test: true,
-      lineItems: [
-        {
-          plan: {
-            appRecurringPricingDetails: {
-              price: { amount: parseFloat(planPrice), currencyCode: "USD" },
-              interval: "EVERY_30_DAYS"
-            }
+  let responseJson: any = null;
+  try {
+    const response = await admin.graphql(`
+      mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $trialDays: Int, $test: Boolean) {
+        appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
+          userErrors {
+            field
+            message
+          }
+          confirmationUrl
+          appSubscription {
+            id
           }
         }
-      ]
-    }
-  });
+      }
+    `, {
+      variables: {
+        name: `Product Page ${planName}`,
+        returnUrl,
+        trialDays: 7,
+        test: true,
+        lineItems: [
+          {
+            plan: {
+              appRecurringPricingDetails: {
+                price: { amount: parseFloat(planPrice), currencyCode: "USD" },
+                interval: "EVERY_30_DAYS"
+              }
+            }
+          }
+        ]
+      }
+    });
 
-  const responseJson = await response.json();
-  const confirmationUrl = responseJson.data?.appSubscriptionCreate?.confirmationUrl;
-  const userErrors = responseJson.data?.appSubscriptionCreate?.userErrors || [];
+    responseJson = await response.json();
+  } catch (error) {
+    console.error("Failed to create subscription:", error);
+    return json({ error: "API request blocked. Ensure your store allows billing." });
+  }
+
+  const confirmationUrl = responseJson?.data?.appSubscriptionCreate?.confirmationUrl;
+  const userErrors = responseJson?.data?.appSubscriptionCreate?.userErrors || [];
 
   if (userErrors.length > 0) {
     return json({ error: userErrors[0].message });
