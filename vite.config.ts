@@ -66,6 +66,7 @@ export default defineConfig({
   ],
   build: {
     assetsInlineLimit: 0,
+    cssMinify: 'esbuild',
   },
   optimizeDeps: {
     include: ["@shopify/app-bridge-react", "@shopify/polaris"],
