@@ -85,7 +85,7 @@ const PLANS = [
     btnBg: "#FFFFFF",
     btnText: "#111827",
     btnBorder: "#E5E7EB",
-    features: ["3 Free Templates", "Basic Features", "Edit Product Text Only", "Responsive Design"],
+    features: ["Free Templates", "Basic Features", "Edit Product Text Only", "Responsive Design"],
   },
   {
     name: "Basic",
@@ -96,7 +96,7 @@ const PLANS = [
     btnBg: "#16A34A",
     btnText: "#FFFFFF",
     btnBorder: "#16A34A",
-    features: ["15+ Premium Templates", "2 Template Types", "Advanced Customization", "Image & Color Control", "Priority Support"],
+    features: ["Free, Basic Templates", "2 Template Types", "Advanced Customization", "Image & Color Control", "Priority Support"],
   },
   {
     name: "Standard",
@@ -107,7 +107,7 @@ const PLANS = [
     btnBg: "#8B5CF6",
     btnText: "#FFFFFF",
     btnBorder: "#8B5CF6",
-    features: ["35+ Premium Templates", "Advanced Styling", "Reviews & Ratings", "Delivery & Stock Info", "Premium Support"],
+    features: ["Free, Basic, Standard Templates", "Advanced Styling", "Reviews & Ratings", "Delivery & Stock Info", "Premium Support"],
   },
   {
     name: "Premium",
@@ -118,7 +118,7 @@ const PLANS = [
     btnBg: "#F59E0B",
     btnText: "#FFFFFF",
     btnBorder: "#F59E0B",
-    features: ["Unlimited Templates", "Video & 360 Gallery", "Volume Discounts", "Related Products", "All Customization Features", "24/7 Priority Support"],
+    features: ["Unlimited Templates", "Video & 360 Gallery", "Volume Discounts", "All Customization Features", "24/7 Priority Support"],
     bestValue: true
   }
 ];
