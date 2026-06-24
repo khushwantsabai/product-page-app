@@ -240,9 +240,11 @@ export default function Plans() {
                 
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '8px' }}>
                   <span style={{ fontSize: '42px', fontWeight: 800, color: '#111827', lineHeight: '1' }}>
-                    ${billingCycle === "Yearly" && plan.price > 0 ? (plan.price * 0.8).toFixed(0) : plan.price}
+                    ${billingCycle === "Yearly" && plan.price > 0 ? (plan.price * 12 * 0.8).toFixed(0) : plan.price}
                   </span>
-                  <span style={{ fontSize: '14px', color: '#6B7280' }}>/month</span>
+                  <span style={{ fontSize: '14px', color: '#6B7280' }}>
+                    {billingCycle === "Yearly" ? "/year" : "/month"}
+                  </span>
                 </div>
                 
                 <p style={{ fontSize: '14px', color: '#6B7280', margin: '0 0 32px 0' }}>{plan.subtitle}</p>
