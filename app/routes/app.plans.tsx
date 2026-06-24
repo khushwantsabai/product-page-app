@@ -10,8 +10,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     await admin.graphql(`{ shop { name } }`);
     graphqlStatus = "SUCCESS";
-  } catch (error) {
-    graphqlStatus = `FAILED: ${String(error)}`;
+  } catch (error: any) {
+    if (error instanceof Response) {
+      const text = await error.text();
+      graphqlStatus = `FAILED: ${error.status} ${error.statusText} - ${text}`;
+    } else {
+      graphqlStatus = `FAILED: ${error?.message || String(error)}`;
+    }
   }
   
   let activeSubscriptions: any[] = [];
