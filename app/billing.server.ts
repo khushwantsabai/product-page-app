@@ -1,12 +1,35 @@
 import { BillingInterval } from "@shopify/shopify-app-remix/server";
 
-// Plan name constants — exported so routes can reference them by name
 export const BASIC_PLAN = "Basic";
 export const STANDARD_PLAN = "Standard";
 export const PREMIUM_PLAN = "Premium";
 
+export const BASIC_PLAN_ANNUAL = "Basic (Yearly)";
+export const STANDARD_PLAN_ANNUAL = "Standard (Yearly)";
+export const PREMIUM_PLAN_ANNUAL = "Premium (Yearly)";
+
 export const billingConfig: any = {
   [BASIC_PLAN]: {
+    lineItems: [
+      {
+        amount: 9.0,
+        currencyCode: "USD",
+        interval: BillingInterval.Every30Days,
+      },
+    ],
+    trialDays: 7,
+  },
+  [BASIC_PLAN_ANNUAL]: {
+    lineItems: [
+      {
+        amount: 86.4,
+        currencyCode: "USD",
+        interval: BillingInterval.Annual,
+      },
+    ],
+    trialDays: 7,
+  },
+  [STANDARD_PLAN]: {
     lineItems: [
       {
         amount: 19.0,
@@ -16,12 +39,12 @@ export const billingConfig: any = {
     ],
     trialDays: 7,
   },
-  [STANDARD_PLAN]: {
+  [STANDARD_PLAN_ANNUAL]: {
     lineItems: [
       {
-        amount: 69.0,
+        amount: 182.4,
         currencyCode: "USD",
-        interval: BillingInterval.Every30Days,
+        interval: BillingInterval.Annual,
       },
     ],
     trialDays: 7,
@@ -29,9 +52,19 @@ export const billingConfig: any = {
   [PREMIUM_PLAN]: {
     lineItems: [
       {
-        amount: 99.0,
+        amount: 39.0,
         currencyCode: "USD",
         interval: BillingInterval.Every30Days,
+      },
+    ],
+    trialDays: 7,
+  },
+  [PREMIUM_PLAN_ANNUAL]: {
+    lineItems: [
+      {
+        amount: 374.4,
+        currencyCode: "USD",
+        interval: BillingInterval.Annual,
       },
     ],
     trialDays: 7,
