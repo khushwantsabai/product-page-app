@@ -14,7 +14,6 @@ const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY || "missing-api-key",
   apiSecretKey: process.env.SHOPIFY_API_SECRET || "missing-api-secret",
   apiVersion: ApiVersion.January25,
-  scopes: process.env.SCOPES?.split(",") || ["write_products"],
   appUrl: process.env.SHOPIFY_APP_URL || "https://pagecraft.electrosale.shop",
   authPathPrefix: "/auth",
   sessionStorage: new PrismaSessionStorage(prisma),
