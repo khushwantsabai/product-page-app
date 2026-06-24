@@ -50,11 +50,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const returnUrl = `https://${host}/admin/apps/${process.env.SHOPIFY_API_KEY}/app/templates`;
 
   try {
-    await billing.request({
-      // @ts-ignore - TS expects 'never' if billing config is missing
-      plan: planName as any,
+    await billing.require({
+      plans: [planName as any],
       isTest: true,
-      returnUrl,
+      onFailure: async () => billing.request({
+        plan: planName as any,
+        isTest: true,
+      }),
     });
     return json({ success: true });
   } catch (error: any) {
@@ -68,6 +70,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
     
     let errorDetails = error.message || String(error);
+    if (error?.response?.errors) {
+       errorDetails += ` | GraphQL Error: ${JSON.stringify(error.response.errors)}`;
+    }
     if (error instanceof Response) {
       errorDetails = `HTTP ${error.status} ${error.statusText}`;
       try {
@@ -75,7 +80,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         errorDetails += ` | ${text}`;
       } catch (e) {}
     }
-    return json({ error: `API request blocked: ${errorDetails}` });
+    return json({ error: `API blocked: ${errorDetails}` });
   }
 };
 
