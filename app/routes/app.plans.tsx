@@ -6,6 +6,13 @@ import { useState, useEffect } from "react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { admin } = await authenticate.admin(request);
+  let graphqlStatus = "pending";
+  try {
+    await admin.graphql(`{ shop { name } }`);
+    graphqlStatus = "SUCCESS";
+  } catch (error) {
+    graphqlStatus = `FAILED: ${String(error)}`;
+  }
   
   let activeSubscriptions: any[] = [];
   try {
@@ -37,7 +44,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     if (activeSub.name.toLowerCase().includes("premium")) currentPlan = "Premium";
   }
 
-  return json({ currentPlan });
+  return json({ currentPlan, graphqlStatus });
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -133,7 +140,7 @@ const PLANS = [
 ];
 
 export default function Plans() {
-  const { currentPlan } = useLoaderData<typeof loader>();
+  const { currentPlan, graphqlStatus } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>() as { confirmationUrl?: string; error?: string } | undefined;
   const submit = useSubmit();
   const navigation = useNavigation();
@@ -171,6 +178,9 @@ export default function Plans() {
   return (
     <Frame>
       <Page fullWidth backAction={{content: 'Dashboard', url: '/app'}}>
+        <div style={{ marginBottom: "20px", padding: "10px", background: "#fff3cd", color: "#856404", borderRadius: "4px" }}>
+          <strong>Diagnostic Info:</strong> Token Status = {graphqlStatus}
+        </div>
         <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '24px 0' }}>
           
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
