@@ -68,6 +68,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       onFailure: async () => billing.request({
         plan: planName as any,
         isTest: true,
+        returnUrl: `https://${session.shop}/admin/apps/${process.env.SHOPIFY_API_KEY}/app/plans`,
       }),
     });
     return json({ success: true });
@@ -92,9 +93,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         errorDetails += ` | ${text}`;
       } catch (e) {}
     }
+    
+    // Explicitly try to fetch the GraphQL errors if they exist deeply nested
+    if (error.networkStatusCode === 403) {
+      errorDetails += ' | Is this app approved for billing? Did you accept the Revenue Share Agreement in the Partner Dashboard?';
+    }
+
     return json({ error: `API blocked: ${errorDetails}` });
   }
 };
+
 
 const PLANS = [
   {
