@@ -62,7 +62,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       throw error; // This is the redirect to Shopify's payment approval screen!
     }
     
-    console.error("Failed to request billing via Shopify API:", error);
+    console.error("Failed to request billing via Shopify API. Full Error:", JSON.stringify(error, null, 2));
+    if (error?.response?.errors) {
+       console.error("GraphQL Errors:", JSON.stringify(error.response.errors, null, 2));
+    }
+    
     let errorDetails = error.message || String(error);
     if (error instanceof Response) {
       errorDetails = `HTTP ${error.status} ${error.statusText}`;
