@@ -51,7 +51,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   try {
     await billing.request({
-      plan: planName,
+      // @ts-ignore - TS expects 'never' if billing config is missing
+      plan: planName as any,
       isTest: true,
       returnUrl,
     });
