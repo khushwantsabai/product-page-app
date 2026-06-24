@@ -24,7 +24,7 @@ const shopify = shopifyApp({
     level: LogSeverity.Debug,
   },
   future: {
-    // unstable_newEmbeddedAuthStrategy: true,
+    unstable_newEmbeddedAuthStrategy: true,
   },
   ...(process.env.SHOP_CUSTOM_DOMAIN
     ? { customShopDomains: [process.env.SHOP_CUSTOM_DOMAIN] }
