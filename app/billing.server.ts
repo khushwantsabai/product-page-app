@@ -12,7 +12,7 @@ export const billingConfig: any = {
   [BASIC_PLAN]: {
     lineItems: [
       {
-        amount: 9.0,
+        amount: 39.0,
         currencyCode: "USD",
         interval: BillingInterval.Every30Days,
       },
@@ -22,7 +22,7 @@ export const billingConfig: any = {
   [BASIC_PLAN_ANNUAL]: {
     lineItems: [
       {
-        amount: 86.4,
+        amount: 374.4,
         currencyCode: "USD",
         interval: BillingInterval.Annual,
       },
@@ -32,7 +32,7 @@ export const billingConfig: any = {
   [STANDARD_PLAN]: {
     lineItems: [
       {
-        amount: 19.0,
+        amount: 69.0,
         currencyCode: "USD",
         interval: BillingInterval.Every30Days,
       },
@@ -42,7 +42,7 @@ export const billingConfig: any = {
   [STANDARD_PLAN_ANNUAL]: {
     lineItems: [
       {
-        amount: 182.4,
+        amount: 662.4,
         currencyCode: "USD",
         interval: BillingInterval.Annual,
       },
@@ -52,7 +52,7 @@ export const billingConfig: any = {
   [PREMIUM_PLAN]: {
     lineItems: [
       {
-        amount: 39.0,
+        amount: 99.0,
         currencyCode: "USD",
         interval: BillingInterval.Every30Days,
       },
@@ -62,7 +62,7 @@ export const billingConfig: any = {
   [PREMIUM_PLAN_ANNUAL]: {
     lineItems: [
       {
-        amount: 374.4,
+        amount: 950.4,
         currencyCode: "USD",
         interval: BillingInterval.Annual,
       },

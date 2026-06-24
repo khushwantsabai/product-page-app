@@ -89,7 +89,7 @@ const PLANS = [
   },
   {
     name: "Basic",
-    price: 9,
+    price: 39,
     subtitle: "Best for small stores",
     color: "#16A34A",
     borderColor: "#16A34A",
@@ -100,7 +100,7 @@ const PLANS = [
   },
   {
     name: "Standard",
-    price: 19,
+    price: 69,
     subtitle: "Best for growing stores",
     color: "#8B5CF6",
     borderColor: "#8B5CF6",
@@ -111,7 +111,7 @@ const PLANS = [
   },
   {
     name: "Premium",
-    price: 39,
+    price: 99,
     subtitle: "Best for high volume stores",
     color: "#F59E0B",
     borderColor: "#F59E0B",
