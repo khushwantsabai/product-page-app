@@ -16,5 +16,4 @@ scopes = "read_customers,read_orders,read_products,read_script_tags,read_themes,
 redirect_urls = [ "https://example.com/api/auth" ]
 
 [build]
-include_config_on_deploy = true
 automatically_update_urls_on_dev = true

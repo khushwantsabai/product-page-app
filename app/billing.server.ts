@@ -19,6 +19,7 @@ export const billingConfig: any = {
       },
     ],
     trialDays: 7,
+    test: true,
   },
   [BASIC_PLAN_ANNUAL]: {
     replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
@@ -30,6 +31,7 @@ export const billingConfig: any = {
       },
     ],
     trialDays: 7,
+    test: true,
   },
   [STANDARD_PLAN]: {
     replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
@@ -41,6 +43,7 @@ export const billingConfig: any = {
       },
     ],
     trialDays: 7,
+    test: true,
   },
   [STANDARD_PLAN_ANNUAL]: {
     replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
@@ -52,6 +55,7 @@ export const billingConfig: any = {
       },
     ],
     trialDays: 7,
+    test: true,
   },
   [PREMIUM_PLAN]: {
     replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
@@ -63,6 +67,7 @@ export const billingConfig: any = {
       },
     ],
     trialDays: 7,
+    test: true,
   },
   [PREMIUM_PLAN_ANNUAL]: {
     replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
@@ -74,5 +79,6 @@ export const billingConfig: any = {
       },
     ],
     trialDays: 7,
+    test: true,
   },
 };

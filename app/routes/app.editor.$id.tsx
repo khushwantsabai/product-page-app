@@ -4,6 +4,28 @@ import { useState, useEffect, useRef } from "react";
 import editorStyles from "../styles/editor.css?url";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+function SortableItem(props: any) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({id: props.id});
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    position: 'relative' as any,
+    zIndex: isDragging ? 1 : 0,
+    width: '100%'
+  };
+  return (
+    <div ref={setNodeRef} style={style} className="sortable-section-wrapper">
+      <div {...attributes} {...listeners} style={{ position: 'absolute', top: '10px', left: '-20px', cursor: 'grab', color: '#9CA3AF', padding: '4px', zIndex: 10 }} title="Drag to reorder">⠿</div>
+      {props.children}
+    </div>
+  );
+}
+
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: editorStyles }];
@@ -280,6 +302,7 @@ export default function Editor() {
   
   const [editorData, setEditorDataState] = useState(() => ({
     ...initialMockData,
+    sectionOrder: initialMockData.sectionOrder || ['header', 'desc', 'vendor', 'options', 'actions', 'stock', 'trust'],
     imageBgColor: initialMockData.imageBgColor || '#F9FAFB',
     vendor: initialMockData.vendor || {
       name: 'Global Goods Inc.',
@@ -315,6 +338,25 @@ export default function Editor() {
   }));
 
   const historyRef = useRef<any[]>([editorData]);
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = (event: any) => {
+    const {active, over} = event;
+    if (over && active.id !== over.id) {
+      setEditorData((prev: any) => {
+        const oldIndex = prev.sectionOrder.indexOf(active.id);
+        const newIndex = prev.sectionOrder.indexOf(over.id);
+        return {
+          ...prev,
+          sectionOrder: arrayMove(prev.sectionOrder, oldIndex, newIndex),
+        };
+      });
+    }
+  };
+
   const historyIndexRef = useRef<number>(0);
   const timeoutRef = useRef<any>(null);
 
@@ -627,7 +669,10 @@ export default function Editor() {
                 top: (editorData.layout === 'split' && activeDevice === 'desktop') ? '24px' : 'auto',
                 alignSelf: (editorData.layout === 'split' && activeDevice === 'desktop') ? 'flex-start' : 'stretch'
               }}>
-                {/* Header Group: Title, Reviews, Price */}
+                                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext items={editorData.sectionOrder || []} strategy={verticalListSortingStrategy}>
+                    {(editorData.sectionOrder || []).map((sectionId: string) => {
+                      if (sectionId === 'header') return <SortableItem key="header" id="header">{/* Header Group: Title, Reviews, Price */}
                 <div style={{ 
                   display: 'flex', 
                   flexDirection: 'column', 
@@ -675,14 +720,16 @@ export default function Editor() {
                   </div>
                 </div>
 
-                {/* Description Group (Only when layout is stacked or in mobile view) */}
+                </SortableItem>;
+                      if (sectionId === 'desc') return <SortableItem key="desc" id="desc">{/* Description Group (Only when layout is stacked or in mobile view) */}
                 {(editorData.layout === 'stacked' || activeDevice === 'mobile') && (
                   <div className="mock-desc" style={{ ...editorData.styles.desc, width: '100%' }}>
                     {editorData.desc}
                   </div>
                 )}
 
-                {/* Vendor Details (Only when layout is stacked or in mobile view) */}
+                </SortableItem>;
+                      if (sectionId === 'vendor') return <SortableItem key="vendor" id="vendor">{/* Vendor Details (Only when layout is stacked or in mobile view) */}
                 {(editorData.layout === 'stacked' || activeDevice === 'mobile') && ['standard', 'premium'].includes(activePlan) && editorData.vendor && (
                   <div className="mock-vendor-details" style={{
                     padding: '12px',
@@ -704,7 +751,8 @@ export default function Editor() {
                   </div>
                 )}
 
-                {/* Options Group: Variants, Quantity */}
+                </SortableItem>;
+                      if (sectionId === 'options') return <SortableItem key="options" id="options">{/* Options Group: Variants, Quantity */}
                 <div style={{ 
                   display: 'flex', 
                   flexDirection: 'column', 
@@ -894,13 +942,15 @@ export default function Editor() {
                   </div>
                 </div>
 
-                {/* Checkout Actions */}
+                </SortableItem>;
+                      if (sectionId === 'actions') return <SortableItem key="actions" id="actions">{/* Checkout Actions */}
                 <div className="mock-actions" style={{ width: '100%', gap: '8px', marginTop: '4px' }}>
                   <button className="mock-btn add-to-cart" style={{ ...editorData.styles.cart, padding: '12px 16px', fontSize: '15px' }}>{editorData.buttonText}</button>
                   <button className="mock-btn buy-now" style={{ ...editorData.styles.buy, padding: '12px 16px', fontSize: '15px' }}>{editorData.buyNowText}</button>
                 </div>
 
-                {/* Stock Warning */}
+                </SortableItem>;
+                      if (sectionId === 'stock') return <SortableItem key="stock" id="stock">{/* Stock Warning */}
                 {activePlan === 'premium' && editorData.stockWarning && (
                   <div className="mock-stock-warning" style={{ width: '100%', marginTop: '12px', textAlign: 'left' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, color: '#DC2626', marginBottom: '6px', justifyContent: (editorData.layout === 'stacked' || activeDevice === 'mobile') ? 'center' : 'flex-start' }}>
@@ -919,7 +969,8 @@ export default function Editor() {
                   </div>
                 )}
 
-                {/* Trust Badges (Only when layout is stacked or in mobile view) */}
+                </SortableItem>;
+                      if (sectionId === 'trust') return <SortableItem key="trust" id="trust">{/* Trust Badges (Only when layout is stacked or in mobile view) */}
                 {(editorData.layout === 'stacked' || activeDevice === 'mobile') && activePlan === 'premium' && editorData.trustBadges && (
                   <div className="mock-trust-badges" style={{ 
                     width: '100%', 
@@ -964,7 +1015,12 @@ export default function Editor() {
                     ))}
                   </div>
                 )}
-              </div>
+              </SortableItem>;
+                      return null;
+                    })}
+                  </SortableContext>
+                </DndContext>
+</div>
             </div>
           </div>
         </div>

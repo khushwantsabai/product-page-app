@@ -191,9 +191,6 @@ export default function Plans() {
   return (
     <Frame>
       <Page fullWidth backAction={{content: 'Dashboard', url: '/app'}}>
-        <div style={{ marginBottom: "20px", padding: "10px", background: "#fff3cd", color: "#856404", borderRadius: "4px" }}>
-          <strong>Diagnostic Info:</strong> Token Status = {graphqlStatus}
-        </div>
         <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '24px 0' }}>
           
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
