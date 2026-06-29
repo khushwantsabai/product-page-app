@@ -1,0 +1,52 @@
+{% schema %}
+{
+  "name": "PPB Core (Required)",
+  "target": "head",
+  "settings": []
+}
+{% endschema %}
+
+<script>
+  window.PPB_DATA = null;
+  (function() {
+    var isDesignMode = {{ request.design_mode | json }};
+    fetch('/apps/product-page?designMode=' + (isDesignMode ? 'true' : 'false'))
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        window.PPB_DATA = data;
+        
+        // Inject global CSS
+        if (data.css) {
+          var style = document.createElement('div');
+          style.innerHTML = data.css;
+          document.head.appendChild(style);
+        }
+        
+        // Dispatch event when data is ready
+        document.dispatchEvent(new CustomEvent('ppb:data_ready'));
+        
+        // Inject into any placeholders already on the page
+        injectAllPlaceholders();
+      })
+      .catch(function(err) { console.error("PPB Fetch Error:", err); });
+
+    function injectAllPlaceholders() {
+      if (!window.PPB_DATA || !window.PPB_DATA.components) return;
+      document.querySelectorAll('.ppb-placeholder').forEach(function(el) {
+        var type = el.getAttribute('data-ppb-type');
+        if (type && window.PPB_DATA.components[type]) {
+          el.innerHTML = window.PPB_DATA.components[type];
+          el.classList.remove('ppb-placeholder');
+        }
+      });
+    }
+
+    // Run when new blocks are dynamically added in Theme Editor
+    document.addEventListener('shopify:section:load', function() {
+      injectAllPlaceholders();
+    });
+    document.addEventListener('shopify:block:select', function() {
+      injectAllPlaceholders();
+    });
+  })();
+</script>

@@ -1,0 +1,3237 @@
+﻿node.exe : 
+2026-06-17T09:30:46.510Z: 
+Running command app dev
+At C:\Users\LENOVO\AppData\Ro
+aming\npm\shopify.ps1:24 
+char:5
++     & "node$exe"  "$basedir
+/node_modules/@shopify/cli/bi
+n/run.js" $ar ...
++     ~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo           
+   : NotSpecified: (2026-06  
+  -17T09:3...command app d   
+ ev:String) [], RemoteExc    
+eption
+    + FullyQualifiedErrorId  
+   : NativeCommandError
+ 
+2026-06-17T09:30:46.547Z: 
+Running system process:
+  ┬╖ Command: C:\Program 
+Files\nodejs\node.exe C:\User
+s\LENOVO\AppData\Roaming\npm\
+node_modules\@shopify\cli\bin
+\run.js notifications list 
+--ignore-errors
+  ┬╖ Working directory: C:/Us
+ers/LENOVO/OneDrive/Desktop/P
+roduct Plus/pagecraft-product
+-builder
+
+2026-06-17T09:30:46.574Z: 
+Notifications to show: 0
+2026-06-17T09:30:46.602Z: 
+Reading the content of file 
+at shopify.app.toml...
+2026-06-17T09:30:46.607Z: 
+Reading the content of file 
+at extensions/product-page-th
+eme-ext/shopify.extension.tom
+l...
+2026-06-17T09:30:46.612Z: 
+Reading the content of file 
+at shopify.web.toml...
+2026-06-17T09:30:46.613Z: 
+Looking for a lockfile in C:/
+Users/LENOVO/OneDrive/Desktop
+/Product Plus/pagecraft-produ
+ct-builder...
+2026-06-17T09:30:46.614Z: 
+Reading the content of file 
+at package.json...
+2026-06-17T09:30:46.615Z: 
+Reading the content of file 
+at package.json...
+2026-06-17T09:30:46.618Z: 
+Reading the .env file at .env
+2026-06-17T09:30:46.618Z: 
+Reading the content of file 
+at .env...
+2026-06-17T09:30:46.619Z: 
+Reading the content of file 
+at .shopify/project.json...
+2026-06-17T09:30:46.621Z: 
+Reading cached app 
+information for directory C:/
+Users/LENOVO/OneDrive/Desktop
+/Product Plus/pagecraft-produ
+ct-builder...
+2026-06-17T09:30:46.623Z: 
+Ensuring that the user is 
+authenticated with the App 
+Management API with the 
+following scopes:
+[]
+
+2026-06-17T09:30:46.623Z: 
+Getting session store...
+2026-06-17T09:30:46.625Z: 
+Getting current session ID...
+2026-06-17T09:30:46.626Z: 
+Validating existing session 
+against the scopes:
+[
+  "openid",
+  "https://api.shopify.com/au
+th/shop.admin.graphql",
+  "https://api.shopify.com/au
+th/shop.admin.themes",
+  "https://api.shopify.com/au
+th/partners.collaborator-rela
+tionships.readonly",
+  "https://api.shopify.com/au
+th/shop.storefront-renderer.d
+evtools",
+  "https://api.shopify.com/au
+th/partners.app.cli.access",
+  "https://api.shopify.com/au
+th/destinations.readonly",
+  "https://api.shopify.com/au
+th/organization.store-managem
+ent",
+  "https://api.shopify.com/au
+th/organization.on-demand-use
+r-access",
+  "https://api.shopify.com/au
+th/organization.apps.manage"
+]
+For applications:
+{
+  "appManagementApi": {
+    "scopes": []
+  },
+  "businessPlatformApi": {
+    "scopes": []
+  }
+}
+
+2026-06-17T09:30:46.626Z: - 
+Token validation -> It's 
+expired: false
+2026-06-17T09:30:46.629Z: 
+Sending "BusinessPlatform" 
+GraphQL request:
+  query UserInfo {
+  currentUserAccount {
+    uuid
+    email
+    organizations(first: 2) {
+      nodes {
+        name
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+With request headers:
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+ - Keep-Alive: timeout=30
+ - Sec-CH-UA-PLATFORM: win32
+ - Content-Type: 
+application/json
+
+to https://destinations.shopi
+fysvc.com/destinations/api/20
+20-07/graphql
+2026-06-17T09:30:46.652Z: 
+Sending "App Management" 
+GraphQL request:
+  query ActiveAppReleaseFromA
+piKey($apiKey: String!) {
+  app: appByKey(key: 
+$apiKey) {
+    ...AppVersionInfo
+    __typename
+  }
+}
+
+fragment ReleasedAppModule 
+on AppModule {
+  uuid
+  userIdentifier
+  handle
+  config
+  target
+  specification {
+    identifier
+    externalIdentifier
+    name
+    experience
+    managementExperience
+  }
+}
+
+fragment AppVersionInfo on 
+App {
+  id
+  key
+  organizationId
+  activeRoot {
+    clientCredentials {
+      secrets {
+        key
+      }
+    }
+    
+grantedShopifyApprovalScopes
+  }
+  activeRelease {
+    id
+    version {
+      name
+      appModules {
+        ...ReleasedAppModule
+      }
+    }
+  }
+}
+
+With variables:
+{
+  "apiKey": "*****"
+}
+
+With request headers:
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+ - Keep-Alive: timeout=30
+ - Sec-CH-UA-PLATFORM: win32
+ - Content-Type: 
+application/json
+
+to https://app.shopify.com/ap
+p_management/unstable/graphql
+.json
+2026-06-17T09:30:47.297Z: 
+Request to https://app.shopif
+y.com/app_management/unstable
+/graphql.json completed in 
+644 ms
+With response headers:
+ - content-type: 
+application/json; 
+charset=utf-8
+ - server-timing: 
+processing;dur=117, verdict_f
+lag_enabled;desc="count=3";du
+r=0.102, _y;desc="6baa0f10-f7
+20-427d-aaa1-9b813d9afcfd", _
+s;desc="5154da30-106f-4c8e-a9
+ce-93922da05749"
+ - x-request-id: 39a01b16-822
+e-4bb5-b926-439ed5e09857-1781
+688651
+    
+2026-06-17T09:30:47.309Z: 
+Sending "BusinessPlatform" 
+GraphQL request:
+  query FindOrganizations($or
+ganizationId: 
+OrganizationID!) {
+  currentUserAccount {
+    organization(id: 
+$organizationId) {
+      id
+      name
+      __typename
+    }
+    __typename
+  }
+}
+
+With variables:
+{
+  "organizationId": "Z2lkOi8v
+b3JnYW5pemF0aW9uL09yZ2FuaXphd
+Glvbi8yMjE3MDQ3ODA="
+}
+
+With request headers:
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+ - Keep-Alive: timeout=30
+ - Sec-CH-UA-PLATFORM: win32
+ - Content-Type: 
+application/json
+
+to https://destinations.shopi
+fysvc.com/destinations/api/20
+20-07/graphql
+2026-06-17T09:30:47.356Z: 
+Sending "App Management" 
+GraphQL request:
+  query fetchSpecifications($
+organizationId: ID!) {
+  specifications(organization
+Id: $organizationId) {
+    name
+    identifier
+    externalIdentifier
+    experience
+    features
+    uidStrategy {
+      __typename
+      appModuleLimit
+      isClientProvided
+    }
+    validationSchema {
+      jsonSchema
+      __typename
+    }
+    __typename
+  }
+}
+
+With variables:
+{
+  "organizationId": "gid://sh
+opify/Organization/221704780"
+}
+
+With request headers:
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+ - Keep-Alive: timeout=30
+ - Sec-CH-UA-PLATFORM: win32
+ - Content-Type: 
+application/json
+
+to https://app.shopify.com/ap
+p_management/unstable/graphql
+.json
+2026-06-17T09:30:48.529Z: 
+Request to https://app.shopif
+y.com/app_management/unstable
+/graphql.json completed in 
+1173 ms
+With response headers:
+ - content-type: 
+application/json; 
+charset=utf-8
+ - server-timing: 
+processing;dur=419, verdict_f
+lag_enabled;desc="count=8";du
+r=0.398, _y;desc="4c97329a-12
+46-447b-b733-43a6b002869d", _
+s;desc="1c90f07e-2853-4d3c-93
+92-8e0fc091c74c"
+ - x-request-id: 8baeb5f3-74b
+b-4a5d-a0e9-b5fe01eb5782-1781
+688651
+    
+2026-06-17T09:30:48.545Z: 
+The following extension 
+specifications were defined 
+locally but not found in the 
+remote specifications: 
+order_attribution_config, 
+tax_calculation
+2026-06-17T09:30:48.545Z: 
+The following extension 
+specifications were found in 
+the remote specifications 
+but not defined locally: 
+admin_app
+2026-06-17T09:30:48.547Z: 
+Reading the content of file 
+at .gitignore...
+2026-06-17T09:30:48.914Z: 
+Notifications to show: 0
+2026-06-17T09:30:48.915Z: 
+Reading cached app 
+information for directory C:/
+Users/LENOVO/OneDrive/Desktop
+/Product Plus/pagecraft-produ
+ct-builder...
+2026-06-17T09:30:48.915Z: 
+Storing app information for 
+directory C:/Users/LENOVO/One
+Drive/Desktop/Product Plus/pa
+gecraft-product-builder:{
+  "appId": "06fec0d0f3013071a
+dbb80cf7190b42b",
+  "title": "pagecraft-product
+-builder\r",
+  "directory": "C:/Users/LENO
+VO/OneDrive/Desktop/Product P
+lus/pagecraft-product-builder
+",
+  "orgId": "221704780"
+}
+2026-06-17T09:30:48.921Z: 
+Sending "BusinessPlatform" 
+GraphQL request:
+  query 
+FetchStoreByDomain($domain: 
+String, $filters: 
+[ShopFilterInput!]) {
+  organization {
+    id
+    name
+    accessibleShops(filters: 
+$filters, search: $domain) {
+      edges {
+        node {
+          id
+          externalId
+          name
+          storeType
+          primaryDomain
+          shortName
+          url
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    currentUser {
+      organizationPermissions
+      __typename
+    }
+    __typename
+  }
+}
+
+With variables:
+{
+  "domain": "product-plus-r9u
+3or2t.myshopify.com",
+  "filters": [
+    {
+      "field": "STORE_TYPE",
+      "operator": "EQUALS",
+      "value": 
+"app_development"
+    },
+    {
+      "field": 
+"STORE_STATUS",
+      "operator": "EQUALS",
+      "value": "ACTIVE"
+    }
+  ]
+}
+
+With request headers:
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+ - Keep-Alive: timeout=30
+ - Sec-CH-UA-PLATFORM: win32
+ - Content-Type: 
+application/json
+
+to https://destinations.shopi
+fysvc.com/organizations/api/u
+nstable/organization/22170478
+0/graphql
+2026-06-17T09:30:49.456Z: 
+Request to https://destinatio
+ns.shopifysvc.com/organizatio
+ns/api/unstable/organization/
+221704780/graphql completed 
+in 535 ms
+With response headers:
+ - cache-control: max-age=0, 
+private, must-revalidate
+ - content-type: 
+application/json; 
+charset=utf-8
+ - etag: W/"de99d6064a692e6a3
+00b38102e4b6759"
+ - server-timing: 
+processing;dur=140, 
+socket_queue;dur=2.709, 
+util;dur=0.16
+ - x-request-id: d5dd70ef-8bb
+1-49b2-b38d-4cd906375c07-1781
+688653
+    
+2026-06-17T09:30:49.457Z: 
+Sending "BusinessPlatform" 
+GraphQL request:
+  mutation 
+ProvisionShopAccess($input: O
+rganizationUserProvisionShopA
+ccessInput!) {
+  organizationUserProvisionSh
+opAccess(
+    organizationUserProvision
+ShopAccessInput: $input
+  ) {
+    success
+    userErrors {
+      message
+      __typename
+    }
+    __typename
+  }
+}
+
+With variables:
+{
+  "input": {
+    "shopifyShopId": "Z2lkOi8
+vb3JnYW5pemF0aW9uL1Nob3BpZnlT
+aG9wLzczMjE3MDgxMzg4"
+  }
+}
+
+With request headers:
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+ - Keep-Alive: timeout=30
+ - Sec-CH-UA-PLATFORM: win32
+ - Content-Type: 
+application/json
+
+to https://destinations.shopi
+fysvc.com/organizations/api/u
+nstable/organization/22170478
+0/graphql
+2026-06-17T09:30:49.910Z: 
+Request to https://destinatio
+ns.shopifysvc.com/organizatio
+ns/api/unstable/organization/
+221704780/graphql completed 
+in 452 ms
+With response headers:
+ - cache-control: max-age=0, 
+private, must-revalidate
+ - content-type: 
+application/json; 
+charset=utf-8
+ - etag: W/"68abd614679dbb046
+70a77b6743f6a0e"
+ - server-timing: 
+processing;dur=60, 
+socket_queue;dur=3.007, 
+util;dur=0.24
+ - x-request-id: c7d85b53-a1e
+e-4120-ae72-18ad4d4c68e9-1781
+688653
+    
+2026-06-17T09:30:49.910Z: 
+Getting a random port...
+2026-06-17T09:30:49.914Z: 
+Random port obtained: 59159
+2026-06-17T09:30:49.973Z: 
+cloudflared already 
+installed, skipping
+2026-06-17T09:30:49.979Z: 
+Running system process:
+  ┬╖ Command: C:/Users/LENOVO
+/AppData/Roaming/npm/node_mod
+ules/@shopify/cli/bin/cloudfl
+ared.exe tunnel --url 
+http://localhost:59159 
+--no-autoupdate
+  ┬╖ Working directory: C:/Us
+ers/LENOVO/OneDrive/Desktop/P
+roduct Plus/pagecraft-product
+-builder
+
+2026-06-17T09:30:50.014Z: 
+2026-06-17T09:30:50Z INF 
+Thank you for trying 
+Cloudflare Tunnel. Doing so, 
+without a Cloudflare 
+account, is a quick way to 
+experiment and try it out. 
+However, be aware that these 
+account-less Tunnels have no 
+uptime guarantee. If you 
+intend to use Tunnels in 
+production you should use a 
+pre-created named tunnel by 
+following: https://developers
+.cloudflare.com/cloudflare-on
+e/connections/connect-apps
+2026-06-17T09:30:50Z INF 
+Requesting new quick Tunnel 
+on trycloudflare.com...
+
+2026-06-17T09:30:50.015Z: 
+Sending "App Management" 
+GraphQL request:
+  query ActiveAppReleaseFromA
+piKey($apiKey: String!) {
+  app: appByKey(key: 
+$apiKey) {
+    ...AppVersionInfo
+    __typename
+  }
+}
+
+fragment ReleasedAppModule 
+on AppModule {
+  uuid
+  userIdentifier
+  handle
+  config
+  target
+  specification {
+    identifier
+    externalIdentifier
+    name
+    experience
+    managementExperience
+  }
+}
+
+fragment AppVersionInfo on 
+App {
+  id
+  key
+  organizationId
+  activeRoot {
+    clientCredentials {
+      secrets {
+        key
+      }
+    }
+    
+grantedShopifyApprovalScopes
+  }
+  activeRelease {
+    id
+    version {
+      name
+      appModules {
+        ...ReleasedAppModule
+      }
+    }
+  }
+}
+
+With variables:
+{
+  "apiKey": "*****"
+}
+
+With request headers:
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+ - Keep-Alive: timeout=30
+ - Sec-CH-UA-PLATFORM: win32
+ - Content-Type: 
+application/json
+
+to https://app.shopify.com/ap
+p_management/unstable/graphql
+.json
+2026-06-17T09:30:50.588Z: 
+Request to https://app.shopif
+y.com/app_management/unstable
+/graphql.json completed in 
+573 ms
+With response headers:
+ - content-type: 
+application/json; 
+charset=utf-8
+ - server-timing: 
+processing;dur=107, verdict_f
+lag_enabled;desc="count=3";du
+r=0.08, _y;desc="30f29669-318
+d-4144-8069-29306562a32d", _s
+;desc="690d42ef-827c-4027-930
+5-2c729b79861c"
+ - x-request-id: 76f6ae50-931
+7-4d0c-a5fc-e131cc0013f6-1781
+688654
+    
+2026-06-17T09:30:50.591Z: 
+Reading cached app 
+information for directory C:/
+Users/LENOVO/OneDrive/Desktop
+/Product Plus/pagecraft-produ
+ct-builder...
+Γò¡ΓöÇ info ΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓò«
+Γöé                          
+                             
+                       Γöé
+Γöé  Using shopify.app.toml 
+for default values:          
+                        Γöé
+Γöé                          
+                             
+                       Γöé
+Γöé    ΓÇó Org:             
+Khushwant                    
+                          Γöé
+Γöé    ΓÇó App:             
+pagecraft-product-builder
+                             
+Γöé
+Γöé    ΓÇó Dev store:       p
+roduct-plus-r9u3or2t.myshopif
+y.com                    Γöé
+Γöé    ΓÇó Update URLs:     
+Yes                          
+                          Γöé
+Γöé                          
+                             
+                       Γöé
+Γöé   You can pass `--reset` 
+to your command to reset 
+your app configuration.    
+Γöé
+Γöé                          
+                             
+                       Γöé
+Γò░ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓò»
+
+2026-06-17T09:30:50.643Z: 
+Port 3457 is free
+2026-06-17T09:30:50.645Z: 
+Polling tunnel status for 
+cloudflare (attempt 0): 
+starting
+2026-06-17T09:30:50.645Z: 
+Getting a random port...
+2026-06-17T09:30:50.646Z: 
+Random port obtained: 59162
+2026-06-17T09:30:51.155Z: 
+Polling tunnel status for 
+cloudflare (attempt 1): 
+starting
+2026-06-17T09:30:51.656Z: 
+Polling tunnel status for 
+cloudflare (attempt 2): 
+starting
+2026-06-17T09:30:52.157Z: 
+Polling tunnel status for 
+cloudflare (attempt 3): 
+starting
+2026-06-17T09:30:52.668Z: 
+Polling tunnel status for 
+cloudflare (attempt 4): 
+starting
+2026-06-17T09:30:53.171Z: 
+Polling tunnel status for 
+cloudflare (attempt 5): 
+starting
+2026-06-17T09:30:53.684Z: 
+Polling tunnel status for 
+cloudflare (attempt 6): 
+starting
+2026-06-17T09:30:54.199Z: 
+Polling tunnel status for 
+cloudflare (attempt 7): 
+starting
+2026-06-17T09:30:54.703Z: 
+Polling tunnel status for 
+cloudflare (attempt 8): 
+starting
+2026-06-17T09:30:55.218Z: 
+Polling tunnel status for 
+cloudflare (attempt 9): 
+starting
+2026-06-17T09:30:55.666Z: 
+2026-06-17T09:30:55Z INF +---
+-----------------------------
+-----------------------------
+-----------------------------
+--+
+2026-06-17T09:30:55Z INF |  
+Your quick Tunnel has been 
+created! Visit it at (it may 
+take some time to be 
+reachable):  |
+2026-06-17T09:30:55Z INF |  h
+ttps://marathon-dealers-korea
+n-curves.trycloudflare.com   
+                             
+  |
+2026-06-17T09:30:55Z INF +---
+-----------------------------
+-----------------------------
+-----------------------------
+--+
+
+2026-06-17T09:30:55.667Z: 
+2026-06-17T09:30:55Z INF 
+Cannot determine default 
+configuration path. No file 
+[config.yml config.yaml] in 
+[~/.cloudflared 
+~/.cloudflare-warp 
+~/cloudflare-warp]
+2026-06-17T09:30:55Z INF 
+Version 2024.8.2
+2026-06-17T09:30:55Z INF 
+GOOS: windows, GOVersion: 
+go1.22.2-devel-cf, GoArch: 
+amd64
+2026-06-17T09:30:55Z INF 
+Settings: 
+map[ha-connections:1 
+no-autoupdate:true 
+protocol:quic 
+url:http://localhost:59159]
+
+2026-06-17T09:30:55.667Z: 
+2026-06-17T09:30:55Z INF 
+cloudflared will not 
+automatically update on 
+Windows systems.
+
+2026-06-17T09:30:55.667Z: 
+2026-06-17T09:30:55Z INF 
+Generated Connector ID: 4b476
+105-a7da-44df-8d8c-23d54bc475
+c3
+
+2026-06-17T09:30:55.670Z: 
+2026-06-17T09:30:55Z INF 
+Initial protocol quic
+
+2026-06-17T09:30:55.671Z: 
+2026-06-17T09:30:55Z INF 
+ICMP proxy will use 
+192.168.29.136 as source for 
+IPv4
+
+2026-06-17T09:30:55.692Z: 
+2026-06-17T09:30:55Z INF 
+ICMP proxy will use 
+fe80::7609:ba1b:7787:c976 in 
+zone NordLynx as source for 
+IPv6
+
+2026-06-17T09:30:55.696Z: 
+2026-06-17T09:30:55Z INF 
+cloudflared does not support 
+loading the system root 
+certificate pool on Windows. 
+Please use --origin-ca-pool 
+<PATH> to specify the path 
+to the certificate pool
+
+2026-06-17T09:30:55.696Z: 
+2026-06-17T09:30:55Z INF 
+Starting metrics server on 
+127.0.0.1:59164/metrics
+
+2026-06-17T09:30:55.729Z: 
+Polling tunnel status for 
+cloudflare (attempt 10): 
+starting
+2026-06-17T09:30:56.082Z: 
+2026-06-17T09:30:56Z WRN 
+Your version 2024.8.2 is 
+outdated. We recommend 
+upgrading it to 2026.6.0
+
+2026-06-17T09:30:56.166Z: 
+2026-06-17T09:30:56Z INF 
+Registered tunnel connection 
+connIndex=0 connection=c593e4
+2a-84f6-41d0-8643-b3cfcc9da8b
+4 event=0 ip=198.41.200.23 
+location=del04 protocol=quic
+
+2026-06-17T09:30:56.230Z: 
+Polling tunnel status for 
+cloudflare (attempt 11): 
+connected
+2026-06-17T09:30:56.231Z: 
+Reading cached app 
+information for directory C:/
+Users/LENOVO/OneDrive/Desktop
+/Product Plus/pagecraft-produ
+ct-builder...
+2026-06-17T09:30:56.264Z: 
+Sending "App Management" 
+GraphQL request:
+  query ActiveAppReleaseFromA
+piKey($apiKey: String!) {
+  app: appByKey(key: 
+$apiKey) {
+    ...AppVersionInfo
+    __typename
+  }
+}
+
+fragment ReleasedAppModule 
+on AppModule {
+  uuid
+  userIdentifier
+  handle
+  config
+  target
+  specification {
+    identifier
+    externalIdentifier
+    name
+    experience
+    managementExperience
+  }
+}
+
+fragment AppVersionInfo on 
+App {
+  id
+  key
+  organizationId
+  activeRoot {
+    clientCredentials {
+      secrets {
+        key
+      }
+    }
+    
+grantedShopifyApprovalScopes
+  }
+  activeRelease {
+    id
+    version {
+      name
+      appModules {
+        ...ReleasedAppModule
+      }
+    }
+  }
+}
+
+With variables:
+{
+  "apiKey": "*****"
+}
+
+With request headers:
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+ - Keep-Alive: timeout=30
+ - Sec-CH-UA-PLATFORM: win32
+ - Content-Type: 
+application/json
+
+to https://app.shopify.com/ap
+p_management/unstable/graphql
+.json
+2026-06-17T09:30:56.942Z: 
+Request to https://app.shopif
+y.com/app_management/unstable
+/graphql.json completed in 
+677 ms
+With response headers:
+ - content-type: 
+application/json; 
+charset=utf-8
+ - server-timing: 
+processing;dur=104, verdict_f
+lag_enabled;desc="count=3";du
+r=0.094, _y;desc="dc02c04d-cc
+0f-4dec-9ed2-76c65dc1f104", _
+s;desc="88ff1c05-a7bd-446b-b2
+68-b6fe0312d805"
+ - x-request-id: 019ed4eb-736
+4-75e1-bd5b-bc880c2ad088-1781
+688660
+    
+2026-06-17T09:30:56.952Z: 
+Reading the content of file 
+at shopify.app.toml...
+2026-06-17T09:30:56.956Z: 
+Reading the content of file 
+at extensions/product-page-th
+eme-ext/shopify.extension.tom
+l...
+2026-06-17T09:30:56.961Z: 
+Reading the content of file 
+at shopify.web.toml...
+2026-06-17T09:30:56.962Z: 
+Looking for a lockfile in C:/
+Users/LENOVO/OneDrive/Desktop
+/Product Plus/pagecraft-produ
+ct-builder...
+2026-06-17T09:30:56.963Z: 
+Reading the content of file 
+at package.json...
+2026-06-17T09:30:56.964Z: 
+Reading the content of file 
+at package.json...
+2026-06-17T09:30:56.966Z: 
+Reading the .env file at .env
+2026-06-17T09:30:56.967Z: 
+Reading the content of file 
+at .env...
+2026-06-17T09:30:56.968Z: 
+Reading the content of file 
+at .shopify/project.json...
+2026-06-17T09:30:56.969Z: 
+Reading cached app 
+information for directory C:/
+Users/LENOVO/OneDrive/Desktop
+/Product Plus/pagecraft-produ
+ct-builder...
+2026-06-17T09:30:56.972Z: 
+Reading the content of file 
+at .gitignore...
+2026-06-17T09:30:56.978Z: 
+Notifications to show: 0
+2026-06-17T09:30:56.980Z: 
+Ensuring that the user is 
+authenticated with the Admin 
+API with the following 
+scopes for the store product-
+plus-r9u3or2t.myshopify.com:
+[]
+
+2026-06-17T09:30:56.980Z: 
+Getting session store...
+2026-06-17T09:30:56.981Z: 
+Getting current session ID...
+2026-06-17T09:30:56.982Z: 
+Validating existing session 
+against the scopes:
+[
+  "openid",
+  "https://api.shopify.com/au
+th/shop.admin.graphql",
+  "https://api.shopify.com/au
+th/shop.admin.themes",
+  "https://api.shopify.com/au
+th/partners.collaborator-rela
+tionships.readonly",
+  "https://api.shopify.com/au
+th/shop.storefront-renderer.d
+evtools",
+  "https://api.shopify.com/au
+th/partners.app.cli.access",
+  "https://api.shopify.com/au
+th/destinations.readonly",
+  "https://api.shopify.com/au
+th/organization.store-managem
+ent",
+  "https://api.shopify.com/au
+th/organization.on-demand-use
+r-access",
+  "https://api.shopify.com/au
+th/organization.apps.manage"
+]
+For applications:
+{
+  "adminApi": {
+    "scopes": [],
+    "storeFqdn": "product-plu
+s-r9u3or2t.myshopify.com"
+  }
+}
+
+2026-06-17T09:30:56.982Z: - 
+Token validation -> It's 
+expired: false
+2026-06-17T09:30:56.983Z: 
+Sending "Admin" GraphQL 
+request:
+  query publicApiVersions {
+  publicApiVersions {
+    handle
+    supported
+    __typename
+  }
+}
+
+With variables:
+{}
+
+With request headers:
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+ - Keep-Alive: timeout=30
+ - Sec-CH-UA-PLATFORM: win32
+ - Content-Type: 
+application/json
+
+to https://product-plus-r9u3o
+r2t.myshopify.com/admin/api/u
+nstable/graphql.json
+2026-06-17T09:30:57.537Z: 
+Request to https://product-pl
+us-r9u3or2t.myshopify.com/adm
+in/api/unstable/graphql.json 
+completed in 554 ms
+With response headers:
+ - content-type: 
+application/json; 
+charset=utf-8
+ - server-timing: 
+processing;dur=114, verdict_f
+lag_enabled;desc="count=11";d
+ur=0.549, graphql;desc="admin
+/query/other", _y;desc="b3504
+285-7cb2-468a-9720-3ef8fdab8d
+44", _s;desc="7441abf4-0cd9-4
+b31-8c59-53bf2718b742"
+ - x-request-id: f8bb3203-8e0
+1-4b49-99a7-8f5425310690-1781
+688661
+    
+2026-06-17T09:30:57.537Z: 
+Sending "Admin" GraphQL 
+request:
+  query OnlineStorePasswordPr
+otection {
+  onlineStore {
+    passwordProtection {
+      enabled
+      __typename
+    }
+    __typename
+  }
+}
+
+With request headers:
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+ - Keep-Alive: timeout=30
+ - Sec-CH-UA-PLATFORM: win32
+ - Content-Type: 
+application/json
+
+to https://product-plus-r9u3o
+r2t.myshopify.com/admin/api/2
+026-04/graphql.json
+2026-06-17T09:30:58.072Z: 
+Request to https://product-pl
+us-r9u3or2t.myshopify.com/adm
+in/api/2026-04/graphql.json 
+completed in 534 ms
+With response headers:
+ - content-type: 
+application/json; 
+charset=utf-8
+ - server-timing: 
+processing;dur=70, verdict_fl
+ag_enabled;desc="count=14";du
+r=0.708, graphql;desc="admin/
+query/other", _y;desc="17904c
+41-b654-4a86-8a1d-100902fc8c8
+e", _s;desc="0e9575a8-dd18-47
+8e-beb9-1a37f8f58bb8"
+ - x-request-id: 9e6beb1d-2c6
+2-43d8-8520-99b23352253c-1781
+688661
+    
+2026-06-17T09:30:58.073Z: 
+Getting storefront password 
+for shop khush-jlzyztzd.mysho
+pify.com...
+2026-06-17T09:30:58.074Z: 
+Sending POST request to URL h
+ttps://product-plus-r9u3or2t.
+myshopify.com/password
+With request headers:
+ - cache-control: no-cache
+ - content-type: application/
+x-www-form-urlencoded
+
+2026-06-17T09:30:58.551Z: 
+Request to https://product-pl
+us-r9u3or2t.myshopify.com/pas
+sword completed in 477 ms
+With response headers:
+ - cache-control: private, 
+no-store
+ - content-type: text/html; 
+charset=utf-8
+ - server-timing: processing;
+dur=51;desc="gc:2", 
+db;dur=19, asn;desc="55836", 
+edge;desc="BOM", 
+country;desc="IN", 
+theme;desc="149427093548", 
+pageType;desc="password", 
+servedBy;desc="jkwj", request
+ID;desc="d1c31bcf-05bb-41cf-9
+b32-a9ac913a44f7-1781688662",
+ _y;desc="dee613be-935a-4cf8-
+a87b-d133b5146521", _s;desc="
+4418d6b4-731b-4cdb-ba00-966ac
+31e94ea", _cmp;desc="3.AMPS_I
+NRJ_f_f_wGIBsQE1TueMD5zJpNbwk
+A"
+ - x-request-id: d1c31bcf-05b
+b-41cf-9b32-a9ac913a44f7-1781
+688662
+    
+2026-06-17T09:30:58.552Z: 
+Setting storefront password 
+for shop khush-jlzyztzd.mysho
+pify.com...
+2026-06-17T09:30:58.564Z: 
+Getting host theme...
+Configuring host theme for 
+theme app extension ...
+2026-06-17T09:30:58.577Z: 
+Finding or creating host 
+theme for theme app 
+extensions
+2026-06-17T09:30:58.578Z: 
+Sending "Admin" GraphQL 
+request:
+  query getTheme($id: ID!) {
+  theme(id: $id) {
+    id
+    name
+    role
+    processing
+    __typename
+  }
+}
+
+With variables:
+{
+  "id": "gid://shopify/Online
+StoreTheme/149449310252"
+}
+
+With request headers:
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+ - Keep-Alive: timeout=30
+ - Sec-CH-UA-PLATFORM: win32
+ - Content-Type: 
+application/json
+
+to https://product-plus-r9u3o
+r2t.myshopify.com/admin/api/2
+026-04/graphql.json
+2026-06-17T09:30:59.125Z: 
+Request to https://product-pl
+us-r9u3or2t.myshopify.com/adm
+in/api/2026-04/graphql.json 
+completed in 547 ms
+With response headers:
+ - content-type: 
+application/json; 
+charset=utf-8
+ - server-timing: 
+processing;dur=73, verdict_fl
+ag_enabled;desc="count=14";du
+r=0.668, graphql;desc="admin/
+query/other", _y;desc="c562c8
+3b-e1f7-44d6-8473-199c2005db5
+d", _s;desc="5345f76d-775d-45
+63-962a-45112a8f346b"
+ - x-request-id: a664ac4b-986
+f-4572-a396-4b91724f844d-1781
+688662
+    
+[2K[1A[2K[G
+Γò¡ΓöÇ info ΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓò«
+Γöé                          
+                             
+                       Γöé
+Γöé  The theme app extension 
+development server is ready. 
+                       Γöé
+Γöé                          
+                             
+                       Γöé
+Γöé  Next steps              
+                             
+                       Γöé
+Γöé    1. Install your app 
+in your development store 
+[1]                         
+Γöé
+Γöé    2. Setup your theme 
+app extension in the host 
+theme [2]                   
+Γöé
+Γöé    3. Preview your theme 
+app extension at 
+http://127.0.0.1:9293 [3]    
+      Γöé
+Γöé                          
+                             
+                       Γöé
+Γò░ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓò»
+[1] https://admin.shopify.com
+/?organization_id=221704780&n
+o_redirect=true&redire
+ct=/oauth/redirect_from_devel
+oper_dashboard?client_id%3D06
+fec0d0f3013071adbb80cf
+7190b42b
+[2] https://product-plus-r9u3
+or2t.myshopify.com/admin/them
+es/149449310252/editor
+[3] http://127.0.0.1:9293
+
+2026-06-17T09:30:59.154Z: 
+Getting a random port...
+2026-06-17T09:30:59.156Z: 
+Random port obtained: 59172
+2026-06-17T09:30:59.156Z: 
+Storing app information for 
+directory C:/Users/LENOVO/One
+Drive/Desktop/Product Plus/pa
+gecraft-product-builder:{
+  "directory": "C:/Users/LENO
+VO/OneDrive/Desktop/Product P
+lus/pagecraft-product-builder
+",
+  "previousAppId": "06fec0d0f
+3013071adbb80cf7190b42b"
+}
+2026-06-17T09:30:59.184Z: 
+Looking for a lockfile in C:/
+Users/LENOVO/OneDrive/Desktop
+/Product Plus/pagecraft-produ
+ct-builder...
+2026-06-17T09:30:59.596Z: 
+Request to https://monorail-e
+dge.shopifysvc.com/v1/produce
+ completed in 392 ms
+With response headers:
+ - x-request-id: f7f0cc39-291
+c-41a0-875e-a5cb6354f796
+    
+2026-06-17T09:30:59.596Z: 
+Analytics event sent: {
+  "command": "app dev",
+  "time_start": 
+1781688646511,
+  "time_end": 1781688659168,
+  "total_time": 12657,
+  "success": true,
+  "cli_version": "4.2.0",
+  "ruby_version": "",
+  "node_version": "24.4.1",
+  "is_employee": false,
+  "uname": "windows amd64",
+  "env_ci": false,
+  "env_plugin_installed_any_c
+ustom": false,
+  "env_plugin_installed_shopi
+fy": "[\"@shopify/cli\"]",
+  "env_shell": "cmd.exe",
+  "env_device_id": "4970019af
+350d7142175a3f55177de4140bfdd
+1d",
+  "env_cloud": "localhost",
+  "env_package_manager": 
+"pnpm",
+  "env_install_package_manage
+r": "npm",
+  "env_is_global": true,
+  "env_auth_method": 
+"device_auth",
+  "env_is_wsl": false,
+  "env_build_repository": 
+"Shopify/cli",
+  
+"env_auto_upgrade_enabled": 
+true,
+  "cmd_app_warning_api_key_de
+precation_displayed": false,
+  "cmd_app_all_configs_any": 
+true,
+  "cmd_app_all_configs_client
+s": "{\"shopify.app.toml\":\"
+06fec0d0f3013071adbb80cf7190b
+42b\"}",
+  "cmd_app_linked_config_used
+": true,
+  "cmd_app_linked_config_name
+": "shopify.app.toml",
+  "cmd_app_linked_config_git_
+tracked": true,
+  "cmd_app_linked_config_sour
+ce": "flag",
+  "cmd_app_linked_config_uses
+_cli_managed_urls": true,
+  "project_type": "node",
+  "app_extensions_any": true,
+  
+"app_extensions_breakdown": 
+"{\"theme\":1}",
+  "app_extensions_count": 1,
+  "app_extensions_custom_layo
+ut": false,
+  "app_extensions_function_an
+y": false,
+  "app_extensions_function_co
+unt": 0,
+  
+"app_extensions_theme_any": 
+true,
+  "app_extensions_theme_count
+": 1,
+  "app_extensions_ui_any": 
+false,
+  "app_extensions_ui_count": 
+0,
+  "app_name_hash": "812593a2b
+5edba13065fbfcaebff5e75e750d8
+2c",
+  "app_path_hash": "3b4eb718f
+6e276e3c455eb20f964f5d3de5fe2
+bf",
+  "app_scopes": "[\"read_cust
+omers\",\"read_orders\",\"rea
+d_products\",\"read_script_ta
+gs\",\"read_themes\",\"write_
+products\",\"write_script_tag
+s\",\"write_themes\"]",
+  "app_web_backend_any": 
+true,
+  "app_web_backend_count": 1,
+  "app_web_custom_layout": 
+true,
+  "app_web_framework": 
+"remix",
+  "app_web_frontend_any": 
+true,
+  "app_web_frontend_count": 
+1,
+  "env_package_manager_worksp
+aces": true,
+  "business_platform_id": 
+221704780,
+  "api_key": "****",
+  "cmd_app_reset_used": 
+false,
+  "store_fqdn_hash": "b196873
+632d02dc0ab17d02a9a137a500e36
+0d48",
+  "store_domain": "product-pl
+us-r9u3or2t.myshopify.com",
+  "cmd_dev_tunnel_type": 
+"auto",
+  "cmd_dev_urls_updated": 
+true,
+  "cmd_app_dependency_install
+ation_skipped": false,
+  
+"cmd_all_timing_network_ms": 
+6168,
+  
+"cmd_all_timing_prompts_ms": 
+0,
+  "cmd_all_launcher": 
+"unknown",
+  "cmd_all_topic": "app",
+  "cmd_all_plugin": 
+"@shopify/cli",
+  "cmd_all_verbose": true,
+  "cmd_all_path_override": 
+true,
+  "cmd_all_path_override_hash
+": "3b4eb718f6e276e3c455eb20f
+964f5d3de5fe2bf",
+  "cmd_all_last_graphql_reque
+st_id": "a664ac4b-986f-4572-a
+396-4b91724f844d-1781688662",
+  
+"cmd_all_timing_active_ms": 
+6488,
+  "cmd_all_exit": "ok",
+  "user_id": "04fe5ada-5803-4
+47d-b93c-419df6f2093d",
+  "request_ids": [
+    "39a01b16-822e-4bb5-b926-
+439ed5e09857-1781688651",
+    "8baeb5f3-74bb-4a5d-a0e9-
+b5fe01eb5782-1781688651",
+    "d5dd70ef-8bb1-49b2-b38d-
+4cd906375c07-1781688653",
+    "c7d85b53-a1ee-4120-ae72-
+18ad4d4c68e9-1781688653",
+    "76f6ae50-9317-4d0c-a5fc-
+e131cc0013f6-1781688654",
+    "019ed4eb-7364-75e1-bd5b-
+bc880c2ad088-1781688660",
+    "f8bb3203-8e01-4b49-99a7-
+8f5425310690-1781688661",
+    "9e6beb1d-2c62-43d8-8520-
+99b23352253c-1781688661",
+    "a664ac4b-986f-4572-a396-
+4b91724f844d-1781688662"
+  ],
+  "args": "--verbose",
+  "app_name": "Product 
+Page\r",
+  "store_fqdn": "product-plus
+-r9u3or2t.myshopify.com",
+  
+"env_plugin_installed_all": 
+"[\"@shopify/cli\"]",
+  "env_shopify_variables": 
+"{}",
+  "metadata": "{\"extraPublic
+\":{},\"extraSensitive\":{}}"
+}
+
+Preview URL: https://admin.shopify.com/store/product-plus-r9u3or2t/apps/06fec0d0f3013071adbb80cf7190b42b?dev-console=show
+GraphiQL URL (Admin API): http://localhost:3457/graphiql?key=e26444f65bcc94f489d716e15d389fbec71179f9d68962d3f485e6fcd49d5409
+2026-06-17T09:30:59.630Z: 
+Running system process:
+  ┬╖ Command: npm exec 
+prisma generate
+  ┬╖ Working directory: C:/Us
+ers/LENOVO/OneDrive/Desktop/P
+roduct Plus/pagecraft-product
+-builder
+
+2026-06-17T09:30:59.649Z: 
+Removing directory at 
+.shopify/dev-bundle...
+2026-06-17T09:30:59.652Z: 
+Reading the content of file 
+at extensions/product-page-th
+eme-ext/blocks/page.liquid...
+2026-06-17T09:30:59.654Z: 
+Ensuring that the user is 
+authenticated with the Theme 
+API with the following 
+scopes:
+[]
+
+2026-06-17T09:30:59.654Z: 
+Ensuring that the user is 
+authenticated with the Admin 
+API with the following 
+scopes for the store product-
+plus-r9u3or2t.myshopify.com:
+[]
+
+2026-06-17T09:30:59.654Z: 
+Getting session store...
+2026-06-17T09:30:59.655Z: 
+Getting current session ID...
+2026-06-17T09:30:59.655Z: 
+Validating existing session 
+against the scopes:
+[
+  "openid",
+  "https://api.shopify.com/au
+th/shop.admin.graphql",
+  "https://api.shopify.com/au
+th/shop.admin.themes",
+  "https://api.shopify.com/au
+th/partners.collaborator-rela
+tionships.readonly",
+  "https://api.shopify.com/au
+th/shop.storefront-renderer.d
+evtools",
+  "https://api.shopify.com/au
+th/partners.app.cli.access",
+  "https://api.shopify.com/au
+th/destinations.readonly",
+  "https://api.shopify.com/au
+th/organization.store-managem
+ent",
+  "https://api.shopify.com/au
+th/organization.on-demand-use
+r-access",
+  "https://api.shopify.com/au
+th/organization.apps.manage"
+]
+For applications:
+{
+  "adminApi": {
+    "scopes": [],
+    "storeFqdn": "product-plu
+s-r9u3or2t.myshopify.com"
+  }
+}
+
+2026-06-17T09:30:59.655Z: - 
+Token validation -> It's 
+expired: false
+2026-06-17T09:30:59.656Z: 
+Ensuring that the user is 
+authenticated with the 
+Storefront API with the 
+following scopes:
+[]
+
+2026-06-17T09:30:59.656Z: 
+Getting session store...
+2026-06-17T09:30:59.656Z: 
+Getting current session ID...
+2026-06-17T09:30:59.657Z: 
+Validating existing session 
+against the scopes:
+[
+  "openid",
+  "https://api.shopify.com/au
+th/shop.admin.graphql",
+  "https://api.shopify.com/au
+th/shop.admin.themes",
+  "https://api.shopify.com/au
+th/partners.collaborator-rela
+tionships.readonly",
+  "https://api.shopify.com/au
+th/shop.storefront-renderer.d
+evtools",
+  "https://api.shopify.com/au
+th/partners.app.cli.access",
+  "https://api.shopify.com/au
+th/destinations.readonly",
+  "https://api.shopify.com/au
+th/organization.store-managem
+ent",
+  "https://api.shopify.com/au
+th/organization.on-demand-use
+r-access",
+  "https://api.shopify.com/au
+th/organization.apps.manage"
+]
+For applications:
+{
+  "storefrontRendererApi": {
+    "scopes": []
+  }
+}
+
+2026-06-17T09:30:59.657Z: - 
+Token validation -> It's 
+expired: false
+2026-06-17T09:30:59.658Z: 
+Sending HEAD request to URL h
+ttps://product-plus-r9u3or2t.
+myshopify.com/?preview_theme_
+id=149449310252&_fd=0&pb=0
+With request headers:
+ - X-Shopify-Shop: product-pl
+us-r9u3or2t.myshopify.com
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+
+2026-06-17T09:30:59.664Z: 
+Creating directory at 
+.shopify/dev-bundle...
+Error: ENOENT: no such file 
+or directory, scandir 'c:\Use
+rs\LENOVO\OneDrive\Desktop\Pr
+oduct Plus\pagecraft-product-
+builder\extensions\product-pa
+ge-theme-ext\locales'
+    at async Object.readdir (
+node:internal/fs/promises:956
+:18)
+    at async 
+Object.readDirectory (file://
+/C:/Users/LENOVO/AppData/Roam
+ing/npm/node_modules/@shopify
+/cli/dist/chunk-IWCPQD7X.js:1
+362:7092)
+    at async Kv (file:///C:/U
+sers/LENOVO/AppData/Roaming/n
+pm/node_modules/@shopify/cli/
+dist/chunk-IWCPQD7X.js:1196:1
+1325)
+    at async lH (file:///C:/U
+sers/LENOVO/AppData/Roaming/n
+pm/node_modules/@shopify/cli/
+dist/chunk-IWCPQD7X.js:1196:1
+1441) {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'scandir',
+  path: 'c:\\Users\\LENOVO\\O
+neDrive\\Desktop\\Product Plu
+s\\pagecraft-product-builder\
+\extensions\\product-page-the
+me-ext\\locales'
+}
+Error: ENOENT: no such file 
+or directory, scandir 'c:\Use
+rs\LENOVO\OneDrive\Desktop\Pr
+oduct Plus\pagecraft-product-
+builder\extensions\product-pa
+ge-theme-ext\locales'
+    at async Object.readdir (
+node:internal/fs/promises:956
+:18)
+    at async 
+Object.readDirectory (file://
+/C:/Users/LENOVO/AppData/Roam
+ing/npm/node_modules/@shopify
+/cli/dist/chunk-IWCPQD7X.js:1
+362:7092)
+    at async Kv (file:///C:/U
+sers/LENOVO/AppData/Roaming/n
+pm/node_modules/@shopify/cli/
+dist/chunk-IWCPQD7X.js:1196:1
+1325)
+    at async fH (file:///C:/U
+sers/LENOVO/AppData/Roaming/n
+pm/node_modules/@shopify/cli/
+dist/chunk-IWCPQD7X.js:1196:1
+1624)
+    at async LiquidRawTag (fi
+le:///C:/Users/LENOVO/AppData
+/Roaming/npm/node_modules/@sh
+opify/cli/dist/chunk-IWCPQD7X
+.js:1198:28315)
+    at async xH (file:///C:/U
+sers/LENOVO/AppData/Roaming/n
+pm/node_modules/@shopify/cli/
+dist/chunk-IWCPQD7X.js:1196:1
+5414)
+    at async WK (file:///C:/U
+sers/LENOVO/AppData/Roaming/n
+pm/node_modules/@shopify/cli/
+dist/chunk-IWCPQD7X.js:1198:5
+2042)
+    at async Promise.all 
+(index 57)
+    at async $K (file:///C:/U
+sers/LENOVO/AppData/Roaming/n
+pm/node_modules/@shopify/cli/
+dist/chunk-IWCPQD7X.js:1198:5
+0952)
+    at async j1 (file:///C:/U
+sers/LENOVO/AppData/Roaming/n
+pm/node_modules/@shopify/cli/
+dist/chunk-IWCPQD7X.js:1362:1
+0295) {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'scandir',
+  path: 'c:\\Users\\LENOVO\\O
+neDrive\\Desktop\\Product Plu
+s\\pagecraft-product-builder\
+\extensions\\product-page-the
+me-ext\\locales'
+}
+Error: ENOENT: no such file 
+or directory, scandir 'c:\Use
+rs\LENOVO\OneDrive\Desktop\Pr
+oduct Plus\pagecraft-product-
+builder\extensions\product-pa
+ge-theme-ext\locales'
+    at async Object.readdir (
+node:internal/fs/promises:956
+:18)
+    at async 
+Object.readDirectory (file://
+/C:/Users/LENOVO/AppData/Roam
+ing/npm/node_modules/@shopify
+/cli/dist/chunk-IWCPQD7X.js:1
+362:7092)
+    at async Kv (file:///C:/U
+sers/LENOVO/AppData/Roaming/n
+pm/node_modules/@shopify/cli/
+dist/chunk-IWCPQD7X.js:1196:1
+1325)
+    at async fH (file:///C:/U
+sers/LENOVO/AppData/Roaming/n
+pm/node_modules/@shopify/cli/
+dist/chunk-IWCPQD7X.js:1196:1
+1624)
+    at async 
+Object.onCodePathEnd (file://
+/C:/Users/LENOVO/AppData/Roam
+ing/npm/node_modules/@shopify
+/cli/dist/chunk-IWCPQD7X.js:1
+196:118231)
+    at async WK (file:///C:/U
+sers/LENOVO/AppData/Roaming/n
+pm/node_modules/@shopify/cli/
+dist/chunk-IWCPQD7X.js:1198:5
+2092)
+    at async Promise.all 
+(index 33)
+    at async $K (file:///C:/U
+sers/LENOVO/AppData/Roaming/n
+pm/node_modules/@shopify/cli/
+dist/chunk-IWCPQD7X.js:1198:5
+0952)
+    at async j1 (file:///C:/U
+sers/LENOVO/AppData/Roaming/n
+pm/node_modules/@shopify/cli/
+dist/chunk-IWCPQD7X.js:1362:1
+0295)
+    at async Eie (file:///C:/
+Users/LENOVO/AppData/Roaming/
+npm/node_modules/@shopify/cli
+/dist/chunk-IWCPQD7X.js:1362:
+8838) {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'scandir',
+  path: 'c:\\Users\\LENOVO\\O
+neDrive\\Desktop\\Product Plu
+s\\pagecraft-product-builder\
+\extensions\\product-page-the
+me-ext\\locales'
+}
+2026-06-17T09:30:59.906Z: 
+Copying file from extensions/
+product-page-theme-ext/blocks
+/page.liquid to .shopify/dev-
+bundle/faafb3a0-bb14-ebfc-999
+c-140b0eca3e63/blocks/page.li
+quid...
+2026-06-17T09:30:59.912Z: 
+Creating directory at 
+extensions...
+2026-06-17T09:30:59.914Z: 
+Failed to scan imports for 
+extension 
+product-page-theme-ext: 
+Error: ENOENT: no such file 
+or directory, open ''
+2026-06-17T09:30:59.952Z: 
+Removing file at C:/Users/LEN
+OVO/AppData/Local/Temp/6c5ac1
+73-0c53-45f6-95ef-89ff16c8c5b
+e.tar...
+2026-06-17T09:30:59.959Z: 
+Sending "App Management" 
+GraphQL request:
+  mutation CreateAssetURL($so
+urceExtension: 
+SourceExtension!, 
+$organizationId: ID!) {
+  appRequestSourceUploadUrl(
+    sourceExtension: 
+$sourceExtension
+    organizationId: 
+$organizationId
+  ) {
+    sourceUploadUrl
+    userErrors {
+      field
+      message
+      __typename
+    }
+    __typename
+  }
+}
+
+With variables:
+{
+  "sourceExtension": "BR",
+  "organizationId": "gid://sh
+opify/Organization/221704780"
+}
+
+With request headers:
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+ - Keep-Alive: timeout=30
+ - Sec-CH-UA-PLATFORM: win32
+ - Content-Type: 
+application/json
+
+to https://app.shopify.com/ap
+p_management/unstable/graphql
+.json
+2026-06-17T09:30:59.992Z: 
+Request to https://product-pl
+us-r9u3or2t.myshopify.com/?pr
+eview_theme_id=149449310252&_
+fd=0&pb=0 completed in 334 ms
+With response headers:
+ - cache-control: private, 
+no-store
+ - content-type: text/html; 
+charset=utf-8
+ - server-timing: processing;
+dur=59;desc="gc:1", 
+db;dur=29, asn;desc="55836", 
+edge;desc="BOM", 
+country;desc="IN", 
+theme;desc="149449310252", 
+pageType;desc="index", 
+servedBy;desc="kd74", request
+ID;desc="43c4fe98-72f5-4d02-a
+156-664a14707ae7-1781688664",
+ _y;desc="19d09bf7-a4e8-46a1-
+a833-ad5c85196609", _s;desc="
+f913b7a0-2ee9-4387-b648-004ab
+b545145", _cmp;desc="3.AMPS_I
+NRJ_f_f_BXMDQYg3QZ6kIe57KA6pK
+A"
+ - x-request-id: 43c4fe98-72f
+5-4d02-a156-664a14707ae7-1781
+688664
+    
+2026-06-17T09:30:59.992Z: 
+Sending POST request to URL h
+ttps://product-plus-r9u3or2t.
+myshopify.com/password
+With request headers:
+ - X-Shopify-Shop: product-pl
+us-r9u3or2t.myshopify.com
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+
+2026-06-17T09:31:00.569Z: 
+Request to https://app.shopif
+y.com/app_management/unstable
+/graphql.json completed in 
+608 ms
+With response headers:
+ - content-type: 
+application/json; 
+charset=utf-8
+ - server-timing: 
+processing;dur=105, verdict_f
+lag_enabled;desc="count=3";du
+r=0.096, _y;desc="ce0cea24-23
+5d-49e3-be8a-36063ed96f14", _
+s;desc="c90d1dab-6d64-4d10-92
+c4-dc1ae4dc9b42"
+ - x-request-id: 019ed4eb-81a
+1-707f-bd14-4e5b55369a5b-1781
+688664
+    
+2026-06-17T09:31:00.583Z: 
+Getting the size of file at 
+.shopify/dev-bundle.br...
+2026-06-17T09:31:00.584Z: 
+Sync-reading the content of 
+file at 
+.shopify/dev-bundle.br...
+2026-06-17T09:31:01.042Z: 
+Request to https://partners-e
+xtensions-scripts-bucket.stor
+age.googleapis.com/deployment
+s/app_sources/221704780/61cab
+018-e479-47cd-8fbc-8461aa67b5
+6d/source.br?X-Goog-Algorithm
+=GOOG4-RSA-SHA256&X-Goog-Cred
+ential=argo-project-sa%40shop
+ify-tiers.iam.gserviceaccount
+.com%2F20260617%2Fauto%2Fstor
+age%2Fgoog4_request&X-Goog-Da
+te=20260617T093104Z&X-Goog-Ex
+pires=3600&X-Goog-SignedHeade
+rs=host&X-Goog-Signature=5638
+c613be60b1bc0a99d7167f41b51e5
+09d78f25ae3ccef6287f9f58eb6a1
+1ae2caf4a2f037163bdd3d1ba8a42
+6858b6119c278d59638c8ddf6bfbb
+a8ecc81d15625bb1cc1eeb4821ce3
+88e7326b23a1a68bf7931296a7140
+22c01d8c508972e22ef624d08ebf8
+2a94edf013390eb0b3f368d4de834
+5badd44db3a152214d611910bd4c1
+085e2443f82a9073f89731bd466f0
+ed23f78697e2b3afb38b9556907ed
+3eb3feeb72512858b466475b13171
+e3800bf012210dbe3ad1e1f147ea5
+dcf96966189fb4a84247a69669a69
+7c14b8de3a563f124eeb74f087e49
+1b1972f1ecda5ca26f5f005449bba
+093572858f436f436788dddcca105
+d66a1b37a89f333 completed in 
+457 ms
+With response headers:
+ - content-type: text/html; 
+charset=UTF-8
+ - etag: "438d14efc2af84db03c
+748b06ad95b22"
+    
+2026-06-17T09:31:01.052Z: 
+Sending "App Dev" GraphQL 
+request:
+  mutation 
+DevSessionCreate($appId: 
+String!, $assetsUrl: 
+String!, $websocketUrl: 
+String) {
+  devSessionCreate(
+    appId: $appId
+    assetsUrl: $assetsUrl
+    websocketUrl: 
+$websocketUrl
+  ) {
+    devSession {
+      websocketUrl
+      updatedAt
+      user {
+        id
+        email
+        __typename
+      }
+      app {
+        id
+        key
+        __typename
+      }
+      __typename
+    }
+    warnings {
+      message
+      code
+      __typename
+    }
+    userErrors {
+      message
+      on
+      field
+      category
+      __typename
+    }
+    __typename
+  }
+}
+
+With variables:
+{
+  "appId": "384689831937",
+  "assetsUrl": "https://partn
+ers-extensions-scripts-bucket
+.storage.googleapis.com/deplo
+yments/app_sources/221704780/
+61cab018-e479-47cd-8fbc-8461a
+a67b56d/source.br?X-Goog-Algo
+rithm=GOOG4-RSA-SHA256&X-Goog
+-Credential=argo-project-sa%4
+0shopify-tiers.iam.gserviceac
+count.com%2F20260617%2Fauto%2
+Fstorage%2Fgoog4_request&X-Go
+og-Date=20260617T093104Z&X-Go
+og-Expires=3600&X-Goog-Signed
+Headers=host&X-Goog-Signature
+=5638c613be60b1bc0a99d7167f41
+b51e509d78f25ae3ccef6287f9f58
+eb6a11ae2caf4a2f037163bdd3d1b
+a8a426858b6119c278d59638c8ddf
+6bfbba8ecc81d15625bb1cc1eeb48
+21ce388e7326b23a1a68bf7931296
+a714022c01d8c508972e22ef624d0
+8ebf82a94edf013390eb0b3f368d4
+de8345badd44db3a152214d611910
+bd4c1085e2443f82a9073f89731bd
+466f0ed23f78697e2b3afb38b9556
+907ed3eb3feeb72512858b466475b
+13171e3800bf012210dbe3ad1e1f1
+47ea5dcf96966189fb4a84247a696
+69a697c14b8de3a563f124eeb74f0
+87e491b1972f1ecda5ca26f5f0054
+49bba093572858f436f436788dddc
+ca105d66a1b37a89f333",
+  "websocketUrl": "wss://mara
+thon-dealers-korean-curves.tr
+ycloudflare.com/extensions"
+}
+
+With request headers:
+ - User-Agent: Shopify CLI; 
+v=4.2.0
+ - Keep-Alive: timeout=30
+ - Sec-CH-UA-PLATFORM: win32
+ - Content-Type: 
+application/json
+
+to https://product-plus-r9u3o
+r2t.myshopify.com/app_dev/uns
+table/graphql.json
+2026-06-17T09:31:01.295Z: 
+Request to https://product-pl
+us-r9u3or2t.myshopify.com/pas
+sword completed in 1302 ms
+With response headers:
+ - cache-control: private, 
+no-store
+ - content-type: text/html; 
+charset=utf-8
+ - server-timing: 
+processing;dur=807, 
+db;dur=777, 
+asn;desc="55836", 
+edge;desc="BOM", 
+country;desc="IN", 
+theme;desc="149449310252", 
+pageType;desc="password", 
+servedBy;desc="2scq", request
+ID;desc="77bebadf-3847-4361-b
+634-651f2abcc2cf-1781688664",
+ _y;desc="dc791cb0-9731-4648-
+aad8-2f89fb24da64", _s;desc="
+8d8666ad-e998-4135-9921-549f5
+40545ac", _cmp;desc="3.AMPS_I
+NRJ_f_f_hvWVDuHNRUeb6kH5QVf2z
+w"
+ - x-request-id: 77bebadf-384
+7-4361-b634-651f2abcc2cf-1781
+688664
+    
+2026-06-17T09:31:02.247Z: 
+Request to https://product-pl
+us-r9u3or2t.myshopify.com/app
+_dev/unstable/graphql.json 
+completed in 1195 ms
+With response headers:
+ - content-type: 
+application/json; 
+charset=utf-8
+ - server-timing: 
+processing;dur=694, verdict_f
+lag_enabled;desc="count=342";
+dur=7.276, _y;desc="3da77dcf-
+b30c-4209-9427-4ab3d183b915",
+ _s;desc="05be348a-aac6-45b8-
+8689-a2895effc54a"
+ - x-request-id: 4abfe125-5ea
+e-42fb-b015-216bd5a72075-1781
+688665
+    
+prisma:cli:bin Failed to 
+initialize the command 
+state: Error: ENOENT: no 
+such file or directory, open 
+'C:\Users\LENOVO\AppData\Roam
+ing\prisma-nodejs\Config\comm
+ands.json' +1745ms
+prisma:config:loadConfigFromF
+ile Config file loaded in 
+109.40ms +1706ms
+prisma:config:loadConfigFromF
+ile No config file found in 
+the current working 
+directory C:\Users\LENOVO\One
+Drive\Desktop\Product Plus\pa
+gecraft-product-builder +0ms
+prisma:getSchema 
+prismaConfig null +120ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\sc
+hema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\schema.prisma +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\pr
+isma\schema.prisma +1ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\prisma\schema.prisma
+ +1ms
+prisma:getConfig Using 
+getConfig Wasm +2ms
+prisma:getConfig config data 
+retrieved without errors in 
+getConfig Wasm +15ms
+prisma:engines binaries to 
+download schema-engine, 
+libquery-engine +1880ms
+prisma:getSchema 
+prismaConfig null +13ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\sc
+hema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\schema.prisma +0ms
+prisma:getSchema 
+prismaConfig null +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\sc
+hema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\schema.prisma +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\pr
+isma\schema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\prisma\schema.prisma
+ +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\pr
+isma\schema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\prisma\schema.prisma
+ +1ms
+prisma:getConfig Using 
+getConfig Wasm +3ms
+prisma:getConfig config data 
+retrieved without errors in 
+getConfig Wasm +2ms
+prisma:cli:checkpoint 
+runCheckpointClientCheck(): 
+Execution time for getting 
+info: 17.662300000000187 ms 
++0ms
+prisma:cli:checkpoint 
+runCheckpointClientCheck(): 
+Execution time for "await 
+checkpoint.check(data)": 
+69.47739999999999 ms +72ms
+prisma:loadEnv project root 
+found at C:\Users\LENOVO\OneD
+rive\Desktop\Product Plus\pag
+ecraft-product-builder\packag
+e.json +75ms
+prisma:getSchema 
+prismaConfig null +2ms
+prisma:tryLoadEnv 
+Environment variables loaded 
+from C:\Users\LENOVO\OneDrive
+\Desktop\Product Plus\pagecra
+ft-product-builder\.env +1ms
+Environment variables loaded 
+from .env
+prisma:getSchema 
+prismaConfig null +2ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\sc
+hema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\schema.prisma +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\pr
+isma\schema.prisma +1ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\prisma\schema.prisma
+ +0ms
+Running pre-dev command: "npm exec prisma generate"2026-06-17T09:30:59.631Z: Setting up GraphiQL HTTP server on port 3457...Preparing dev preview on product-plus-r9u3or2t.myshopify.com2026-06-17T09:30:59.638Z: Setting up the UI extensions HTTP server...2026-06-17T09:30:59.638Z: Setting up the UI extensions Websocket server...2026-06-17T09:30:59.639Z: Setting up the UI extensions bundler and file watching...Proxy server started on port 59159 GraphiQL server started on port 3457Running theme check on your Theme app extension...Bundling theme extension product-page-theme-ext...2026-06-17T09:30:59.924Z: File watcher started with 4 pathsΓ£à Ready, watching for changes in your app Γöé Access scopes auto-granted: read_customers, read_orders, read_products, read_script_tags, read_themes, write_products, write_script_tags, write_themesΓöé Using URL: https://marathon-dealers-korean-curves.trycloudflare.com/apps/default-app-home/app/proxyΓöé Any changes to prefix and subpath will only apply to new installsΓöö Using URL: https://marathon-dealers-korean-curves.trycloudflare.comPrisma schema loaded from prisma\schema.prisma
+prisma:getConfig Using 
+getConfig Wasm +1ms
+prisma:getConfig config data 
+retrieved without errors in 
+getConfig Wasm +1ms
+prisma:getDMMF Using getDmmf 
+Wasm +1ms
+prisma:getDMMF dmmf data 
+retrieved without errors in 
+getDmmf Wasm +34ms
+prisma:client:generator 
+requiresEngines [
+  "libqueryEngine"
+] +1ms
+prisma:generator 
+prismaCliDir C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\no
+de_modules\prisma +5ms
+prisma:generator 
+prismaClientDir C:\Users\LENO
+VO\OneDrive\Desktop\Product P
+lus\pagecraft-product-builder
+\node_modules\@prisma\client 
++0ms
+prisma:generator baseDir C:\U
+sers\LENOVO\OneDrive\Desktop\
+Product Plus\pagecraft-produc
+t-builder\prisma +0ms
+prisma:mergeSchemas Using 
+mergeSchemas Wasm +0ms
+prisma:loadEnv project root 
+found at C:\Users\LENOVO\OneD
+rive\Desktop\Product Plus\pag
+ecraft-product-builder\node_m
+odules\@prisma\client\package
+.json +4ms
+prisma:getSchema 
+prismaConfig null +1ms
+prisma:getGenerators 
+neededVersions {
+  "c2990dca591cba766e3b7ef5d9
+e8a84796e47ab7": {
+    "engines": [
+      "libqueryEngine"
+    ],
+    "binaryTargets": [
+      {
+        "fromEnvVar": null,
+        "value": "windows",
+        "native": true
+      }
+    ]
+  }
+} +1ms
+prisma:getGenerators {
+  "generatorBinaryPaths": {
+    "libqueryEngine": {
+      "windows": "C:\\Users\\
+LENOVO\\OneDrive\\Desktop\\Pr
+oduct Plus\\pagecraft-product
+-builder\\node_modules\\prism
+a\\query_engine-windows.dll.n
+ode"
+    }
+  }
+} +70ms
+prisma:tryLoadEnv 
+Environment variables not 
+found at null +7ms
+prisma:tryLoadEnv 
+Environment variables loaded 
+from C:\Users\LENOVO\OneDrive
+\Desktop\Product Plus\pagecra
+ft-product-builder\.env +1ms
+prisma:cli:bin Execution 
+time for executing "await 
+cli.parse(commandArray)": 
+440.60300000000007 ms +121ms
+
+Γ£ö Generated Prisma Client (v6.19.3) to .\node_modules\@prisma\client in 97ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+2026-06-17T09:31:03.535Z: 
+Running system process:
+  ┬╖ Command: npm exec 
+prisma migrate deploy
+  ┬╖ Working directory: C:/Us
+ers/LENOVO/OneDrive/Desktop/P
+roduct Plus/pagecraft-product
+-builder
+
+2026-06-17T09:31:03.981Z: Upgrading HTTP request to a websocket connection2026-06-17T09:31:03.983Z: Websocket connection successfully established2026-06-17T09:31:03.983Z: Sending connected payload: [33m{
+  [0m[37m"event":[33m [0m[32m"connected"[33m,
+  [0m[37m"data":[33m {
+    [0m[37m"app":[33m {
+      [0m[37m"title":[33m [0m[32m"Product Page\r"[33m,
+      [0m[37m"apiKey":[33m [0m[32m"06fec0d0f3013071adbb80cf7190b42b"[33m,
+      [0m[37m"url":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/oauth/redirect_from_cli?client_id=06fec0d0f3013071adbb80cf7190b42b"[33m,
+      [0m[37m"mobileUrl":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/apps/06fec0d0f3013071adbb80cf7190b42b?shop=product-plus-r9u3or2t.myshopify.com&host=cHJvZHVjdC1wbHVzLXI5dTNvcjJ0Lm15c2hvcGlmeS5jb20vYWRtaW4vYXBwcy8wNmZlYzBkMGYzMDEzMDcxYWRiYjgwY2Y3MTkwYjQyYg"[33m
+    },
+    [0m[37m"appId":[33m [0m[32m"gid://shopify/App/384689831937"[33m,
+    [0m[37m"store":[33m [0m[32m"product-plus-r9u3or2t.myshopify.com"[33m,
+    [0m[37m"extensions":[33m []
+  },
+  [0m[37m"version":[33m [0m[32m"3"[33m
+}[0m2026-06-17T09:31:04.509Z: Upgrading HTTP request to a websocket connection2026-06-17T09:31:04.510Z: Websocket connection successfully established2026-06-17T09:31:04.510Z: Sending connected payload: [33m{
+  [0m[37m"event":[33m [0m[32m"connected"[33m,
+  [0m[37m"data":[33m {
+    [0m[37m"app":[33m {
+      [0m[37m"title":[33m [0m[32m"Product Page\r"[33m,
+      [0m[37m"apiKey":[33m [0m[32m"06fec0d0f3013071adbb80cf7190b42b"[33m,
+      [0m[37m"url":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/oauth/redirect_from_cli?client_id=06fec0d0f3013071adbb80cf7190b42b"[33m,
+      [0m[37m"mobileUrl":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/apps/06fec0d0f3013071adbb80cf7190b42b?shop=product-plus-r9u3or2t.myshopify.com&host=cHJvZHVjdC1wbHVzLXI5dTNvcjJ0Lm15c2hvcGlmeS5jb20vYWRtaW4vYXBwcy8wNmZlYzBkMGYzMDEzMDcxYWRiYjgwY2Y3MTkwYjQyYg"[33m
+    },
+    [0m[37m"appId":[33m [0m[32m"gid://shopify/App/384689831937"[33m,
+    [0m[37m"store":[33m [0m[32m"product-plus-r9u3or2t.myshopify.com"[33m,
+    [0m[37m"extensions":[33m []
+  },
+  [0m[37m"version":[33m [0m[32m"3"[33m
+}[0m2026-06-17T09:31:04.639Z: Received websocket message with event type update and data:
+[33m{
+  [0m[37m"app":[33m {
+    [0m[37m"__typename":[33m [0m[32m"App"[33m,
+    [0m[37m"id":[33m [0m[32m"gid://shopify/App/384689831937"[33m,
+    [0m[37m"apiKey":[33m [0m[32m"06fec0d0f3013071adbb80cf7190b42b"[33m,
+    [0m[37m"applicationUrl":[33m [0m[32m"https://including-irc-instructors-storage.trycloudflare.com/"[33m,
+    [0m[37m"handle":[33m [0m[32m"pagecraft-product-builder"[33m,
+    [0m[37m"title":[33m [0m[32m"pagecraft-product-builder\r"[33m,
+    [0m[37m"developerName":[33m [0m[32m"Khushwant"[33m,
+    [0m[37m"icon":[33m {
+      [0m[37m"__typename":[33m [0m[32m"Image"[33m,
+      [0m[37m"id":[33m [0m[31mnull[33m,
+      [0m[37m"transformedSrc":[33m [0m[32m"https://cdn.shopify.com/shopifycloud/shopify/assets/default-app-74bfb89634baf86f3402062ef55df218fe55b4f2775ff605d0ccfe1a20f9c0d3_36x.png"[33m
+    },
+    [0m[37m"installation":[33m {
+      [0m[37m"__typename":[33m [0m[32m"AppInstallation"[33m,
+      [0m[37m"id":[33m [0m[32m"gid://shopify/AppInstallation/650415079468"[33m,
+      [0m[37m"launchUrl":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/apps/pagecraft-product-builder"[33m
+    },
+    [0m[37m"supportLocales":[33m []
+  },
+  [0m[37m"extensions":[33m []
+}[0m
+          2026-06-17T09:31:04.639Z: Sending websocket update event to the websocket clients:
+  [33m{
+  [0m[37m"event":[33m [0m[32m"update"[33m,
+  [0m[37m"version":[33m [0m[32m"3"[33m,
+  [0m[37m"data":[33m {
+    [0m[37m"app":[33m {
+      [0m[37m"title":[33m [0m[32m"pagecraft-product-builder\r"[33m,
+      [0m[37m"apiKey":[33m [0m[32m"06fec0d0f3013071adbb80cf7190b42b"[33m,
+      [0m[37m"url":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/oauth/redirect_from_cli?client_id=06fec0d0f3013071adbb80cf7190b42b"[33m,
+      [0m[37m"mobileUrl":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/apps/06fec0d0f3013071adbb80cf7190b42b?shop=product-plus-r9u3or2t.myshopify.com&host=cHJvZHVjdC1wbHVzLXI5dTNvcjJ0Lm15c2hvcGlmeS5jb20vYWRtaW4vYXBwcy8wNmZlYzBkMGYzMDEzMDcxYWRiYjgwY2Y3MTkwYjQyYg"[33m,
+      [0m[37m"__typename":[33m [0m[32m"App"[33m,
+      [0m[37m"id":[33m [0m[32m"gid://shopify/App/384689831937"[33m,
+      [0m[37m"applicationUrl":[33m [0m[32m"https://including-irc-instructors-storage.trycloudflare.com/"[33m,
+      [0m[37m"handle":[33m [0m[32m"pagecraft-product-builder"[33m,
+      [0m[37m"developerName":[33m [0m[32m"Khushwant"[33m,
+      [0m[37m"icon":[33m {
+        [0m[37m"__typename":[33m [0m[32m"Image"[33m,
+        [0m[37m"id":[33m [0m[31mnull[33m,
+        [0m[37m"transformedSrc":[33m [0m[32m"https://cdn.shopify.com/shopifycloud/shopify/assets/default-app-74bfb89634baf86f3402062ef55df218fe55b4f2775ff605d0ccfe1a20f9c0d3_36x.png"[33m
+      },
+      [0m[37m"installation":[33m {
+        [0m[37m"__typename":[33m [0m[32m"AppInstallation"[33m,
+        [0m[37m"id":[33m [0m[32m"gid://shopify/AppInstallation/650415079468"[33m,
+        [0m[37m"launchUrl":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/apps/pagecraft-product-builder"[33m
+      },
+      [0m[37m"supportLocales":[33m []
+    },
+    [0m[37m"appId":[33m [0m[32m"gid://shopify/App/384689831937"[33m,
+    [0m[37m"version":[33m [0m[32m"3"[33m,
+    [0m[37m"root":[33m {
+      [0m[37m"url":[33m [0m[32m"https://marathon-dealers-korean-curves.trycloudflare.com/extensions"[33m
+    },
+    [0m[37m"socket":[33m {
+      [0m[37m"url":[33m [0m[32m"wss://marathon-dealers-korean-curves.trycloudflare.com/extensions"[33m
+    },
+    [0m[37m"devConsole":[33m {
+      [0m[37m"url":[33m [0m[32m"https://marathon-dealers-korean-curves.trycloudflare.com/extensions/dev-console"[33m
+    },
+    [0m[37m"store":[33m [0m[32m"product-plus-r9u3or2t.myshopify.com"[33m,
+    [0m[37m"extensions":[33m []
+  }
+}[0m
+    2026-06-17T09:31:04.640Z: Sending websocket with event type update and data:
+[33m{
+  [0m[37m"app":[33m {
+    [0m[37m"title":[33m [0m[32m"pagecraft-product-builder\r"[33m,
+    [0m[37m"apiKey":[33m [0m[32m"06fec0d0f3013071adbb80cf7190b42b"[33m,
+    [0m[37m"url":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/oauth/redirect_from_cli?client_id=06fec0d0f3013071adbb80cf7190b42b"[33m,
+    [0m[37m"mobileUrl":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/apps/06fec0d0f3013071adbb80cf7190b42b?shop=product-plus-r9u3or2t.myshopify.com&host=cHJvZHVjdC1wbHVzLXI5dTNvcjJ0Lm15c2hvcGlmeS5jb20vYWRtaW4vYXBwcy8wNmZlYzBkMGYzMDEzMDcxYWRiYjgwY2Y3MTkwYjQyYg"[33m,
+    [0m[37m"__typename":[33m [0m[32m"App"[33m,
+    [0m[37m"id":[33m [0m[32m"gid://shopify/App/384689831937"[33m,
+    [0m[37m"applicationUrl":[33m [0m[32m"https://including-irc-instructors-storage.trycloudflare.com/"[33m,
+    [0m[37m"handle":[33m [0m[32m"pagecraft-product-builder"[33m,
+    [0m[37m"developerName":[33m [0m[32m"Khushwant"[33m,
+    [0m[37m"icon":[33m {
+      [0m[37m"__typename":[33m [0m[32m"Image"[33m,
+      [0m[37m"id":[33m [0m[31mnull[33m,
+      [0m[37m"transformedSrc":[33m [0m[32m"https://cdn.shopify.com/shopifycloud/shopify/assets/default-app-74bfb89634baf86f3402062ef55df218fe55b4f2775ff605d0ccfe1a20f9c0d3_36x.png"[33m
+    },
+    [0m[37m"installation":[33m {
+      [0m[37m"__typename":[33m [0m[32m"AppInstallation"[33m,
+      [0m[37m"id":[33m [0m[32m"gid://shopify/AppInstallation/650415079468"[33m,
+      [0m[37m"launchUrl":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/apps/pagecraft-product-builder"[33m
+    },
+    [0m[37m"supportLocales":[33m []
+  },
+  [0m[37m"appId":[33m [0m[32m"gid://shopify/App/384689831937"[33m,
+  [0m[37m"version":[33m [0m[32m"3"[33m,
+  [0m[37m"root":[33m {
+    [0m[37m"url":[33m [0m[32m"https://marathon-dealers-korean-curves.trycloudflare.com/extensions"[33m
+  },
+  [0m[37m"socket":[33m {
+    [0m[37m"url":[33m [0m[32m"wss://marathon-dealers-korean-curves.trycloudflare.com/extensions"[33m
+  },
+  [0m[37m"devConsole":[33m {
+    [0m[37m"url":[33m [0m[32m"https://marathon-dealers-korean-curves.trycloudflare.com/extensions/dev-console"[33m
+  },
+  [0m[37m"store":[33m [0m[32m"product-plus-r9u3or2t.myshopify.com"[33m,
+  [0m[37m"extensions":[33m []
+}[0m
+        2026-06-17T09:31:04.640Z: Sending websocket update event to the websocket clients:
+  [33m{
+  [0m[37m"event":[33m [0m[32m"update"[33m,
+  [0m[37m"version":[33m [0m[32m"3"[33m,
+  [0m[37m"data":[33m {
+    [0m[37m"app":[33m {
+      [0m[37m"title":[33m [0m[32m"pagecraft-product-builder\r"[33m,
+      [0m[37m"apiKey":[33m [0m[32m"06fec0d0f3013071adbb80cf7190b42b"[33m,
+      [0m[37m"url":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/oauth/redirect_from_cli?client_id=06fec0d0f3013071adbb80cf7190b42b"[33m,
+      [0m[37m"mobileUrl":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/apps/06fec0d0f3013071adbb80cf7190b42b?shop=product-plus-r9u3or2t.myshopify.com&host=cHJvZHVjdC1wbHVzLXI5dTNvcjJ0Lm15c2hvcGlmeS5jb20vYWRtaW4vYXBwcy8wNmZlYzBkMGYzMDEzMDcxYWRiYjgwY2Y3MTkwYjQyYg"[33m,
+      [0m[37m"__typename":[33m [0m[32m"App"[33m,
+      [0m[37m"id":[33m [0m[32m"gid://shopify/App/384689831937"[33m,
+      [0m[37m"applicationUrl":[33m [0m[32m"https://including-irc-instructors-storage.trycloudflare.com/"[33m,
+      [0m[37m"handle":[33m [0m[32m"pagecraft-product-builder"[33m,
+      [0m[37m"developerName":[33m [0m[32m"Khushwant"[33m,
+      [0m[37m"icon":[33m {
+        [0m[37m"__typename":[33m [0m[32m"Image"[33m,
+        [0m[37m"id":[33m [0m[31mnull[33m,
+        [0m[37m"transformedSrc":[33m [0m[32m"https://cdn.shopify.com/shopifycloud/shopify/assets/default-app-74bfb89634baf86f3402062ef55df218fe55b4f2775ff605d0ccfe1a20f9c0d3_36x.png"[33m
+      },
+      [0m[37m"installation":[33m {
+        [0m[37m"__typename":[33m [0m[32m"AppInstallation"[33m,
+        [0m[37m"id":[33m [0m[32m"gid://shopify/AppInstallation/650415079468"[33m,
+        [0m[37m"launchUrl":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/apps/pagecraft-product-builder"[33m
+      },
+      [0m[37m"supportLocales":[33m []
+    },
+    [0m[37m"appId":[33m [0m[32m"gid://shopify/App/384689831937"[33m,
+    [0m[37m"version":[33m [0m[32m"3"[33m,
+    [0m[37m"root":[33m {
+      [0m[37m"url":[33m [0m[32m"https://marathon-dealers-korean-curves.trycloudflare.com/extensions"[33m
+    },
+    [0m[37m"socket":[33m {
+      [0m[37m"url":[33m [0m[32m"wss://marathon-dealers-korean-curves.trycloudflare.com/extensions"[33m
+    },
+    [0m[37m"devConsole":[33m {
+      [0m[37m"url":[33m [0m[32m"https://marathon-dealers-korean-curves.trycloudflare.com/extensions/dev-console"[33m
+    },
+    [0m[37m"store":[33m [0m[32m"product-plus-r9u3or2t.myshopify.com"[33m,
+    [0m[37m"extensions":[33m []
+  }
+}[0m
+    2026-06-17T09:31:04.640Z: Sending websocket with event type update and data:
+[33m{
+  [0m[37m"app":[33m {
+    [0m[37m"title":[33m [0m[32m"pagecraft-product-builder\r"[33m,
+    [0m[37m"apiKey":[33m [0m[32m"06fec0d0f3013071adbb80cf7190b42b"[33m,
+    [0m[37m"url":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/oauth/redirect_from_cli?client_id=06fec0d0f3013071adbb80cf7190b42b"[33m,
+    [0m[37m"mobileUrl":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/apps/06fec0d0f3013071adbb80cf7190b42b?shop=product-plus-r9u3or2t.myshopify.com&host=cHJvZHVjdC1wbHVzLXI5dTNvcjJ0Lm15c2hvcGlmeS5jb20vYWRtaW4vYXBwcy8wNmZlYzBkMGYzMDEzMDcxYWRiYjgwY2Y3MTkwYjQyYg"[33m,
+    [0m[37m"__typename":[33m [0m[32m"App"[33m,
+    [0m[37m"id":[33m [0m[32m"gid://shopify/App/384689831937"[33m,
+    [0m[37m"applicationUrl":[33m [0m[32m"https://including-irc-instructors-storage.trycloudflare.com/"[33m,
+    [0m[37m"handle":[33m [0m[32m"pagecraft-product-builder"[33m,
+    [0m[37m"developerName":[33m [0m[32m"Khushwant"[33m,
+    [0m[37m"icon":[33m {
+      [0m[37m"__typename":[33m [0m[32m"Image"[33m,
+      [0m[37m"id":[33m [0m[31mnull[33m,
+      [0m[37m"transformedSrc":[33m [0m[32m"https://cdn.shopify.com/shopifycloud/shopify/assets/default-app-74bfb89634baf86f3402062ef55df218fe55b4f2775ff605d0ccfe1a20f9c0d3_36x.png"[33m
+    },
+    [0m[37m"installation":[33m {
+      [0m[37m"__typename":[33m [0m[32m"AppInstallation"[33m,
+      [0m[37m"id":[33m [0m[32m"gid://shopify/AppInstallation/650415079468"[33m,
+      [0m[37m"launchUrl":[33m [0m[32m"https://product-plus-r9u3or2t.myshopify.com/admin/apps/pagecraft-product-builder"[33m
+    },
+    [0m[37m"supportLocales":[33m []
+  },
+  [0m[37m"appId":[33m [0m[32m"gid://shopify/App/384689831937"[33m,
+  [0m[37m"version":[33m [0m[32m"3"[33m,
+  [0m[37m"root":[33m {
+    [0m[37m"url":[33m [0m[32m"https://marathon-dealers-korean-curves.trycloudflare.com/extensions"[33m
+  },
+  [0m[37m"socket":[33m {
+    [0m[37m"url":[33m [0m[32m"wss://marathon-dealers-korean-curves.trycloudflare.com/extensions"[33m
+  },
+  [0m[37m"devConsole":[33m {
+    [0m[37m"url":[33m [0m[32m"https://marathon-dealers-korean-curves.trycloudflare.com/extensions/dev-console"[33m
+  },
+  [0m[37m"store":[33m [0m[32m"product-plus-r9u3or2t.myshopify.com"[33m,
+  [0m[37m"extensions":[33m []
+}[0m
+prisma:cli:bin Failed to 
+initialize the command 
+state: Error: ENOENT: no 
+such file or directory, open 
+'C:\Users\LENOVO\AppData\Roam
+ing\prisma-nodejs\Config\comm
+ands.json' +1760ms
+prisma:config:loadConfigFromF
+ile Config file loaded in 
+111.76ms +1726ms
+prisma:config:loadConfigFromF
+ile No config file found in 
+the current working 
+directory C:\Users\LENOVO\One
+Drive\Desktop\Product Plus\pa
+gecraft-product-builder +0ms
+prisma:getSchema 
+prismaConfig null +116ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\sc
+hema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\schema.prisma +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\pr
+isma\schema.prisma +1ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\prisma\schema.prisma
+ +0ms
+prisma:getConfig Using 
+getConfig Wasm +10ms
+prisma:getConfig config data 
+retrieved without errors in 
+getConfig Wasm +13ms
+prisma:engines binaries to 
+download schema-engine, 
+libquery-engine +1895ms
+prisma:getSchema 
+prismaConfig null +14ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\sc
+hema.prisma +1ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\schema.prisma +0ms
+prisma:getSchema 
+prismaConfig null +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\sc
+hema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\schema.prisma +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\pr
+isma\schema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\prisma\schema.prisma
+ +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\pr
+isma\schema.prisma +1ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\prisma\schema.prisma
+ +0ms
+prisma:getConfig Using 
+getConfig Wasm +3ms
+prisma:getConfig config data 
+retrieved without errors in 
+getConfig Wasm +2ms
+prisma:cli:checkpoint 
+runCheckpointClientCheck(): 
+Execution time for getting 
+info: 21.1875 ms +1ms
+prisma:cli:checkpoint 
+runCheckpointClientCheck(): 
+Execution time for "await 
+checkpoint.check(data)": 
+58.666999999999916 ms +61ms
+prisma:loadEnv project root 
+found at C:\Users\LENOVO\OneD
+rive\Desktop\Product Plus\pag
+ecraft-product-builder\packag
+e.json +78ms
+prisma:getSchema 
+prismaConfig null +2ms
+prisma:tryLoadEnv 
+Environment variables loaded 
+from C:\Users\LENOVO\OneDrive
+\Desktop\Product Plus\pagecra
+ft-product-builder\.env +1ms
+Environment variables loaded 
+from .env
+prisma:getSchema 
+prismaConfig null +2ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\sc
+hema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\schema.prisma +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product Plus
+\pagecraft-product-builder\pr
+isma\schema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file C:\Us
+ers\LENOVO\OneDrive\Desktop\P
+roduct Plus\pagecraft-product
+-builder\prisma\schema.prisma
+ +1ms
+        Prisma schema loaded from prisma\schema.prisma
+prisma:getConfig Using 
+getConfig Wasm +1ms
+prisma:getConfig config data 
+retrieved without errors in 
+getConfig Wasm +1ms
+Datasource "db": SQLite database "dev.db" at "file:./dev.db"
+prisma:migrate:deploy {
+  "listMigrationDirectoriesRe
+sult": {
+    "migrations": [
+      "20240530213853_create_
+session_table"
+    ]
+  }
+} +40ms
+
+1 migration found in prisma/migrations
+
+prisma:schemaEngine:rpc 
+starting Schema engine with 
+binary: C:\Users\LENOVO\OneDr
+ive\Desktop\Product Plus\page
+craft-product-builder\node_mo
+dules\@prisma\engines\schema-
+engine-windows.exe +2ms
+prisma:schemaEngine:rpc 
+SENDING RPC CALL {"id":1,"jso
+nrpc":"2.0","method":"applyMi
+grations","params":{"migratio
+nsList":{"baseDir":"C:\\Users
+\\LENOVO\\OneDrive\\Desktop\\
+Product Plus\\pagecraft-produ
+ct-builder\\prisma\\migration
+s","lockfile":{"path":"migrat
+ion_lock.toml","content":null
+},"migrationDirectories":[{"p
+ath":"20240530213853_create_s
+ession_table","migrationFile"
+:{"path":"migration.sql","con
+tent":{"tag":"ok","value":"--
+ CreateTable\r\nCREATE TABLE 
+\"Session\" (\r\n    \"id\" 
+TEXT NOT NULL PRIMARY 
+KEY,\r\n    \"shop\" TEXT 
+NOT NULL,\r\n    \"state\" 
+TEXT NOT NULL,\r\n    
+\"isOnline\" BOOLEAN NOT 
+NULL DEFAULT false,\r\n    
+\"scope\" TEXT,\r\n    
+\"expires\" DATETIME,\r\n    
+\"accessToken\" TEXT NOT 
+NULL,\r\n    \"userId\" 
+BIGINT,\r\n    \"firstName\" 
+TEXT,\r\n    \"lastName\" 
+TEXT,\r\n    \"email\" 
+TEXT,\r\n    
+\"accountOwner\" BOOLEAN NOT 
+NULL DEFAULT false,\r\n    
+\"locale\" TEXT,\r\n    
+\"collaborator\" BOOLEAN 
+DEFAULT false,\r\n    
+\"emailVerified\" BOOLEAN 
+DEFAULT false,\r\n    
+\"refreshToken\" TEXT,\r\n   
+ \"refreshTokenExpires\" DATE
+TIME\r\n);\r\n"}}}],"shadowDb
+InitScript":""},"filters":{"e
+xternalTables":[],"externalEn
+ums":[]}}} +5ms
+prisma:schemaEngine:stderr {"
+timestamp":"2026-06-17T09:31:
+07.2341823Z","level":"INFO","
+fields":{"message":"Starting 
+schema engine RPC server","gi
+t_hash":"c2990dca591cba766e3b
+7ef5d9e8a84796e47ab7"},"targe
+t":"schema_engine"} +8ms
+prisma:schemaEngine:stderr {"
+timestamp":"2026-06-17T09:31:
+07.2367848Z","level":"INFO","
+fields":{"sql":"PRAGMA main.l
+ocking_mode=EXCLUSIVE","adapt
+er_name":"None","query_type":
+"acquire_lock"},"target":"sql
+_schema_connector::flavour::s
+qlite","span":{"name":"ApplyM
+igrations"},"spans":[{"name":
+"ApplyMigrations"}]} +2ms
+prisma:schemaEngine:rpc {
+  "jsonrpc": "2.0",
+  "error": {
+    "code": 4466,
+    "message": "An error 
+happened. Check the data 
+field for details.",
+    "data": {
+      "is_panic": false,
+      "message": "The 
+database schema is not 
+empty. Read more about how 
+to baseline an existing 
+production database: https://
+pris.ly/d/migrate-baseline",
+      "meta": null,
+      "error_code": "P3005"
+    }
+  },
+  "id": 1
+} +1ms
+Error: Error: P3005
+
+The database schema is not 
+empty. Read more about how 
+to baseline an existing 
+production database: https://
+pris.ly/d/migrate-baseline
+
+    at Object.<anonymous> (C:
+\Users\LENOVO\OneDrive\Deskto
+p\Product Plus\pagecraft-prod
+uct-builder\node_modules\pris
+ma\build\index.js:3378:8)
+    at e.handleResponse (C:\U
+sers\LENOVO\OneDrive\Desktop\
+Product Plus\pagecraft-produc
+t-builder\node_modules\prisma
+\build\index.js:3369:3249)
+    at Ch.<anonymous> (C:\Use
+rs\LENOVO\OneDrive\Desktop\Pr
+oduct Plus\pagecraft-product-
+builder\node_modules\prisma\b
+uild\index.js:3374:456)
+    at Ch.emit 
+(node:events:507:28)
+    at addChunk (node:interna
+l/streams/readable:559:12)
+    at readableAddChunkPushOb
+jectMode (node:internal/strea
+ms/readable:536:3)
+    at Readable.push (node:in
+ternal/streams/readable:391:5
+)
+    at Ch._pushBuffer (C:\Use
+rs\LENOVO\OneDrive\Desktop\Pr
+oduct Plus\pagecraft-product-
+builder\node_modules\prisma\b
+uild\index.js:3363:369)
+    at Ch._transform (C:\User
+s\LENOVO\OneDrive\Desktop\Pro
+duct Plus\pagecraft-product-b
+uilder\node_modules\prisma\bu
+ild\index.js:3363:199)
+    at Transform._write (node
+:internal/streams/transform:1
+71:8)
+ΓöÇΓöÇ external error ΓöÇΓöÇΓ
+öÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇ
+
+Error coming from `npm exec 
+prisma migrate deploy`
+
+Command failed with exit 
+code 1: npm exec prisma 
+migrate deploy
+prisma:cli:bin Failed to 
+initialize the command 
+state: Error: ENOENT: no such
+file or directory, open
+'C:\Users\LENOVO\AppData\Roam
+ing\prisma-nodejs\Config\comm
+ands.json' +1760ms
+prisma:config:loadConfigFromF
+ile Config file loaded in 
+111.76ms +1726ms
+prisma:config:loadConfigFromF
+ile No config file found in 
+the current working
+directory C:\Users\LENOVO\One
+Drive\Desktop\Product
+Plus\pagecraft-product-builde
+r +0ms
+prisma:getSchema 
+prismaConfig null +116ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product
+Plus\pagecraft-product-builde
+r\schema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file
+C:\Users\LENOVO\OneDrive\Desk
+top\Product
+Plus\pagecraft-product-builde
+r\schema.prisma +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product
+Plus\pagecraft-product-builde
+r\prisma\schema.prisma +1ms
+prisma:getSchema Reading 
+schema from single file
+C:\Users\LENOVO\OneDrive\Desk
+top\Product
+Plus\pagecraft-product-builde
+r\prisma\schema.prisma +0ms
+prisma:getConfig Using 
+getConfig Wasm +10ms
+prisma:getConfig config data 
+retrieved without errors in 
+getConfig Wasm +13ms
+prisma:engines binaries to 
+download schema-engine, 
+libquery-engine +1895ms
+prisma:getSchema 
+prismaConfig null +14ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product
+Plus\pagecraft-product-builde
+r\schema.prisma +1ms
+prisma:getSchema Reading 
+schema from single file
+C:\Users\LENOVO\OneDrive\Desk
+top\Product
+Plus\pagecraft-product-builde
+r\schema.prisma +0ms
+prisma:getSchema 
+prismaConfig null +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product
+Plus\pagecraft-product-builde
+r\schema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file
+C:\Users\LENOVO\OneDrive\Desk
+top\Product
+Plus\pagecraft-product-builde
+r\schema.prisma +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product
+Plus\pagecraft-product-builde
+r\prisma\schema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file
+C:\Users\LENOVO\OneDrive\Desk
+top\Product
+Plus\pagecraft-product-builde
+r\prisma\schema.prisma +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product
+Plus\pagecraft-product-builde
+r\prisma\schema.prisma +1ms
+prisma:getSchema Reading 
+schema from single file
+C:\Users\LENOVO\OneDrive\Desk
+top\Product
+Plus\pagecraft-product-builde
+r\prisma\schema.prisma +0ms
+prisma:getConfig Using 
+getConfig Wasm +3ms
+prisma:getConfig config data 
+retrieved without errors in 
+getConfig Wasm +2ms
+prisma:cli:checkpoint 
+runCheckpointClientCheck(): 
+Execution time for getting
+info: 21.1875 ms +1ms
+prisma:cli:checkpoint 
+runCheckpointClientCheck(): 
+Execution time for "await
+checkpoint.check(data)": 
+58.666999999999916 ms +61ms
+prisma:loadEnv project root 
+found at C:\Users\LENOVO\OneD
+rive\Desktop\Product
+Plus\pagecraft-product-builde
+r\package.json +78ms
+prisma:getSchema 
+prismaConfig null +2ms
+prisma:tryLoadEnv 
+Environment variables loaded 
+from
+C:\Users\LENOVO\OneDrive\Desk
+top\Product Plus\pagecraft-pr
+oduct-builder\.env
++1ms
+Environment variables loaded 
+from .env
+prisma:getSchema 
+prismaConfig null +2ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product
+Plus\pagecraft-product-builde
+r\schema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file
+C:\Users\LENOVO\OneDrive\Desk
+top\Product
+Plus\pagecraft-product-builde
+r\schema.prisma +0ms
+prisma:getSchema Checking 
+existence of C:\Users\LENOVO\
+OneDrive\Desktop\Product
+Plus\pagecraft-product-builde
+r\prisma\schema.prisma +0ms
+prisma:getSchema Reading 
+schema from single file
+C:\Users\LENOVO\OneDrive\Desk
+top\Product
+Plus\pagecraft-product-builde
+r\prisma\schema.prisma +1ms
+prisma:getConfig Using 
+getConfig Wasm +1ms
+prisma:getConfig config data 
+retrieved without errors in 
+getConfig Wasm +1ms
+prisma:migrate:deploy {
+  "listMigrationDirectoriesRe
+sult": {
+    "migrations": [
+      "20240530213853_create_
+session_table"
+    ]
+  }
+} +40ms
+prisma:schemaEngine:rpc 
+starting Schema engine with 
+binary:
+C:\Users\LENOVO\OneDrive\Desk
+top\Product Plus\pagecraft-pr
+oduct-builder\node_mod
+ules\@prisma\engines\schema-e
+ngine-windows.exe +2ms
+prisma:schemaEngine:rpc 
+SENDING RPC CALL
+{"id":1,"jsonrpc":"2.0","meth
+od":"applyMigrations","params
+":{"migrationsList":{"
+baseDir":"C:\\Users\\LENOVO\\
+OneDrive\\Desktop\\Product 
+Plus\\pagecraft-product-
+builder\\prisma\\migrations",
+"lockfile":{"path":"migration
+_lock.toml","content":
+null},"migrationDirectories":
+[{"path":"20240530213853_crea
+te_session_table","mig
+rationFile":{"path":"migratio
+n.sql","content":{"tag":"ok",
+"value":"--
+CreateTable\r\nCREATE TABLE 
+\"Session\" (\r\n    \"id\" 
+TEXT NOT NULL PRIMARY
+KEY,\r\n    \"shop\" TEXT 
+NOT NULL,\r\n    \"state\" 
+TEXT NOT NULL,\r\n
+\"isOnline\" BOOLEAN NOT 
+NULL DEFAULT false,\r\n    
+\"scope\" TEXT,\r\n
+\"expires\" DATETIME,\r\n    
+\"accessToken\" TEXT NOT 
+NULL,\r\n    \"userId\"
+BIGINT,\r\n    \"firstName\" 
+TEXT,\r\n    \"lastName\" 
+TEXT,\r\n    \"email\"
+TEXT,\r\n    
+\"accountOwner\" BOOLEAN NOT 
+NULL DEFAULT false,\r\n    
+\"locale\"
+TEXT,\r\n    
+\"collaborator\" BOOLEAN 
+DEFAULT false,\r\n    
+\"emailVerified\"
+BOOLEAN DEFAULT false,\r\n   
+ \"refreshToken\" TEXT,\r\n
+\"refreshTokenExpires\" DATET
+IME\r\n);\r\n"}}}],"shadowDbI
+nitScript":""},"filter
+s":{"externalTables":[],"exte
+rnalEnums":[]}}} +5ms
+prisma:schemaEngine:stderr {"
+timestamp":"2026-06-17T09:31:
+07.2341823Z","level":"
+INFO","fields":{"message":"St
+arting schema engine RPC 
+server","git_hash":"c2990d
+ca591cba766e3b7ef5d9e8a84796e
+47ab7"},"target":"schema_engi
+ne"} +8ms
+prisma:schemaEngine:stderr {"
+timestamp":"2026-06-17T09:31:
+07.2367848Z","level":"
+INFO","fields":{"sql":"PRAGMA
+ main.locking_mode=EXCLUSIVE"
+,"adapter_name":"None"
+,"query_type":"acquire_lock"}
+,"target":"sql_schema_connect
+or::flavour::sqlite","
+span":{"name":"ApplyMigration
+s"},"spans":[{"name":"ApplyMi
+grations"}]} +2ms
+prisma:schemaEngine:rpc {
+  "jsonrpc": "2.0",
+  "error": {
+    "code": 4466,
+    "message": "An error 
+happened. Check the data 
+field for details.",
+    "data": {
+      "is_panic": false,
+      "message": "The 
+database schema is not 
+empty. Read more about how to
+baseline an existing 
+production database: https://
+pris.ly/d/migrate-baseline",
+      "meta": null,
+      "error_code": "P3005"
+    }
+  },
+  "id": 1
+} +1ms
+Error: Error: P3005
+
+The database schema is not 
+empty. Read more about how 
+to baseline an existing
+production database: https://
+pris.ly/d/migrate-baseline
+
+    at Object.<anonymous> (C:
+\Users\LENOVO\OneDrive\Deskto
+p\Product
+Plus\pagecraft-product-builde
+r\node_modules\prisma\build\i
+ndex.js:3378:8)
+    at e.handleResponse (C:\U
+sers\LENOVO\OneDrive\Desktop\
+Product
+Plus\pagecraft-product-builde
+r\node_modules\prisma\build\i
+ndex.js:3369:3249)
+    at Ch.<anonymous> (C:\Use
+rs\LENOVO\OneDrive\Desktop\Pr
+oduct
+Plus\pagecraft-product-builde
+r\node_modules\prisma\build\i
+ndex.js:3374:456)
+    at Ch.emit 
+(node:events:507:28)
+    at addChunk (node:interna
+l/streams/readable:559:12)
+    at readableAddChunkPushOb
+jectMode (node:internal/strea
+ms/readable:536:3)
+    at Readable.push (node:in
+ternal/streams/readable:391:5
+)
+    at Ch._pushBuffer (C:\Use
+rs\LENOVO\OneDrive\Desktop\Pr
+oduct
+Plus\pagecraft-product-builde
+r\node_modules\prisma\build\i
+ndex.js:3363:369)
+    at Ch._transform (C:\User
+s\LENOVO\OneDrive\Desktop\Pro
+duct
+Plus\pagecraft-product-builde
+r\node_modules\prisma\build\i
+ndex.js:3363:199)
+    at Transform._write (node
+:internal/streams/transform:1
+71:8)
+Prisma schema loaded from 
+prisma\schema.prisma
+Datasource "db": SQLite 
+database "dev.db" at 
+"file:./dev.db"
+
+1 migration found in 
+prisma/migrations
+
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö
+ÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓ
+öÇΓöÇΓöÇ
+
+2026-06-17T09:31:07.365Z: 
+Looking for a lockfile in C:/
+Users/LENOVO/OneDrive/Desktop
+/Product Plus/pagecraft-produ
+ct-builder...
+2026-06-17T09:31:07.376Z: 
+Skipping Bugsnag report for 
+expected error
