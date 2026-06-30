@@ -9,16 +9,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: templatesStyles }];
 };
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const { redirect } = await authenticate.admin(request);
-  const formData = await request.formData();
-  const templateId = String(formData.get("templateId"));
-  const templateName = String(formData.get("templateName"));
-
-  // Go directly to editor with template info — no DB record yet
-  // The record is only created when the user clicks Save Draft or Publish
-  return redirect(`/app/editor/new?templateId=${encodeURIComponent(templateId)}&templateName=${encodeURIComponent(templateName)}`);
-};
+// The Action was removed as navigation is now handled strictly client-side to preserve App Bridge session context
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { admin } = await authenticate.admin(request);
@@ -193,13 +184,14 @@ export default function Templates() {
                        🔒 Upgrade Plan
                      </button>
                   ) : (
-                    <Form method="post" style={{flex: 1, display: 'flex'}}>
-                      <input type="hidden" name="templateId" value={tpl.id} />
-                      <input type="hidden" name="templateName" value={tpl.name} />
-                      <button type="submit" className={`action-btn ${tpl.brand === 'free' ? 'btn-use-green' : tpl.brand === 'premium' ? 'btn-use-yellow' : 'btn-use'}`} style={{width: '100%'}}>
-                        Use Template
-                      </button>
-                    </Form>
+                    <button 
+                      type="button" 
+                      onClick={() => navigate(`/app/editor/new?templateId=${encodeURIComponent(tpl.id)}&templateName=${encodeURIComponent(tpl.name)}`)}
+                      className={`action-btn ${tpl.brand === 'free' ? 'btn-use-green' : tpl.brand === 'premium' ? 'btn-use-yellow' : 'btn-use'}`} 
+                      style={{width: '100%', flex: 1}}
+                    >
+                      Use Template
+                    </button>
                   )}
                 </div>
               </div>
