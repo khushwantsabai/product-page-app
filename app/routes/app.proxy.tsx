@@ -41,6 +41,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const price = settingsObj.price || "$0.00";
     const compareAt = settingsObj.compareAt || "";
     const imageBgColor = settingsObj.imageBgColor || "transparent";
+    const pageBgColor = settingsObj.pageBgColor || "transparent";
     const layout = settingsObj.layout || "split";
     const sizes = settingsObj.sizes || [];
     const sectionOrder = settingsObj.sectionOrder || ['header', 'desc', 'vendor', 'options', 'actions', 'trust'];
@@ -50,6 +51,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const buyNowText = settingsObj.buyNowText || "Buy it Now";
     const vendor = settingsObj.vendor || null;
     const trustBadges = settingsObj.trustBadges || [];
+    const galleryMedia = settingsObj.galleryMedia || [];
+    const mainImage = settingsObj.image || "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png";
+
+    // Combine main image and additional gallery media
+    const allMedia = [
+      { type: 'image', url: mainImage },
+      ...galleryMedia
+    ].filter(m => m.url); // filter out empty URLs
     
     // Dynamic Styles
     const styles = settingsObj.styles || {
@@ -61,10 +70,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       badge: { backgroundColor: '#FEE2E2', color: '#EF4444' }
     };
 
+    const containerStyles = pageBgColor && pageBgColor !== 'transparent'
+      ? `background-color: ${pageBgColor}; padding: 24px; border-radius: 12px;`
+      : `background-color: transparent; padding: 0;`;
 
     const globalCss = `
       <style>
-        .pp-container { font-family: inherit; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: ${layout === 'stacked' ? 'column' : 'row'}; gap: 40px; align-items: flex-start; }
+        .pp-container { font-family: inherit; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: ${layout === 'stacked' ? 'column' : 'row'}; gap: 40px; align-items: flex-start; ${containerStyles} }
         .pp-gallery-section { flex: 1; width: 100%; min-width: 0; }
         .pp-gallery img { width: 100%; border-radius: 8px; object-fit: cover; background-color: ${imageBgColor}; }
         .pp-thumbnails { display: flex; gap: 12px; margin-top: 16px; }
@@ -103,25 +115,46 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       </style>
     `;
 
-    const components = {
-      header: `<h1 class="pp-title">${title}</h1>`,
-      price: `
+    const galleryHtml = `
+      <div class="pp-gallery-section">
+        <div class="pp-gallery">
+          ${allMedia[0].type === 'video' ? `
+            <video src="${allMedia[0].url}" controls style="width: 100%; border-radius: 8px; background-color: ${imageBgColor};"></video>
+          ` : `
+            <img src="${allMedia[0].url}" id="pp-main-image" style="width: 100%; border-radius: 8px; object-fit: cover; background-color: ${imageBgColor};" />
+          `}
+        </div>
+        ${allMedia.length > 1 ? `
+          <div class="pp-thumbnails">
+            ${allMedia.map((m: any, idx: number) => `
+              <div class="pp-thumbnail" style="cursor: pointer;" onclick="document.getElementById('pp-main-image').src = '${m.url}'">
+                ${m.type === 'video' ? '🎥' : `<img src="${m.url}" />`}
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    const detailsHtml = sectionOrder.map((sectionId: string) => {
+      if (sectionId === 'header') return `<h1 class="pp-title">${title}</h1>`;
+      if (sectionId === 'price') return `
         <div class="pp-price-wrap">
           <span class="pp-price">${price}</span>
           ${compareAt ? `<span class="pp-compare">${compareAt}</span>` : ''}
           ${compareAt ? `<span class="pp-save">Save 15%</span>` : ''}
         </div>
-      `,
-      desc: `<div class="pp-desc" style="margin-top: 16px;">${desc}</div>`,
-      vendor: vendor && vendor.name ? `
+      `;
+      if (sectionId === 'desc') return `<div class="pp-desc" style="margin-top: 16px;">${desc}</div>`;
+      if (sectionId === 'vendor' && vendor && vendor.name) return `
         <div class="pp-vendor-details">
           <div style="font-weight: 600; color: #374151; margin-bottom: 6px;">Vendor Details</div>
           <div style="display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; color: #4B5563;">
             <span style="color: #6B7280;">Vendor:</span> <span>${vendor.name}</span>
           </div>
         </div>
-      ` : '',
-      options: `
+      `;
+      if (sectionId === 'options') return `
         <div class="pp-options">
           <div class="pp-opt-title">Color: <span style="font-weight: normal; color: #6B7280;">Black</span></div>
           <div class="pp-colors">
@@ -149,14 +182,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             <button class="pp-qty-btn">+</button>
           </div>
         </div>
-      `,
-      actions: `
+      `;
+      if (sectionId === 'actions') return `
         <div class="pp-actions">
           <button class="pp-add-btn">${buttonText}</button>
           <button class="pp-buy-btn">${buyNowText}</button>
         </div>
-      `,
-      trust: trustBadges && trustBadges.length > 0 ? `
+      `;
+      if (sectionId === 'trust' && trustBadges && trustBadges.length > 0) return `
         <div class="pp-trust-badges">
           ${trustBadges.map((badge: any) => `
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -170,10 +203,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             </div>
           `).join('')}
         </div>
-      ` : ''
-    };
+      `;
+      return '';
+    }).join('');
 
-    return new Response(JSON.stringify({ css: globalCss, components, sectionOrder }), {
+    const layoutHtml = `
+      <div class="pp-container">
+        ${galleryHtml}
+        <div class="pp-details">
+          ${detailsHtml}
+        </div>
+      </div>
+    `;
+
+    return new Response(JSON.stringify({ css: globalCss, html: layoutHtml }), {
       headers: {
         "Content-Type": "application/json",
         "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",

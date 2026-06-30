@@ -31,18 +31,12 @@
       .catch(function(err) { console.error("PPB Fetch Error:", err); });
 
     function injectAllPlaceholders() {
-      if (!window.PPB_DATA || !window.PPB_DATA.components) return;
+      if (!window.PPB_DATA || !window.PPB_DATA.html) return;
       
       // Inject into Master Template Block
       var root = document.getElementById('pagecraft-root');
-      if (root && window.PPB_DATA.sectionOrder) {
-        var html = '';
-        window.PPB_DATA.sectionOrder.forEach(function(sectionId) {
-          if (window.PPB_DATA.components[sectionId]) {
-            html += window.PPB_DATA.components[sectionId];
-          }
-        });
-        root.innerHTML = html;
+      if (root) {
+        root.innerHTML = window.PPB_DATA.html;
       }
     }
 

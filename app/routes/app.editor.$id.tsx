@@ -173,7 +173,12 @@ export const TEMPLATE_MOCKS: Record<string, any> = {
     unavailableSizes: ['L'],
     showSizeChart: true,
     sizeChartOpen: false,
-    crossUnavailable: true
+    crossUnavailable: true,
+    vendor: null,
+    trustBadges: [],
+    galleryMedia: [],
+    pageBgColor: 'transparent',
+    sectionOrder: ['header', 'price', 'desc', 'options', 'actions']
   },
   '2': {
     title: 'Modern Electronics Suite',
@@ -189,46 +194,84 @@ export const TEMPLATE_MOCKS: Record<string, any> = {
     unavailableSizes: ['L'],
     showSizeChart: true,
     sizeChartOpen: false,
-    crossUnavailable: true
+    crossUnavailable: true,
+    vendor: null,
+    trustBadges: [],
+    galleryMedia: [
+      { type: 'image', url: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-2_large.png' }
+    ],
+    pageBgColor: '#F3F4F6',
+    sectionOrder: ['header', 'price', 'desc', 'options', 'actions']
   },
   '3': {
     title: 'Luxury Watch Collection',
     plan: 'Standard',
     price: '$450.00',
     compareAt: '$599.00',
-    desc: 'Timeless elegance meets modern engineering.',
+    desc: 'Timeless elegance meets modern engineering. A watch that defines your status.',
     image: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-2_large.png',
     layout: 'split',
     discountBadge: 'Save 25%',
-    sizes: ['S', 'M', 'L', 'XL'],
-    selectedSize: 'M',
-    unavailableSizes: ['L'],
-    showSizeChart: true,
+    sizes: ['One Size'],
+    selectedSize: 'One Size',
+    unavailableSizes: [],
+    showSizeChart: false,
     sizeChartOpen: false,
-    crossUnavailable: true
+    crossUnavailable: true,
+    vendor: {
+      name: 'Elegance Timepieces',
+      manufacturer: 'Swiss Horology',
+      country: 'Switzerland',
+      shipsFrom: 'Geneva'
+    },
+    trustBadges: [],
+    galleryMedia: [
+      { type: 'image', url: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png' },
+      { type: 'image', url: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-3_large.png' }
+    ],
+    pageBgColor: 'transparent',
+    sectionOrder: ['header', 'price', 'desc', 'vendor', 'options', 'actions']
   },
   '4': {
     title: 'Beauty Glow Skincare',
     plan: 'Premium',
     price: '$129.00',
     compareAt: '$150.00',
-    desc: 'Complete routine for glowing, healthy skin.',
+    desc: 'Complete routine for glowing, healthy skin. Includes cleanser, toner, and moisturizer.',
     image: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-4_large.png',
     layout: 'stacked',
     discountBadge: 'Save 14%',
-    sizes: ['S', 'M', 'L', 'XL'],
-    selectedSize: 'M',
-    unavailableSizes: ['L'],
-    showSizeChart: true,
+    sizes: ['Standard Set', 'Travel Set'],
+    selectedSize: 'Standard Set',
+    unavailableSizes: [],
+    showSizeChart: false,
     sizeChartOpen: false,
-    crossUnavailable: true
+    crossUnavailable: true,
+    vendor: {
+      name: 'Glow Labs Cosmetics',
+      manufacturer: 'Glow Labs',
+      country: 'France',
+      shipsFrom: 'Paris'
+    },
+    trustBadges: [
+      { id: '1', title: 'Premium Quality', desc: 'Dermatologist tested', icon: '✨' },
+      { id: '2', title: 'Cruelty Free', desc: 'Never tested on animals', icon: '🐰' },
+      { id: '3', title: 'Fast Shipping', desc: 'Ships within 24 hours', icon: '🚀' }
+    ],
+    galleryMedia: [
+      { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
+      { type: 'image', url: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-3_large.png' },
+      { type: 'image', url: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-6_large.png' }
+    ],
+    pageBgColor: '#FFF1F2',
+    sectionOrder: ['header', 'price', 'desc', 'vendor', 'options', 'actions', 'trust']
   },
   '5': {
     title: 'Fashion Store Collection',
     plan: 'Basic',
     price: '$89.00',
     compareAt: '$110.00',
-    desc: 'Latest trends for your daily wardrobe.',
+    desc: 'Latest trends for your daily wardrobe. Made with sustainable materials.',
     image: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-collection-3_large.png',
     layout: 'split',
     discountBadge: 'Save 19%',
@@ -237,7 +280,14 @@ export const TEMPLATE_MOCKS: Record<string, any> = {
     unavailableSizes: ['L'],
     showSizeChart: true,
     sizeChartOpen: false,
-    crossUnavailable: true
+    crossUnavailable: true,
+    vendor: null,
+    trustBadges: [],
+    galleryMedia: [
+      { type: 'image', url: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-collection-1_large.png' }
+    ],
+    pageBgColor: 'transparent',
+    sectionOrder: ['header', 'price', 'desc', 'options', 'actions']
   },
   '6': {
     title: 'Sporty Performance Shoes',
@@ -248,12 +298,25 @@ export const TEMPLATE_MOCKS: Record<string, any> = {
     image: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png',
     layout: 'split',
     discountBadge: 'Save 17%',
-    sizes: ['S', 'M', 'L', 'XL'],
-    selectedSize: 'M',
-    unavailableSizes: ['L'],
+    sizes: ['US 8', 'US 9', 'US 10', 'US 11'],
+    selectedSize: 'US 10',
+    unavailableSizes: ['US 9'],
     showSizeChart: true,
     sizeChartOpen: false,
-    crossUnavailable: true
+    crossUnavailable: true,
+    vendor: {
+      name: 'Athletix Pro',
+      manufacturer: 'Athletix',
+      country: 'USA',
+      shipsFrom: 'New York'
+    },
+    trustBadges: [],
+    galleryMedia: [
+      { type: 'image', url: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-2_large.png' },
+      { type: 'image', url: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-3_large.png' }
+    ],
+    pageBgColor: 'transparent',
+    sectionOrder: ['header', 'price', 'desc', 'vendor', 'options', 'actions']
   },
   'default': {
     title: 'Wireless Headphones Over Ear',
@@ -263,12 +326,17 @@ export const TEMPLATE_MOCKS: Record<string, any> = {
     image: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-5_large.png',
     layout: 'split',
     discountBadge: 'Save 20%',
-    sizes: ['S', 'M', 'L', 'XL'],
-    selectedSize: 'M',
-    unavailableSizes: ['L'],
-    showSizeChart: true,
+    sizes: ['Standard', 'Pro'],
+    selectedSize: 'Standard',
+    unavailableSizes: [],
+    showSizeChart: false,
     sizeChartOpen: false,
-    crossUnavailable: true
+    crossUnavailable: true,
+    vendor: null,
+    trustBadges: [],
+    galleryMedia: [],
+    pageBgColor: 'transparent',
+    sectionOrder: ['header', 'price', 'desc', 'options', 'actions']
   }
 };
 
@@ -297,6 +365,7 @@ export default function Editor() {
     ...initialMockData,
     sectionOrder: initialMockData.sectionOrder || ['header', 'desc', 'vendor', 'options', 'actions', 'trust'],
     imageBgColor: initialMockData.imageBgColor || '#F9FAFB',
+    pageBgColor: initialMockData.pageBgColor || 'transparent',
     vendor: initialMockData.vendor || {
       name: 'Global Goods Inc.',
       manufacturer: 'Apex Labs',
@@ -322,7 +391,8 @@ export default function Editor() {
       cart: { fontFamily: 'Inter', fontSize: 16, fontWeight: '600', color: '#111827', textAlign: 'center' },
       buy: { fontFamily: 'Inter', fontSize: 16, fontWeight: '600', color: '#ffffff', textAlign: 'center' },
       badge: { backgroundColor: '#FEE2E2', color: '#EF4444' }
-    }
+    },
+    galleryMedia: initialMockData.galleryMedia || []
   }));
 
   const historyRef = useRef<any[]>([editorData]);
@@ -543,7 +613,10 @@ export default function Editor() {
             <div className="mock-product" style={{ 
               flexDirection: (editorData.layout === 'stacked' || activeDevice === 'mobile') ? 'column' : 'row', 
               alignItems: (editorData.layout === 'stacked' || activeDevice === 'mobile') ? 'center' : 'flex-start', 
-              gap: (editorData.layout === 'stacked' || activeDevice === 'mobile') ? '32px' : '24px' 
+              gap: (editorData.layout === 'stacked' || activeDevice === 'mobile') ? '32px' : '24px',
+              backgroundColor: editorData.pageBgColor || 'transparent',
+              padding: editorData.pageBgColor && editorData.pageBgColor !== 'transparent' ? '24px' : '0',
+              borderRadius: '12px'
             }}>
               <div className="mock-gallery" style={{ 
                 width: '100%', 
@@ -555,18 +628,16 @@ export default function Editor() {
               }}>
                 <img src={editorData.image} alt="Product" style={{ width: '100%', borderRadius: '8px', objectFit: 'cover', backgroundColor: editorData.imageBgColor }} />
                 
-                {activePlan !== 'free' && (
+                {activePlan !== 'free' && editorData.galleryMedia && editorData.galleryMedia.length > 0 && (
                   <div style={{ display: 'flex', gap: '8px', marginTop: '16px', flexWrap: 'wrap', justifyContent: (editorData.layout === 'stacked' || activeDevice === 'mobile') ? 'center' : 'flex-start' }}>
-                    {Array.from({ length: activePlan === 'basic' ? 3 : activePlan === 'standard' ? 5 : 7 }).map((_, i) => (
-                      <div key={i} style={{ width: '64px', height: '64px', borderRadius: '6px', border: '1px dashed #D1D5DB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF', background: editorData.imageBgColor }}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    {[{ type: 'image', url: editorData.image }, ...editorData.galleryMedia].filter(m => m.url).map((m: any, i: number) => (
+                      <div 
+                        key={i} 
+                        style={{ width: '64px', height: '64px', borderRadius: '6px', border: '1px solid #D1D5DB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF', background: editorData.imageBgColor, overflow: 'hidden', cursor: 'pointer' }}
+                      >
+                        {m.type === 'video' ? '🎥' : <img src={m.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                       </div>
                     ))}
-                    {activePlan === 'premium' && (
-                      <div style={{ width: '64px', height: '64px', borderRadius: '6px', border: '1px dashed #D1D5DB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF', background: editorData.imageBgColor }}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                      </div>
-                    )}
                   </div>
                 )}
 
@@ -1026,10 +1097,53 @@ export default function Editor() {
                     Stacked
                   </button>
                 </div>
-                {activePlan !== 'premium' && (
+                {activePlan !== 'premium' ? (
                   <div style={{color: '#ef4444', fontSize: '12px', marginTop: '-8px', marginBottom: '16px'}}>
-                    Upgrade to Premium to customize the layout structure.
+                    Upgrade to Premium to customize the layout structure and background colors.
                   </div>
+                ) : (
+                  <>
+                    <span className="prop-label" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '24px' }}>
+                      Template Background Color
+                    </span>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+                      {[
+                        { name: 'Transparent', value: 'transparent' },
+                        { name: 'White', value: '#ffffff' },
+                        { name: 'Off-White', value: '#FAF9F6' },
+                        { name: 'Light Gray', value: '#F3F4F6' },
+                        { name: 'Soft Blue', value: '#EFF6FF' },
+                        { name: 'Soft Rose', value: '#FFF1F2' },
+                        { name: 'Dark Theme', value: '#111827' }
+                      ].map(preset => (
+                        <button
+                          key={preset.value}
+                          onClick={() => setEditorData({ ...editorData, pageBgColor: preset.value })}
+                          style={{
+                            padding: '6px 10px',
+                            borderRadius: '4px',
+                            border: editorData.pageBgColor === preset.value ? '2px solid #16A34A' : '1px solid #D1D5DB',
+                            background: preset.value === 'transparent' ? 'white' : preset.value,
+                            color: preset.value === '#111827' ? 'white' : '#374151',
+                            fontSize: '11px',
+                            fontWeight: editorData.pageBgColor === preset.value ? 700 : 400,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {preset.name}
+                        </button>
+                      ))}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+                      <span style={{ fontSize: '12px', color: '#4B5563', fontWeight: 500 }}>Custom Color:</span>
+                      <input 
+                        type="color" 
+                        value={editorData.pageBgColor && editorData.pageBgColor.startsWith('#') ? editorData.pageBgColor : '#ffffff'}
+                        onChange={(e) => setEditorData({ ...editorData, pageBgColor: e.target.value })}
+                        style={{ border: '1px solid #D1D5DB', padding: '1px', borderRadius: '4px', width: '40px', height: '28px', cursor: 'pointer' }}
+                      />
+                    </div>
+                  </>
                 )}
               </>
             )}
@@ -1447,10 +1561,55 @@ export default function Editor() {
                         {activePlan === 'premium' && 'Max 7 images'}
                       </span>
                     </span>
-                    <div style={{ padding: '16px', border: '1px dashed #D1D5DB', borderRadius: '8px', textAlign: 'center', marginBottom: '24px', cursor: 'pointer', background: '#F9FAFB' }}>
-                      <div style={{ fontSize: '24px', marginBottom: '8px' }}>🖼️</div>
-                      <div style={{ fontSize: '14px', fontWeight: 500 }}>Upload Gallery Images</div>
-                    </div>
+                    
+                    {/* Render Gallery Media Inputs */}
+                    {(editorData.galleryMedia || []).filter((m: any) => m.type === 'image').map((mediaItem: any, idx: number) => (
+                      <div key={`img-${idx}`} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                        <input 
+                          type="text" 
+                          className="prop-select" 
+                          style={{ marginBottom: 0, flex: 1, background: 'white' }} 
+                          value={mediaItem.url}
+                          placeholder="Image URL..."
+                          onChange={(e) => {
+                            const newMedia = [...(editorData.galleryMedia || [])];
+                            const imageIndex = newMedia.findIndex((m, i) => m.type === 'image' && i === newMedia.indexOf(mediaItem));
+                            if (imageIndex !== -1) {
+                              newMedia[imageIndex] = { ...newMedia[imageIndex], url: e.target.value };
+                              setEditorData({ ...editorData, galleryMedia: newMedia });
+                            }
+                          }}
+                        />
+                        <button 
+                          onClick={() => {
+                            const newMedia = (editorData.galleryMedia || []).filter((m: any) => m !== mediaItem);
+                            setEditorData({ ...editorData, galleryMedia: newMedia });
+                          }}
+                          style={{ background: '#FEE2E2', color: '#EF4444', border: 'none', borderRadius: '4px', width: '32px', cursor: 'pointer' }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                    
+                    {(() => {
+                      const imageCount = (editorData.galleryMedia || []).filter((m: any) => m.type === 'image').length;
+                      const maxImages = activePlan === 'basic' ? 3 : activePlan === 'standard' ? 5 : 7;
+                      if (imageCount < maxImages) {
+                        return (
+                          <button
+                            onClick={() => {
+                              const newMedia = [...(editorData.galleryMedia || []), { type: 'image', url: '' }];
+                              setEditorData({ ...editorData, galleryMedia: newMedia });
+                            }}
+                            style={{ width: '100%', padding: '10px', background: '#F9FAFB', border: '1px dashed #D1D5DB', borderRadius: '8px', cursor: 'pointer', marginBottom: '24px', color: '#4B5563', fontSize: '13px', fontWeight: 500 }}
+                          >
+                            + Add Image URL
+                          </button>
+                        );
+                      }
+                      return <div style={{ marginBottom: '24px' }}></div>;
+                    })()}
                   </>
                 )}
 
@@ -1460,10 +1619,52 @@ export default function Editor() {
                       Product Video
                       <span style={{ color: '#6B7280', fontSize: '12px', fontWeight: 400 }}>Max 1 video</span>
                     </span>
-                    <div style={{ padding: '16px', border: '1px dashed #D1D5DB', borderRadius: '8px', textAlign: 'center', marginBottom: '24px', cursor: 'pointer', background: '#F9FAFB' }}>
-                      <div style={{ fontSize: '24px', marginBottom: '8px' }}>🎥</div>
-                      <div style={{ fontSize: '14px', fontWeight: 500 }}>Upload Product Video</div>
-                    </div>
+                    
+                    {(editorData.galleryMedia || []).filter((m: any) => m.type === 'video').length > 0 ? (
+                      <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
+                        {(() => {
+                          const mediaItem = (editorData.galleryMedia || []).find((m: any) => m.type === 'video');
+                          return (
+                            <>
+                              <input 
+                                type="text" 
+                                className="prop-select" 
+                                style={{ marginBottom: 0, flex: 1, background: 'white' }} 
+                                value={mediaItem.url}
+                                placeholder="YouTube / MP4 URL..."
+                                onChange={(e) => {
+                                  const newMedia = [...(editorData.galleryMedia || [])];
+                                  const videoIndex = newMedia.findIndex((m) => m.type === 'video');
+                                  if (videoIndex !== -1) {
+                                    newMedia[videoIndex] = { ...newMedia[videoIndex], url: e.target.value };
+                                    setEditorData({ ...editorData, galleryMedia: newMedia });
+                                  }
+                                }}
+                              />
+                              <button 
+                                onClick={() => {
+                                  const newMedia = (editorData.galleryMedia || []).filter((m: any) => m.type !== 'video');
+                                  setEditorData({ ...editorData, galleryMedia: newMedia });
+                                }}
+                                style={{ background: '#FEE2E2', color: '#EF4444', border: 'none', borderRadius: '4px', width: '32px', cursor: 'pointer' }}
+                              >
+                                ×
+                              </button>
+                            </>
+                          );
+                        })()}
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          const newMedia = [...(editorData.galleryMedia || []), { type: 'video', url: '' }];
+                          setEditorData({ ...editorData, galleryMedia: newMedia });
+                        }}
+                        style={{ width: '100%', padding: '10px', background: '#F9FAFB', border: '1px dashed #D1D5DB', borderRadius: '8px', cursor: 'pointer', marginBottom: '24px', color: '#4B5563', fontSize: '13px', fontWeight: 500 }}
+                      >
+                        + Add Video URL
+                      </button>
+                    )}
                   </>
                 ) : (
                   <>

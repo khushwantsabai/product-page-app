@@ -26,6 +26,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         app {
           installation {
             activeSubscriptions {
+              id
               name
               status
             }
@@ -43,24 +44,38 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const activeSub = activeSubscriptions.find((sub: any) => sub.status === "ACTIVE");
   
   let currentPlan = "Free";
+  let activeSubscriptionId = null;
   if (activeSub && activeSub.name) {
+    activeSubscriptionId = activeSub.id || activeSub.name; // In GraphQL we didn't query id, let's fix that below
     if (activeSub.name.toLowerCase().includes("basic")) currentPlan = "Basic";
     if (activeSub.name.toLowerCase().includes("standard")) currentPlan = "Standard";
     if (activeSub.name.toLowerCase().includes("premium")) currentPlan = "Premium";
   }
 
-  return json({ currentPlan, graphqlStatus });
+  return json({ currentPlan, activeSubscriptionId, graphqlStatus });
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { session, billing } = await authenticate.admin(request);
   const formData = await request.formData();
   const planName = formData.get("planName") as string;
+  const activeSubscriptionId = formData.get("activeSubscriptionId") as string;
   
   const host = session.shop; 
-  // Construct the returnUrl dynamically using the API key to ensure correct routing
 
   try {
+    // If the user chooses Free, we simply cancel the active subscription
+    if (planName === "Free") {
+      if (activeSubscriptionId) {
+        await billing.cancel({
+          subscriptionId: activeSubscriptionId,
+          isTest: true,
+          prorate: true,
+        });
+      }
+      return json({ success: true, downgradedToFree: true });
+    }
+
     await billing.require({
       plans: [planName as any],
       isTest: true,
@@ -72,8 +87,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     });
     return json({ success: true });
   } catch (error: any) {
-    if (error instanceof Response && error.status >= 300 && error.status < 400) {
-      throw error; // This is the redirect to Shopify's payment approval screen!
+    if (error instanceof Response) {
+      throw error; // Shopify Remix throws Response objects (302, 401, etc) to control App Bridge redirects. We MUST re-throw them!
     }
     
     console.error("Failed to request billing via Shopify API. Full Error:", JSON.stringify(error, null, 2));
@@ -84,13 +99,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     let errorDetails = error.message || String(error);
     if (error?.response?.errors) {
        errorDetails += ` | GraphQL Error: ${JSON.stringify(error.response.errors)}`;
-    }
-    if (error instanceof Response) {
-      errorDetails = `HTTP ${error.status} ${error.statusText}`;
-      try {
-        const text = await error.clone().text();
-        errorDetails += ` | ${text}`;
-      } catch (e) {}
     }
     
     // Explicitly try to fetch the GraphQL errors if they exist deeply nested
@@ -152,8 +160,8 @@ const PLANS = [
 ];
 
 export default function Plans() {
-  const { currentPlan } = useLoaderData<typeof loader>();
-  const actionData = useActionData<typeof action>() as { confirmationUrl?: string; error?: string } | undefined;
+  const { currentPlan, activeSubscriptionId } = useLoaderData<typeof loader>();
+  const actionData = useActionData<typeof action>() as { confirmationUrl?: string; error?: string; downgradedToFree?: boolean } | undefined;
   const submit = useSubmit();
   const navigation = useNavigation();
 
@@ -164,6 +172,10 @@ export default function Plans() {
     if (actionData?.confirmationUrl) {
       // Redirect to Shopify approval screen
       window.open(actionData.confirmationUrl, "_top");
+    } else if (actionData?.downgradedToFree) {
+       setActiveToast("Successfully downgraded to the Free plan!");
+       // Force a refresh of loader data to update the UI immediately
+       navigation.state === "idle" && window.location.reload();
     } else if (actionData?.error) {
        setActiveToast(actionData.error);
     }
@@ -180,8 +192,9 @@ export default function Plans() {
   const handleSelectPlan = (planName: string, planPrice: number) => {
     const finalPrice = billingCycle === "Yearly" ? (planPrice * 0.8).toFixed(2) : planPrice.toString();
     const formData = new FormData();
-    formData.append("planName", planName + (billingCycle === "Yearly" ? " (Yearly)" : ""));
+    formData.append("planName", planName === "Free" ? "Free" : planName + (billingCycle === "Yearly" ? " (Yearly)" : ""));
     formData.append("planPrice", finalPrice);
+    if (activeSubscriptionId) formData.append("activeSubscriptionId", activeSubscriptionId);
     submit(formData, { method: "post" });
   };
 
