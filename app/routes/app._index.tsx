@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs, LinksFunction, ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData, useNavigate, Link, Form } from "@remix-run/react";
-import { useEffect } from "react";
+
 import { authenticate } from "../shopify.server";
 import db from "../db.server";
 import dashboardStyles from "../styles/dashboard.css?url";

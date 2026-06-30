@@ -167,7 +167,6 @@ export const TEMPLATE_MOCKS: Record<string, any> = {
     desc: 'Brighten your space with this elegant, minimalist modern lamp.',
     image: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-5_large.png',
     layout: 'split',
-    reviews: { rating: 0, count: 0 },
     discountBadge: '',
     sizes: ['S', 'M', 'L', 'XL'],
     selectedSize: 'M',
@@ -184,7 +183,6 @@ export const TEMPLATE_MOCKS: Record<string, any> = {
     desc: 'High-performance electronics for your smart home setup.',
     image: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-6_large.png',
     layout: 'stacked',
-    reviews: { rating: 4.8, count: 1248 },
     discountBadge: 'Save 15%',
     sizes: ['S', 'M', 'L', 'XL'],
     selectedSize: 'M',
@@ -201,7 +199,6 @@ export const TEMPLATE_MOCKS: Record<string, any> = {
     desc: 'Timeless elegance meets modern engineering.',
     image: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-2_large.png',
     layout: 'split',
-    reviews: { rating: 4.9, count: 2345 },
     discountBadge: 'Save 25%',
     sizes: ['S', 'M', 'L', 'XL'],
     selectedSize: 'M',
@@ -218,7 +215,6 @@ export const TEMPLATE_MOCKS: Record<string, any> = {
     desc: 'Complete routine for glowing, healthy skin.',
     image: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-4_large.png',
     layout: 'stacked',
-    reviews: { rating: 5.0, count: 876 },
     discountBadge: 'Save 14%',
     sizes: ['S', 'M', 'L', 'XL'],
     selectedSize: 'M',
@@ -235,7 +231,6 @@ export const TEMPLATE_MOCKS: Record<string, any> = {
     desc: 'Latest trends for your daily wardrobe.',
     image: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-collection-3_large.png',
     layout: 'split',
-    reviews: { rating: 4.6, count: 432 },
     discountBadge: 'Save 19%',
     sizes: ['S', 'M', 'L', 'XL'],
     selectedSize: 'M',
@@ -252,7 +247,6 @@ export const TEMPLATE_MOCKS: Record<string, any> = {
     desc: 'Lightweight and durable shoes for maximum athletic performance.',
     image: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png',
     layout: 'split',
-    reviews: { rating: 4.7, count: 1890 },
     discountBadge: 'Save 17%',
     sizes: ['S', 'M', 'L', 'XL'],
     selectedSize: 'M',
@@ -268,7 +262,6 @@ export const TEMPLATE_MOCKS: Record<string, any> = {
     desc: 'Experience high-quality sound with active noise cancellation and extra long battery life. Perfect for travel or focused work.',
     image: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-5_large.png',
     layout: 'split',
-    reviews: { rating: 4.5, count: 512 },
     discountBadge: 'Save 20%',
     sizes: ['S', 'M', 'L', 'XL'],
     selectedSize: 'M',
@@ -302,18 +295,13 @@ export default function Editor() {
   
   const [editorData, setEditorDataState] = useState(() => ({
     ...initialMockData,
-    sectionOrder: initialMockData.sectionOrder || ['header', 'desc', 'vendor', 'options', 'actions', 'stock', 'trust'],
+    sectionOrder: initialMockData.sectionOrder || ['header', 'desc', 'vendor', 'options', 'actions', 'trust'],
     imageBgColor: initialMockData.imageBgColor || '#F9FAFB',
     vendor: initialMockData.vendor || {
       name: 'Global Goods Inc.',
       manufacturer: 'Apex Labs',
       wholesaler: 'Midwest Distributing',
       source: 'Direct Import'
-    },
-    stockWarning: initialMockData.stockWarning || {
-      count: 8,
-      max: 10,
-      text: 'Only {count} items left in stock!'
     },
     trustBadges: initialMockData.trustBadges || [
       { id: '1', title: 'Shipping', desc: 'On all orders', icon: '🚚' },
@@ -521,11 +509,10 @@ export default function Editor() {
             {[
               ...(editorData.plan === 'Premium' ? [{ id: 'layout', icon: '📐', label: 'Layout Settings' }] : []),
               ...((activePlan === 'standard' || activePlan === 'premium') ? [{ id: 'vendor', icon: '🏢', label: 'Vendor Details' }] : []),
-              ...(activePlan === 'premium' ? [{ id: 'trust', icon: '🛡️', label: 'Stock & Trust' }] : []),
+              ...(activePlan === 'premium' ? [{ id: 'trust', icon: '🛡️', label: 'Trust Badges' }] : []),
               { id: 'images', icon: '🖼️', label: 'Product Images' },
               { id: 'title', icon: 'T', label: 'Product Title' },
               { id: 'price', icon: '💲', label: 'Price' },
-              ...(activePlan !== 'free' ? [{ id: 'reviews', icon: '⭐', label: 'Reviews' }] : []),
               { id: 'desc', icon: '📝', label: 'Description' },
               { id: 'variants', icon: '🎨', label: 'Variant Picker' },
               { id: 'sizes', icon: '📏', label: 'Size Options' },
@@ -682,23 +669,7 @@ export default function Editor() {
                 }}>
                   <div className="mock-title" style={editorData.styles.title}>{editorData.title}</div>
                   
-                  {activePlan !== 'free' && editorData.reviews && (
-                    <div 
-                      style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
-                      onClick={() => setActiveSection('reviews')}
-                    >
-                      <div style={{ color: '#FBBF24', fontSize: '15px', letterSpacing: '1px' }}>
-                        {renderStars(editorData.reviews.rating || 5)}
-                      </div>
-                      <div style={{ color: '#4B5563', fontSize: '13px', fontWeight: 600 }}>
-                        ({editorData.reviews.rating || '5.0'})
-                      </div>
-                      <div style={{ color: '#9CA3AF', fontSize: '13px' }}>•</div>
-                      <div style={{ color: '#6B7280', fontSize: '13px' }}>
-                        {(editorData.reviews.count || 0).toLocaleString()} Reviews
-                      </div>
-                    </div>
-                  )}
+
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '2px' }}>
                     <div className="mock-price" style={editorData.styles.price}>
@@ -950,26 +921,7 @@ export default function Editor() {
                 </div>
 
                 </SortableItem>;
-                      if (sectionId === 'stock') return <SortableItem key="stock" id="stock">{/* Stock Warning */}
-                {activePlan === 'premium' && editorData.stockWarning && (
-                  <div className="mock-stock-warning" style={{ width: '100%', marginTop: '12px', textAlign: 'left' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, color: '#DC2626', marginBottom: '6px', justifyContent: (editorData.layout === 'stacked' || activeDevice === 'mobile') ? 'center' : 'flex-start' }}>
-                      <span>🔥</span>
-                      <span>{editorData.stockWarning.text.replace('{count}', editorData.stockWarning.count)}</span>
-                    </div>
-                    <div style={{ width: '100%', height: '6px', background: '#E5E7EB', borderRadius: '3px', overflow: 'hidden' }}>
-                      <div style={{ 
-                        width: `${Math.min(100, (editorData.stockWarning.count / editorData.stockWarning.max) * 100)}%`, 
-                        height: '100%', 
-                        background: '#EF4444', 
-                        borderRadius: '3px',
-                        transition: 'width 0.3s ease'
-                      }}></div>
-                    </div>
-                  </div>
-                )}
 
-                </SortableItem>;
                       if (sectionId === 'trust') return <SortableItem key="trust" id="trust">{/* Trust Badges (Only when layout is stacked or in mobile view) */}
                 {(editorData.layout === 'stacked' || activeDevice === 'mobile') && activePlan === 'premium' && editorData.trustBadges && (
                   <div className="mock-trust-badges" style={{ 
@@ -1227,44 +1179,7 @@ export default function Editor() {
               </>
             )}
 
-            {activeSection === 'reviews' && activePlan !== 'free' && editorData.reviews && (
-              <>
-                <span className="prop-label">Rating Score (0.0 - 5.0)</span>
-                <input 
-                  type="number" 
-                  className="prop-select" 
-                  style={{marginBottom: '16px', background: 'white'}} 
-                  value={editorData.reviews.rating}
-                  onChange={(e) => {
-                    const val = Math.max(0, Math.min(5, Number(e.target.value)));
-                    setEditorData({
-                      ...editorData,
-                      reviews: { ...editorData.reviews, rating: val }
-                    });
-                  }}
-                  min={0}
-                  max={5}
-                  step={0.1}
-                />
-                
-                <span className="prop-label">Review Count</span>
-                <input 
-                  type="number" 
-                  className="prop-select" 
-                  style={{marginBottom: '16px', background: 'white'}} 
-                  value={editorData.reviews.count}
-                  onChange={(e) => {
-                    const val = Math.max(0, Math.round(Number(e.target.value)));
-                    setEditorData({
-                      ...editorData,
-                      reviews: { ...editorData.reviews, count: val }
-                    });
-                  }}
-                  min={0}
-                  step={1}
-                />
-              </>
-            )}
+
 
             {activeSection === 'sizes' && editorData.sizes && (
               <>
@@ -1631,53 +1546,7 @@ export default function Editor() {
 
             {activeSection === 'trust' && (
               <>
-                <div style={{ borderBottom: '1px solid #E5E7EB', paddingBottom: '12px', marginBottom: '16px' }}>
-                  <span className="prop-label" style={{ fontWeight: 600, fontSize: '14px', color: '#111827' }}>Stock Warning Settings</span>
-                  
-                  <span className="prop-label" style={{ marginTop: '12px' }}>Warning Message Template</span>
-                  <input 
-                    type="text" 
-                    className="prop-select" 
-                    style={{ marginBottom: '12px', background: 'white' }} 
-                    value={editorData.stockWarning?.text || ''}
-                    onChange={(e) => setEditorData({
-                      ...editorData,
-                      stockWarning: { ...editorData.stockWarning, text: e.target.value }
-                    })}
-                  />
-                  <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '12px', marginTop: '-8px' }}>Use <code>{'{count}'}</code> to display the stock number dynamically.</div>
 
-                  <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
-                    <div style={{ flex: 1 }}>
-                      <span className="prop-label">Current Stock</span>
-                      <input 
-                        type="number" 
-                        className="prop-select" 
-                        style={{ background: 'white' }} 
-                        value={editorData.stockWarning?.count ?? 8}
-                        min={0}
-                        onChange={(e) => setEditorData({
-                          ...editorData,
-                          stockWarning: { ...editorData.stockWarning, count: Number(e.target.value) }
-                        })}
-                      />
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <span className="prop-label">Max Stock (Scale)</span>
-                      <input 
-                        type="number" 
-                        className="prop-select" 
-                        style={{ background: 'white' }} 
-                        value={editorData.stockWarning?.max ?? 10}
-                        min={1}
-                        onChange={(e) => setEditorData({
-                          ...editorData,
-                          stockWarning: { ...editorData.stockWarning, max: Number(e.target.value) }
-                        })}
-                      />
-                    </div>
-                  </div>
-                </div>
 
                 <div>
                   <span className="prop-label" style={{ fontWeight: 600, fontSize: '14px', color: '#111827', marginBottom: '12px' }}>Trust Badges Settings</span>

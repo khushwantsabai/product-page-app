@@ -53,13 +53,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const { admin, session, billing } = await authenticate.admin(request);
+  const { session, billing } = await authenticate.admin(request);
   const formData = await request.formData();
   const planName = formData.get("planName") as string;
   
   const host = session.shop; 
   // Construct the returnUrl dynamically using the API key to ensure correct routing
-  const returnUrl = `https://${host}/admin/apps/${process.env.SHOPIFY_API_KEY}/app/templates`;
 
   try {
     await billing.require({
@@ -153,7 +152,7 @@ const PLANS = [
 ];
 
 export default function Plans() {
-  const { currentPlan, graphqlStatus } = useLoaderData<typeof loader>();
+  const { currentPlan } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>() as { confirmationUrl?: string; error?: string } | undefined;
   const submit = useSubmit();
   const navigation = useNavigation();

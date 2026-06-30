@@ -32,13 +32,18 @@
 
     function injectAllPlaceholders() {
       if (!window.PPB_DATA || !window.PPB_DATA.components) return;
-      document.querySelectorAll('.ppb-placeholder').forEach(function(el) {
-        var type = el.getAttribute('data-ppb-type');
-        if (type && window.PPB_DATA.components[type]) {
-          el.innerHTML = window.PPB_DATA.components[type];
-          el.classList.remove('ppb-placeholder');
-        }
-      });
+      
+      // Inject into Master Template Block
+      var root = document.getElementById('pagecraft-root');
+      if (root && window.PPB_DATA.sectionOrder) {
+        var html = '';
+        window.PPB_DATA.sectionOrder.forEach(function(sectionId) {
+          if (window.PPB_DATA.components[sectionId]) {
+            html += window.PPB_DATA.components[sectionId];
+          }
+        });
+        root.innerHTML = html;
+      }
     }
 
     // Run when new blocks are dynamically added in Theme Editor

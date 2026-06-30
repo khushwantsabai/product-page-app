@@ -40,12 +40,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const desc = settingsObj.desc || settingsObj.description || "";
     const price = settingsObj.price || "$0.00";
     const compareAt = settingsObj.compareAt || "";
-    const image = settingsObj.image || "";
     const imageBgColor = settingsObj.imageBgColor || "transparent";
-    const thumbnails = settingsObj.thumbnails || [];
     const layout = settingsObj.layout || "split";
     const sizes = settingsObj.sizes || [];
-    const reviews = settingsObj.reviews || { rating: 0, count: 0 };
+    const sectionOrder = settingsObj.sectionOrder || ['header', 'desc', 'vendor', 'options', 'actions', 'trust'];
     const selectedSize = settingsObj.selectedSize || sizes[0];
     const unavailableSizes = settingsObj.unavailableSizes || [];
     const buttonText = settingsObj.buttonText || "Add to Cart";
@@ -108,13 +106,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const components = {
       header: `<h1 class="pp-title">${title}</h1>`,
       price: `
-        ${reviews.count > 0 ? `
-          <div class="pp-reviews">
-            <span style="color: #FBBF24;">★★★★★</span>
-            <span style="font-weight: 600; color: #111827;">(${reviews.rating})</span>
-            <span>• ${reviews.count} Reviews</span>
-          </div>
-        ` : ''}
         <div class="pp-price-wrap">
           <span class="pp-price">${price}</span>
           ${compareAt ? `<span class="pp-compare">${compareAt}</span>` : ''}
@@ -165,17 +156,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           <button class="pp-buy-btn">${buyNowText}</button>
         </div>
       `,
-      stock: settingsObj.stockWarning ? `
-        <div class="mock-stock-warning" style="width: 100%; margin-top: 12px; text-align: left;">
-          <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #DC2626; margin-bottom: 6px;">
-            <span>🔥</span>
-            <span>${settingsObj.stockWarning.text.replace('{count}', settingsObj.stockWarning.count)}</span>
-          </div>
-          <div style="width: 100%; height: 6px; background: #E5E7EB; border-radius: 3px; overflow: hidden;">
-            <div style="width: ${Math.min(100, (settingsObj.stockWarning.count / settingsObj.stockWarning.max) * 100)}%; height: 100%; background: #EF4444; border-radius: 3px;"></div>
-          </div>
-        </div>
-      ` : '',
       trust: trustBadges && trustBadges.length > 0 ? `
         <div class="pp-trust-badges">
           ${trustBadges.map((badge: any) => `
@@ -193,7 +173,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       ` : ''
     };
 
-    return new Response(JSON.stringify({ css: globalCss, components }), {
+    return new Response(JSON.stringify({ css: globalCss, components, sectionOrder }), {
       headers: {
         "Content-Type": "application/json",
         "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
