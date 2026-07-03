@@ -536,11 +536,13 @@ export default function Editor() {
             Undo
           </button>
           {isPreview ? (
-            <form method="post" action="/app/templates" style={{ margin: 0 }}>
-              <input type="hidden" name="templateId" value={page?.templateId || editorData.id || page.id.replace('preview-', '')} />
-              <input type="hidden" name="templateName" value={editorData.title || "Template"} />
-              <button type="submit" className="btn-solid">Use Template</button>
-            </form>
+            <button 
+              type="button" 
+              className="btn-solid"
+              onClick={() => navigate(`/app/editor/new?templateId=${encodeURIComponent(page?.templateId || editorData.id || page.id.replace('preview-', ''))}&templateName=${encodeURIComponent(editorData.title || "Template")}`)}
+            >
+              Use Template
+            </button>
           ) : (
             <>
               <button 
@@ -578,13 +580,10 @@ export default function Editor() {
           <div className="section-list">
             {[
               ...(editorData.plan === 'Premium' ? [{ id: 'layout', icon: '📐', label: 'Layout Settings' }] : []),
-              ...((activePlan === 'standard' || activePlan === 'premium') ? [{ id: 'vendor', icon: '🏢', label: 'Vendor Details' }] : []),
-              ...(activePlan === 'premium' ? [{ id: 'trust', icon: '🛡️', label: 'Trust Badges' }] : []),
               { id: 'images', icon: '🖼️', label: 'Product Images' },
               { id: 'title', icon: 'T', label: 'Product Title' },
               { id: 'price', icon: '💲', label: 'Price' },
               { id: 'desc', icon: '📝', label: 'Description' },
-              { id: 'variants', icon: '🎨', label: 'Variant Picker' },
               { id: 'sizes', icon: '📏', label: 'Size Options' },
               { id: 'quantity', icon: '🔢', label: 'Quantity Selector' },
               { id: 'cart', icon: '🛒', label: 'Add To Cart' },
