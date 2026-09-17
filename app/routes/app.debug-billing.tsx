@@ -29,7 +29,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       variables: {
         name: "Test Debug Plan",
         returnUrl: `https://${session.shop}/admin/apps/${process.env.SHOPIFY_API_KEY}/app/plans`,
-        test: true,
+        test: false,
         lineItems: [{
           plan: {
             appRecurringPricingDetails: {

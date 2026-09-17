@@ -69,7 +69,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       if (activeSubscriptionId) {
         await billing.cancel({
           subscriptionId: activeSubscriptionId,
-          isTest: true,
+          isTest: false,
           prorate: true,
         });
       }
@@ -78,10 +78,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     await billing.require({
       plans: [planName as any],
-      isTest: true,
+      isTest: false,
       onFailure: async () => billing.request({
         plan: planName as any,
-        isTest: true,
+        isTest: false,
         returnUrl: `https://${session.shop}/admin/apps/${process.env.SHOPIFY_API_KEY}/app/plans`,
       }),
     });

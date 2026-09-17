@@ -12,7 +12,7 @@ async function main() {
       appSubscriptionCreate(
         name: "Basic",
         returnUrl: "https://${session.shop}/admin/apps/06fec0d0f3013071adbb80cf7190b42b/app/plans",
-        test: true,
+        test: false,
         lineItems: [{
           plan: {
             appRecurringPricingDetails: {
