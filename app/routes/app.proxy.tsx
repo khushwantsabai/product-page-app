@@ -156,19 +156,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       `;
       if (sectionId === 'options') return `
         <div class="pp-options">
-          <div class="pp-opt-title">Color: <span style="font-weight: normal; color: #6B7280;">Black</span></div>
+          <div class="pp-opt-title">Color: <span id="pp-selected-color-label" style="font-weight: normal; color: #6B7280;">Black</span></div>
           <div class="pp-colors">
-            <div class="pp-color active" style="background-color: #111827;"></div>
-            <div class="pp-color" style="background-color: #E5E7EB;"></div>
-            <div class="pp-color" style="background-color: #3B82F6;"></div>
+            <div class="pp-color active" style="background-color: #111827;" onclick="document.querySelectorAll('.pp-color').forEach(el=>el.classList.remove('active')); this.classList.add('active'); document.getElementById('pp-selected-color-label').innerText = 'Black';"></div>
+            <div class="pp-color" style="background-color: #E5E7EB;" onclick="document.querySelectorAll('.pp-color').forEach(el=>el.classList.remove('active')); this.classList.add('active'); document.getElementById('pp-selected-color-label').innerText = 'Gray';"></div>
+            <div class="pp-color" style="background-color: #3B82F6;" onclick="document.querySelectorAll('.pp-color').forEach(el=>el.classList.remove('active')); this.classList.add('active'); document.getElementById('pp-selected-color-label').innerText = 'Blue';"></div>
           </div>
         </div>
         ${sizes.length > 0 ? `
           <div class="pp-options">
-            <div class="pp-opt-title">Size: <span style="font-weight: bold;">${selectedSize}</span></div>
+            <div class="pp-opt-title">Size: <span id="pp-selected-size-label" style="font-weight: bold;">${selectedSize}</span></div>
             <div class="pp-sizes">
               ${sizes.map((s: string) => `
-                <div class="pp-size ${s === selectedSize ? 'active' : ''} ${unavailableSizes.includes(s) ? 'disabled' : ''}">${s}</div>
+                <div class="pp-size ${s === selectedSize ? 'active' : ''} ${unavailableSizes.includes(s) ? 'disabled' : ''}" 
+                     onclick="if(!this.classList.contains('disabled')) { document.querySelectorAll('.pp-size').forEach(el=>el.classList.remove('active')); this.classList.add('active'); document.getElementById('pp-selected-size-label').innerText = '${s}'; }">${s}</div>
               `).join('')}
             </div>
             <div style="color: #16A34A; font-size: 13px; font-weight: 600; margin-top: 8px; cursor: pointer;">Size Chart ▼</div>
@@ -177,16 +178,16 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         <div class="pp-options">
           <div class="pp-opt-title">Quantity</div>
           <div class="pp-qty-wrap">
-            <button class="pp-qty-btn">-</button>
-            <input type="text" class="pp-qty-input" value="1" readonly />
-            <button class="pp-qty-btn">+</button>
+            <button class="pp-qty-btn" onclick="var input = document.getElementById('pp-qty-input'); var val = parseInt(input.value); if(val > 1) input.value = val - 1;">-</button>
+            <input type="text" id="pp-qty-input" class="pp-qty-input" value="1" readonly />
+            <button class="pp-qty-btn" onclick="var input = document.getElementById('pp-qty-input'); var val = parseInt(input.value); input.value = val + 1;">+</button>
           </div>
         </div>
       `;
       if (sectionId === 'actions') return `
         <div class="pp-actions">
-          <button class="pp-add-btn">${buttonText}</button>
-          <button class="pp-buy-btn">${buyNowText}</button>
+          <button class="pp-add-btn" onclick="alert('Added to cart!');">${buttonText}</button>
+          <button class="pp-buy-btn" onclick="alert('Proceeding to checkout!');">${buyNowText}</button>
         </div>
       `;
       if (sectionId === 'trust' && trustBadges && trustBadges.length > 0) return `

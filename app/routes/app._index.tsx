@@ -111,6 +111,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   return json({
     activePlan,
+    shop: session.shop,
     merchantPlan: activePlan,
     pagesCreated,
     pagesPublished,
@@ -125,7 +126,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function Dashboard() {
-  const { activePlan, recentPages } = useLoaderData<typeof loader>();
+  const { activePlan, recentPages, shop } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
 
   const getPlanDescription = (planName: string) => {

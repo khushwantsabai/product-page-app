@@ -13,7 +13,7 @@ export const billingConfig: any = {
     replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
     lineItems: [
       {
-        amount: 39.0,
+        amount: .0,
         currencyCode: "USD",
         interval: BillingInterval.Every30Days,
       },
