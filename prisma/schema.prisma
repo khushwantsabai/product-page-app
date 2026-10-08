@@ -53,9 +53,9 @@ model Plan {
 
 model Subscription {
   id               String    @id @default(uuid())
-  shopId           String
-  planId           String
-  shopifyChargeId  String
+  shopId           String    @default("")
+  planId           String    @default("")
+  shopifyChargeId  String    @default("")
   status           String
   trialEndsAt      DateTime?
   currentPeriodEnd DateTime?
@@ -76,9 +76,9 @@ model ProductPage {
 model Template {
   id               String   @id @default(uuid())
   name             String
-  planRequired     String
-  thumbnailUrl     String
-  defaultSettings  Json
+  planRequired     String   @default("Free")
+  thumbnailUrl     String   @default("")
+  defaultSettings  Json     @default("{}")
 }
 
 model PageVersion {
